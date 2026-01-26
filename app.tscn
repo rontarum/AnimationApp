@@ -1,0 +1,261 @@
+[gd_scene load_steps=25 format=3 uid="uid://vbbjm1irm2ew"]
+
+[ext_resource type="Script" uid="uid://ti52tkbtccx4" path="res://canvas_camera.gd" id="1_3npyw"]
+[ext_resource type="Script" uid="uid://bpi2121wqipum" path="res://app.gd" id="1_g1skh"]
+[ext_resource type="Script" uid="uid://cd0k2h4amadh2" path="res://draw_container.gd" id="1_u1txy"]
+[ext_resource type="Shader" uid="uid://bfytwucjiyspp" path="res://checker.gdshader" id="3_itptj"]
+[ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="6_8l3i4"]
+[ext_resource type="Texture2D" uid="uid://dq457sq27anje" path="res://assets/icons/tools/arrow.svg" id="8_5oejy"]
+[ext_resource type="Theme" uid="uid://c478ise21qgjv" path="res://app.tres" id="8_gtgpg"]
+[ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://tool.gd" id="9_7iiwk"]
+[ext_resource type="Script" uid="uid://ccrley6gx0ik2" path="res://assets/ui_components/layers/layers_panel.gd" id="9_j4pmb"]
+[ext_resource type="Texture2D" uid="uid://b3aythki6lfcq" path="res://assets/icons/tools/selection.svg" id="9_ovwn0"]
+[ext_resource type="Texture2D" uid="uid://dmp1jsuld8dbr" path="res://assets/icons/tools/draw/brush.svg" id="10_7iiwk"]
+[ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="10_dv8dk"]
+[ext_resource type="Texture2D" uid="uid://dfnnft4jib4w2" path="res://assets/icons/tools/draw/eraser.svg" id="11_a37lv"]
+[ext_resource type="Texture2D" uid="uid://caw555qo5ev0h" path="res://assets/icons/tools/draw/fill.svg" id="12_gtgpg"]
+[ext_resource type="Script" uid="uid://ciru41hkovgfg" path="res://swatch.gd" id="14_a37lv"]
+[ext_resource type="Script" uid="uid://cye24k1erlon3" path="res://assets/swatch_picker.gd" id="16_ra7kh"]
+[ext_resource type="Script" uid="uid://wwqv6ogje2k7" path="res://assets/scripts/cursor_drawer.gd" id="17_gjbw5"]
+[ext_resource type="Texture2D" uid="uid://dcruge44xhvb5" path="res://assets/icons/cursor/arrow.svg" id="18_jq15t"]
+[ext_resource type="Script" uid="uid://dtllkob6b6oap" path="res://assets/scripts/cursor_sprite.gd" id="19_rgcu8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_25sla"]
+shader = ExtResource("3_itptj")
+shader_parameter/size = 64.0
+shader_parameter/light_col = Color(0.94, 0.92, 0.92, 1)
+shader_parameter/gray_col = Color(0.7882353, 0.8156863, 0.8784314, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j4pmb"]
+bg_color = Color(0.9222606, 0.86270624, 0.8628575, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dv8dk"]
+bg_color = Color(0.8069084, 0.60483414, 0.6426659, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kd73m"]
+bg_color = Color(0.8873913, 0.7471103, 0.76985294, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dv8dk"]
+
+[node name="App" type="Node2D"]
+script = ExtResource("1_g1skh")
+
+[node name="BackLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background" type="ColorRect" parent="BackLayer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.9490196, 0.9254902, 0.92941177, 1)
+
+[node name="DrawContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+texture_repeat = 1
+material = SubResource("ShaderMaterial_25sla")
+offset_right = 640.0
+offset_bottom = 360.0
+pivot_offset = Vector2(320, 192)
+stretch = true
+script = ExtResource("1_u1txy")
+
+[node name="DrawCanvas" type="SubViewport" parent="DrawContainer"]
+transparent_bg = true
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(640, 360)
+render_target_update_mode = 4
+
+[node name="CanvasCamera" type="Camera2D" parent="DrawContainer"]
+script = ExtResource("1_3npyw")
+
+[node name="GUI" type="CanvasLayer" parent="."]
+
+[node name="Palette" type="TextureRect" parent="GUI"]
+visible = false
+texture_filter = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 141.0
+offset_bottom = 48.0
+texture = ExtResource("6_8l3i4")
+
+[node name="FramePanel" type="Panel" parent="GUI"]
+offset_left = 64.0
+offset_top = 952.0
+offset_right = 1664.0
+offset_bottom = 1080.0
+theme = ExtResource("8_gtgpg")
+
+[node name="LayersPanel" type="Panel" parent="GUI"]
+offset_left = 1664.0
+offset_top = 440.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme = ExtResource("8_gtgpg")
+script = ExtResource("9_j4pmb")
+
+[node name="MarginContainer" type="MarginContainer" parent="GUI/LayersPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 64
+
+[node name="LayersContainer" type="Control" parent="GUI/LayersPanel/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NewLayerButton" type="Button" parent="GUI/LayersPanel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 46.0
+offset_bottom = 47.0
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("10_dv8dk")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_j4pmb")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dv8dk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kd73m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
+text = "+"
+
+[node name="DeleteLayerButton" type="Button" parent="GUI/LayersPanel"]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 16.0
+offset_right = 86.0
+offset_bottom = 47.0
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("10_dv8dk")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_j4pmb")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dv8dk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kd73m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
+text = "-"
+
+[node name="ToolPanel" type="Panel" parent="GUI"]
+offset_right = 64.0
+offset_bottom = 1080.0
+theme = ExtResource("8_gtgpg")
+
+[node name="ToolPanelMargin" type="MarginContainer" parent="GUI/ToolPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_right = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 80
+
+[node name="ToolBar" type="VBoxContainer" parent="GUI/ToolPanel/ToolPanelMargin"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 30
+
+[node name="Arrow" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture = ExtResource("8_5oejy")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="Selection" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar"]
+layout_mode = 2
+texture = ExtResource("9_ovwn0")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+type = 1
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="Brush" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar"]
+layout_mode = 2
+texture = ExtResource("10_7iiwk")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+type = 4
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="Eraser" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar"]
+layout_mode = 2
+texture = ExtResource("11_a37lv")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+type = 5
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="Fill" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar"]
+layout_mode = 2
+texture = ExtResource("12_gtgpg")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+type = 6
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="PrimarySwatchBack" type="ColorRect" parent="GUI/ToolPanel"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 936.0
+offset_right = 49.0
+offset_bottom = 970.0
+color = Color(0.26666668, 0.29411766, 0.4509804, 0.23529412)
+
+[node name="PrimarySwatch" type="ColorRect" parent="GUI/ToolPanel/PrimarySwatchBack"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 33.0
+offset_bottom = 33.0
+pivot_offset = Vector2(16, 16)
+script = ExtResource("14_a37lv")
+metadata/_edit_lock_ = true
+
+[node name="SecondarySwatchBack" type="ColorRect" parent="GUI/ToolPanel"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 976.0
+offset_right = 49.0
+offset_bottom = 1010.0
+color = Color(0.26666668, 0.29411766, 0.4509804, 0.23529412)
+
+[node name="SecondarySwatch" type="ColorRect" parent="GUI/ToolPanel/SecondarySwatchBack"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 33.0
+offset_bottom = 33.0
+pivot_offset = Vector2(16, 16)
+color = Color(0, 0, 0, 1)
+script = ExtResource("14_a37lv")
+order = 1
+metadata/_edit_lock_ = true
+
+[node name="SwatchPicker" type="ColorPicker" parent="GUI"]
+offset_left = 96.0
+offset_top = 352.0
+offset_right = 394.0
+offset_bottom = 924.0
+theme = ExtResource("8_gtgpg")
+edit_intensity = false
+color_modes_visible = false
+script = ExtResource("16_ra7kh")
+
+[node name="CursorDrawer" type="Node2D" parent="GUI"]
+script = ExtResource("17_gjbw5")
+
+[node name="CursorSprite" type="Sprite2D" parent="GUI"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("18_jq15t")
+offset = Vector2(16, 24)
+script = ExtResource("19_rgcu8")
+
+[connection signal="mouse_entered" from="DrawContainer" to="DrawContainer" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="DrawContainer" to="DrawContainer" method="_on_mouse_exited"]

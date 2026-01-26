@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2hbj7i2iebnc"]
+
+[sub_resource type="Gradient" id="Gradient_ovwn0"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.9647059, 0.9372549, 0.9372549, 1, 0.77349997, 0.78625, 0.85, 1, 0.96862745, 0.9411765, 0.9411765, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rgcu8"]
+gradient = SubResource("Gradient_ovwn0")
+
+[node name="LayerSeparator" type="TextureRect"]
+texture = SubResource("GradientTexture1D_rgcu8")
+stretch_mode = 5

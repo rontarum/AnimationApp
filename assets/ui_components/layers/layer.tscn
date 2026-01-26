@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=3 uid="uid://dphwe1t4okc3j"]
+
+[ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="1_6vp7s"]
+[ext_resource type="Script" uid="uid://ci0ea10afo41n" path="res://assets/ui_components/layers/layer.gd" id="1_g5dus"]
+[ext_resource type="Script" uid="uid://be0nms7e6yr7c" path="res://assets/ui_components/layers/layer_preview.gd" id="2_g5dus"]
+[ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="3_f14fd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5dus"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.27058825, 0.29411766, 0.4509804, 0.39215687)
+corner_detail = 1
+
+[node name="Layer" type="ColorRect"]
+custom_minimum_size = Vector2(256, 64)
+color = Color(0.9647059, 0.9372549, 0.9372549, 1)
+script = ExtResource("1_g5dus")
+
+[node name="LayerMargin" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 64.0
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="LayerHbox" type="HBoxContainer" parent="LayerMargin"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/separation = 12
+
+[node name="LayerPreview" type="TextureRect" parent="LayerMargin/LayerHbox"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+texture = ExtResource("1_6vp7s")
+expand_mode = 2
+stretch_mode = 5
+script = ExtResource("2_g5dus")
+
+[node name="LayerLabel" type="LineEdit" parent="LayerMargin/LayerHbox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/caret_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/selection_color = Color(0.61149776, 0.6950189, 0.87084705, 1)
+theme_override_constants/caret_width = 2
+theme_override_fonts/font = ExtResource("3_f14fd")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/focus = SubResource("StyleBoxFlat_g5dus")
+text = "Layer"
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_enabled = false
+virtual_keyboard_show_on_focus = false
+middle_mouse_paste_enabled = false
+drag_and_drop_selection_enabled = false
+flat = true
+select_all_on_focus = true
+caret_blink = true
