@@ -13,6 +13,10 @@ func _ready() -> void:
 	EventBus.secondary_color_changed.connect(_on_secondary_color_changed)
 	EventBus.color_picked.connect(_on_color_picked)
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("swap_colors"):
+		swap_colors()
+
 func _on_primary_color_changed(new_color: Color) -> void:
 	print("[ColorService] Primary color changed to: ", new_color)
 	# Здесь можно добавить дополнительную логику обработки изменения primary цвета
@@ -46,6 +50,7 @@ func swap_colors() -> void:
 	var temp = AppState.primary_color
 	AppState.primary_color = AppState.secondary_color
 	AppState.secondary_color = temp
+	print("[ColorService] Colors swapped - Primary: ", AppState.primary_color, " Secondary: ", AppState.secondary_color)
 
 ## Сбросить цвета к значениям по умолчанию
 func reset_colors() -> void:

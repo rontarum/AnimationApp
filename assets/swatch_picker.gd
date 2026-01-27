@@ -36,4 +36,6 @@ func toggle(col: Color, from: Node) -> void:
 	last_node = from
 
 func _on_color_pick(col: Color) -> void:
-	color_picked.emit(col, last_node)
+	# Эмитим только если есть активный swatch
+	if last_node:
+		color_picked.emit(col, last_node)

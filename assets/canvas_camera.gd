@@ -21,7 +21,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	zoom = Vector2.ONE
-	position = DrawViewport.canvas_size * 0.5
+	position = CanvasService.CANVAS_SIZE * 0.5
 	zoom_value = zoom
 
 func _process(delta: float) -> void:
@@ -51,11 +51,15 @@ func _drag() -> Vector2:
 		drag_mouse = mouse_vp
 		drag_camera = position
 		is_dragging = true
-		CursorSprite.instance.change_shape(Util.ToolType.GRAB)
+		# Меняем курсор на GRAB при начале перетаскивания
+		if Services.cursor:
+			Services.cursor.set_override(ToolType.Type.GRAB)
 	
 	if is_dragging and Input.is_action_just_released("drag"):
 		is_dragging = false
-		CursorSprite.instance.change_shape(Util.ToolType.ARROW)
+		# Возвращаем курсор текущего инструмента
+		if Services.cursor:
+			Services.cursor.clear_override()
 	
 	if is_dragging:
 		var move_vector: Vector2 = mouse_vp - drag_mouse

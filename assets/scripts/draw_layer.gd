@@ -1,32 +1,31 @@
 class_name DrawLayer extends TextureRect
 
+## DrawLayer - слой рисования на canvas
+## 
+## Зона ответственности:
+## - Хранение и управление Image данными
+## - Методы set_pixel/get_pixel для рисования
+## - Работает через layer_id (int), не зависит от UI Layer
+
 var image: Image
 var tex: ImageTexture
-var layer: Layer
+var layer_id: int = -1
 
-var is_active: bool = false
-
-func _init(_size: Vector2i, _layer: Layer, _image: Image = null) -> void:
+func _init(_size: Vector2i, _layer_id: int, _image: Image = null) -> void:
+	layer_id = _layer_id
+	
 	if _image:
 		image = _image
-		tex = ImageTexture.create_from_image(image)
-		texture = tex
-		return
+	else:
+		image = Image.create_empty(_size.x, _size.y, false, Image.FORMAT_RGBA8)
+		image.fill(Color.TRANSPARENT)  # Прозрачный по умолчанию
 	
-	image = Image.create_empty(_size.x, _size.y, false, Image.FORMAT_RGBA8)
-	var random_color: Color = Color(randf_range(0.0, 1.0), randf_range(0.0, 1.0), randf_range(0.0, 1.0), 1.0)
-	image.fill(random_color)
 	tex = ImageTexture.create_from_image(image)
 	texture = tex
-	
-	layer = _layer
-	layer.visibility_changed.connect(_on_visibility_changed)
-	layer.activity_changed.connect(_on_activity_changed)
-	layer.moved.connect(_on_layer_moved)
-	layer.tree_exiting.connect(func(): queue_free())
 
 func _ready() -> void:
-	queue_redraw()
+	# Подписка на события через EventBus
+	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
 
 func get_pixel(point: Vector2i) -> Color:
 	return image.get_pixelv(point)
@@ -35,11 +34,6 @@ func set_pixel(point: Vector2i, color: Color) -> void:
 	image.set_pixelv(point, color)
 	tex.update(image)
 
-func _on_visibility_changed() -> void:
-	visible = layer.is_visible()
-
-func _on_activity_changed(value: bool) -> void:
-	is_active = value
-
-func _on_layer_moved() -> void:
-	get_parent().move_child(self, layer.get_index())
+func _on_layer_visibility_changed(id: int, is_visible: bool) -> void:
+	if id == layer_id:
+		visible = is_visible

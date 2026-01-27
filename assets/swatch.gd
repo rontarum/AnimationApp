@@ -23,15 +23,6 @@ func _ready() -> void:
 	else:  # Secondary swatch
 		color = AppState.secondary_color
 	
-	# Обратная совместимость (пока)
-	if Cursor.has_signal("focus_changed"):
-		Cursor.focus_changed.connect(func(node):
-			if is_toggled and node != self:
-				_toggle()
-				if SwatchPicker.instance:
-					SwatchPicker.instance.visible = false
-		)
-	
 	if SwatchPicker.instance and SwatchPicker.instance.has_signal("color_picked"):
 		SwatchPicker.instance.color_picked.connect(
 			func(col, from):
@@ -64,19 +55,11 @@ func _on_mouse_entered() -> void:
 	is_hovered = true
 	# Новая архитектура: эмитим событие наведения
 	EventBus.ui_element_hovered.emit(self, true)
-	
-	# Обратная совместимость с курсором (пока)
-	if CursorSprite.instance and CursorSprite.instance.has_method("change_shape"):
-		CursorSprite.instance.change_shape(Util.ToolType.POINTER)
 
 func _on_mouse_exited() -> void:
 	is_hovered = false
 	# Новая архитектура: эмитим событие ухода
 	EventBus.ui_element_hovered.emit(self, false)
-	
-	# Обратная совместимость с курсором (пока)
-	if CursorSprite.instance and CursorSprite.instance.has_method("change_shape"):
-		CursorSprite.instance.change_shape(Util.ToolType.ARROW)
 
 func _toggle() -> void:
 	var tween = get_tree().create_tween()

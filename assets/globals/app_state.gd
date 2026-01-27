@@ -4,14 +4,14 @@
 ## Все изменения состояния проходят через сеттеры, которые эмитят соответствующие события.
 ##
 ## Пример использования:
-##   AppState.current_tool = Util.ToolType.BRUSH  # Автоматически эмитит tool_selected
+##   AppState.current_tool = ToolType.Type.BRUSH  # Автоматически эмитит tool_selected
 ##   var tool = AppState.current_tool  # Чтение состояния
 
 extends Node
 
 # === TOOL STATE ===
-var _current_tool: int = 0  # Util.ToolType.ARROW
-var current_tool: int:
+var _current_tool: ToolType.Type = ToolType.Type.ARROW
+var current_tool: ToolType.Type:
 	get: return _current_tool
 	set(value):
 		if _current_tool != value:

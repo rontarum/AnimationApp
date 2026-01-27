@@ -207,7 +207,8 @@ func _on_layer_clicked(layer: Layer) -> void:
 		EventBus.layer_selected.emit(layer_id)
 
 func _on_layer_drag_started(layer: Layer, _mouse_pos: Vector2) -> void:
-	CursorSprite.instance.hide()
+	if Services.cursor:
+		Services.cursor.hide_cursor()
 	dragged_layer = layer
 	drag_offset_y = layers_container.get_local_mouse_position().y - layer.position.y
 	dragged_layer.z_index = 10
@@ -221,7 +222,8 @@ func _on_layer_drag_ended(_layer: Layer) -> void:
 	_finish_drag()
 
 func _finish_drag() -> void:
-	CursorSprite.instance.show()
+	if Services.cursor:
+		Services.cursor.show_cursor()
 	if not dragged_layer: return
 	dragged_layer.z_index = 0
 	dragged_layer = null

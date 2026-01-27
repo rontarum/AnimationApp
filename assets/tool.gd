@@ -1,6 +1,6 @@
 class_name Tool extends TextureRect
 
-@export var type: Util.ToolType
+@export var type: ToolType.Type
 
 var is_hovered: bool = false
 
@@ -20,10 +20,6 @@ func _ready() -> void:
 	
 	# Новая архитектура: подписка на EventBus
 	EventBus.ui_element_focused.connect(_on_element_focused)
-	
-	# Обратная совместимость (пока)
-	if Cursor.has_signal("focus_changed"):
-		Cursor.focus_changed.connect(func(node): if node != self: modulate = Color("ffffffff"))
 
 func _on_element_focused(element: Node) -> void:
 	if element != self:
@@ -38,10 +34,6 @@ func _on_mouse_entered() -> void:
 	
 	# Новая архитектура: эмитим событие наведения
 	EventBus.ui_element_hovered.emit(self, true)
-	
-	# Обратная совместимость с курсором (пока)
-	if CursorSprite.instance and CursorSprite.instance.has_method("change_shape"):
-		CursorSprite.instance.change_shape(Util.ToolType.POINTER)
 
 func _on_mouse_exited() -> void:
 	is_hovered = false
@@ -51,10 +43,6 @@ func _on_mouse_exited() -> void:
 	
 	# Новая архитектура: эмитим событие ухода
 	EventBus.ui_element_hovered.emit(self, false)
-	
-	# Обратная совместимость с курсором (пока)
-	if CursorSprite.instance and CursorSprite.instance.has_method("change_shape"):
-		CursorSprite.instance.change_shape(Util.ToolType.ARROW)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("action") and is_hovered:
@@ -64,7 +52,3 @@ func _input(event: InputEvent) -> void:
 		
 		# Выбираем инструмент через ToolService
 		Services.tool.select_tool(type)
-		
-		# Обратная совместимость с курсором (пока)
-		if Cursor.has_method("set_mode"):
-			Cursor.set_mode(type)

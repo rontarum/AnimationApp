@@ -22,13 +22,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-EventBus="*res://globals/event_bus.gd"
-AppState="*res://globals/app_state.gd"
-Services="*res://globals/services.gd"
-Globals="*res://globals.gd"
-Util="*res://assets/globals/util.gd"
-DrawViewport="*res://assets/globals/draw_viewport.gd"
-Cursor="*res://assets/globals/cursor.gd"
+ToolType="*res://core/tool_type.gd"
+EventBus="*res://assets/globals/event_bus.gd"
+AppState="*res://assets/globals/app_state.gd"
+Services="*res://assets/globals/services.gd"
 
 [display]
 

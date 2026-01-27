@@ -6,6 +6,9 @@
 class_name CanvasService
 extends Node
 
+# Размер холста по умолчанию
+const CANVAS_SIZE := Vector2(32, 32)
+
 # Ссылка на DrawCanvas (SubViewport)
 var draw_canvas: SubViewport = null
 
@@ -56,13 +59,8 @@ func create_draw_layer(layer_id: int, size: Vector2i, layer_ui: Node = null) -> 
 		push_error("[CanvasService] DrawCanvas not initialized")
 		return null
 	
-	# Создаём простой TextureRect вместо DrawLayer пока не мигрируем полностью
-	var draw_layer = TextureRect.new()
-	var image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
-	image.fill(Color(randf(), randf(), randf(), 1.0))  # Случайный цвет для теста
-	var tex = ImageTexture.create_from_image(image)
-	draw_layer.texture = tex
-	
+	# Создаём DrawLayer (extends TextureRect)
+	var draw_layer = DrawLayer.new(size, layer_id)
 	draw_canvas.add_child(draw_layer)
 	draw_layer.name = "DrawLayer_" + str(layer_id)
 	
@@ -119,9 +117,9 @@ func _on_tool_action_updated(position: Vector2) -> void:
 		return
 	
 	match tool_type:
-		Util.ToolType.BRUSH:
+		ToolType.Type.BRUSH:
 			if AppState.is_drawing:
 				set_pixel(pos_int, AppState.primary_color)
-		Util.ToolType.ERASER:
+		ToolType.Type.ERASER:
 			if AppState.is_drawing:
 				set_pixel(pos_int, Color.TRANSPARENT)

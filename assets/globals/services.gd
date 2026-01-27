@@ -4,7 +4,7 @@
 ## Сервисы регистрируются при инициализации и доступны глобально.
 ##
 ## Пример использования:
-##   Services.tool.select_tool(Util.ToolType.BRUSH)
+##   Services.tool.select_tool(ToolType.Type.BRUSH)
 ##   Services.layer.create_layer("New Layer")
 
 extends Node
@@ -14,6 +14,7 @@ var tool: Node = null  # ToolService
 var layer: Node = null  # LayerService
 var canvas: Node = null  # CanvasService
 var color: Node = null  # ColorService
+var cursor: Node = null  # CursorService
 var history: Node = null  # HistoryService
 var clipboard: Node = null  # ClipboardService
 
@@ -28,6 +29,7 @@ func register(service_name: String, service: Node) -> void:
 		"layer": layer = service
 		"canvas": canvas = service
 		"color": color = service
+		"cursor": cursor = service
 		"history": history = service
 		"clipboard": clipboard = service
 		_:
@@ -35,4 +37,4 @@ func register(service_name: String, service: Node) -> void:
 
 ## Проверка готовности всех сервисов
 func are_all_ready() -> bool:
-	return tool != null and layer != null and canvas != null and color != null
+	return tool != null and layer != null and canvas != null and color != null and cursor != null

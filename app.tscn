@@ -1,28 +1,26 @@
 [gd_scene format=3 uid="uid://vbbjm1irm2ew"]
 
-[ext_resource type="Script" uid="uid://ti52tkbtccx4" path="res://canvas_camera.gd" id="1_3npyw"]
+[ext_resource type="Script" uid="uid://ti52tkbtccx4" path="res://assets/canvas_camera.gd" id="1_3npyw"]
 [ext_resource type="Script" uid="uid://bpi2121wqipum" path="res://app.gd" id="1_g1skh"]
-[ext_resource type="Script" uid="uid://cd0k2h4amadh2" path="res://draw_container.gd" id="1_u1txy"]
-[ext_resource type="Script" uid="uid://c2myt2dukpvaw" path="res://services/canvas_service.gd" id="2_canvas"]
-[ext_resource type="Script" uid="uid://blodp4ec2uv0s" path="res://services/color_service.gd" id="2_color"]
-[ext_resource type="Script" uid="uid://d0ps33us8meoe" path="res://services/layer_service.gd" id="2_layer"]
-[ext_resource type="Script" uid="uid://c3jbey48lqc5m" path="res://services/tool_service.gd" id="2_tool"]
-[ext_resource type="Shader" uid="uid://bfytwucjiyspp" path="res://checker.gdshader" id="3_itptj"]
+[ext_resource type="Script" uid="uid://cd0k2h4amadh2" path="res://assets/draw_container.gd" id="1_u1txy"]
+[ext_resource type="Script" uid="uid://c2myt2dukpvaw" path="res://assets/services/canvas_service.gd" id="2_canvas"]
+[ext_resource type="Script" uid="uid://blodp4ec2uv0s" path="res://assets/services/color_service.gd" id="2_color"]
+[ext_resource type="Script" uid="uid://c0eujtf53rwtq" path="res://services/cursor_service.gd" id="2_cursor"]
+[ext_resource type="Script" uid="uid://d0ps33us8meoe" path="res://assets/services/layer_service.gd" id="2_layer"]
+[ext_resource type="Script" uid="uid://c3jbey48lqc5m" path="res://assets/services/tool_service.gd" id="2_tool"]
+[ext_resource type="Shader" uid="uid://bfytwucjiyspp" path="res://assets/shaders/checker.gdshader" id="3_itptj"]
 [ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="6_8l3i4"]
 [ext_resource type="Texture2D" uid="uid://dq457sq27anje" path="res://assets/icons/tools/arrow.svg" id="8_5oejy"]
 [ext_resource type="Theme" uid="uid://c478ise21qgjv" path="res://app.tres" id="8_gtgpg"]
-[ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://tool.gd" id="9_7iiwk"]
+[ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://assets/tool.gd" id="9_7iiwk"]
 [ext_resource type="Script" uid="uid://ccrley6gx0ik2" path="res://assets/ui_components/layers/layers_panel.gd" id="9_j4pmb"]
 [ext_resource type="Texture2D" uid="uid://b3aythki6lfcq" path="res://assets/icons/tools/selection.svg" id="9_ovwn0"]
 [ext_resource type="Texture2D" uid="uid://dmp1jsuld8dbr" path="res://assets/icons/tools/draw/brush.svg" id="10_7iiwk"]
 [ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="10_dv8dk"]
 [ext_resource type="Texture2D" uid="uid://dfnnft4jib4w2" path="res://assets/icons/tools/draw/eraser.svg" id="11_a37lv"]
 [ext_resource type="Texture2D" uid="uid://caw555qo5ev0h" path="res://assets/icons/tools/draw/fill.svg" id="12_gtgpg"]
-[ext_resource type="Script" uid="uid://ciru41hkovgfg" path="res://swatch.gd" id="14_a37lv"]
+[ext_resource type="Script" uid="uid://ciru41hkovgfg" path="res://assets/swatch.gd" id="14_a37lv"]
 [ext_resource type="Script" uid="uid://cye24k1erlon3" path="res://assets/swatch_picker.gd" id="16_ra7kh"]
-[ext_resource type="Script" uid="uid://wwqv6ogje2k7" path="res://assets/scripts/cursor_drawer.gd" id="17_gjbw5"]
-[ext_resource type="Texture2D" uid="uid://dcruge44xhvb5" path="res://assets/icons/cursor/arrow.svg" id="18_jq15t"]
-[ext_resource type="Script" uid="uid://dtllkob6b6oap" path="res://assets/scripts/cursor_sprite.gd" id="19_rgcu8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_25sla"]
 shader = ExtResource("3_itptj")
@@ -49,14 +47,17 @@ script = ExtResource("1_g1skh")
 [node name="ToolService" type="Node" parent="Services" unique_id=409477310]
 script = ExtResource("2_tool")
 
-[node name="LayerService" type="Node" parent="Services" unique_id=1372539193]
+[node name="LayerService" type="Node" parent="Services" unique_id=409477311]
 script = ExtResource("2_layer")
 
-[node name="CanvasService" type="Node" parent="Services" unique_id=898736434]
+[node name="CanvasService" type="Node" parent="Services" unique_id=409477312]
 script = ExtResource("2_canvas")
 
-[node name="ColorService" type="Node" parent="Services" unique_id=1234567890]
+[node name="ColorService" type="Node" parent="Services" unique_id=409477313]
 script = ExtResource("2_color")
+
+[node name="CursorService" type="Node" parent="Services" unique_id=409477314]
+script = ExtResource("2_cursor")
 
 [node name="BackLayer" type="CanvasLayer" parent="." unique_id=2061429068]
 layer = -1
@@ -66,7 +67,7 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.9490196, 0.9254902, 0.92941177, 1)
 
-[node name="DrawContainer" type="SubViewportContainer" parent="." unique_id=601135555]
+[node name="DrawContainer" type="SubViewportContainer" parent="." unique_id=1656024856]
 texture_filter = 1
 texture_repeat = 1
 material = SubResource("ShaderMaterial_25sla")
@@ -75,6 +76,7 @@ offset_bottom = 360.0
 pivot_offset = Vector2(320, 192)
 stretch = true
 script = ExtResource("1_u1txy")
+metadata/_custom_type_script = "uid://cd0k2h4amadh2"
 
 [node name="DrawCanvas" type="SubViewport" parent="DrawContainer" unique_id=2136603045]
 transparent_bg = true
@@ -83,8 +85,9 @@ canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
 render_target_update_mode = 4
 
-[node name="CanvasCamera" type="Camera2D" parent="DrawContainer" unique_id=1895814481]
+[node name="CanvasCamera" type="Camera2D" parent="DrawContainer" unique_id=1125928295]
 script = ExtResource("1_3npyw")
+metadata/_custom_type_script = "uid://ti52tkbtccx4"
 
 [node name="GUI" type="CanvasLayer" parent="." unique_id=444308579]
 
@@ -104,13 +107,14 @@ offset_right = 1664.0
 offset_bottom = 1080.0
 theme = ExtResource("8_gtgpg")
 
-[node name="LayersPanel" type="Panel" parent="GUI" unique_id=430078369]
+[node name="LayersPanel" type="Panel" parent="GUI" unique_id=316599511]
 offset_left = 1664.0
 offset_top = 440.0
 offset_right = 1920.0
 offset_bottom = 1080.0
 theme = ExtResource("8_gtgpg")
 script = ExtResource("9_j4pmb")
+metadata/_custom_type_script = "uid://ccrley6gx0ik2"
 
 [node name="MarginContainer" type="MarginContainer" parent="GUI/LayersPanel" unique_id=196998408]
 layout_mode = 1
@@ -226,7 +230,7 @@ offset_right = 49.0
 offset_bottom = 970.0
 color = Color(0.26666668, 0.29411766, 0.4509804, 0.23529412)
 
-[node name="PrimarySwatch" type="ColorRect" parent="GUI/ToolPanel/PrimarySwatchBack" unique_id=166425915]
+[node name="PrimarySwatch" type="ColorRect" parent="GUI/ToolPanel/PrimarySwatchBack" unique_id=602396128]
 layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
@@ -234,6 +238,7 @@ offset_right = 33.0
 offset_bottom = 33.0
 pivot_offset = Vector2(16, 16)
 script = ExtResource("14_a37lv")
+metadata/_custom_type_script = "uid://ciru41hkovgfg"
 metadata/_edit_lock_ = true
 
 [node name="SecondarySwatchBack" type="ColorRect" parent="GUI/ToolPanel" unique_id=1380034595]
@@ -244,7 +249,7 @@ offset_right = 49.0
 offset_bottom = 1010.0
 color = Color(0.26666668, 0.29411766, 0.4509804, 0.23529412)
 
-[node name="SecondarySwatch" type="ColorRect" parent="GUI/ToolPanel/SecondarySwatchBack" unique_id=1685871327]
+[node name="SecondarySwatch" type="ColorRect" parent="GUI/ToolPanel/SecondarySwatchBack" unique_id=811122496]
 layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
@@ -254,9 +259,10 @@ pivot_offset = Vector2(16, 16)
 color = Color(0, 0, 0, 1)
 script = ExtResource("14_a37lv")
 order = 1
+metadata/_custom_type_script = "uid://ciru41hkovgfg"
 metadata/_edit_lock_ = true
 
-[node name="SwatchPicker" type="ColorPicker" parent="GUI" unique_id=1263343018]
+[node name="SwatchPicker" type="ColorPicker" parent="GUI" unique_id=1490217654]
 offset_left = 96.0
 offset_top = 352.0
 offset_right = 394.0
@@ -265,15 +271,7 @@ theme = ExtResource("8_gtgpg")
 edit_intensity = false
 color_modes_visible = false
 script = ExtResource("16_ra7kh")
-
-[node name="CursorDrawer" type="Node2D" parent="GUI" unique_id=2110407570]
-script = ExtResource("17_gjbw5")
-
-[node name="CursorSprite" type="Sprite2D" parent="GUI" unique_id=1986489543]
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("18_jq15t")
-offset = Vector2(16, 24)
-script = ExtResource("19_rgcu8")
+metadata/_custom_type_script = "uid://cye24k1erlon3"
 
 [connection signal="mouse_entered" from="DrawContainer" to="DrawContainer" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="DrawContainer" to="DrawContainer" method="_on_mouse_exited"]

@@ -4,13 +4,13 @@
 ## Компоненты эмитят события, другие подписываются на них.
 ##
 ## Пример использования:
-##   EventBus.tool_selected.emit(Util.ToolType.BRUSH)
+##   EventBus.tool_selected.emit(ToolType.Type.BRUSH)
 ##   EventBus.tool_selected.connect(_on_tool_selected)
 
 extends Node
 
 # === TOOL EVENTS ===
-signal tool_selected(tool_type: int)  # Выбран инструмент
+signal tool_selected(tool_type: ToolType.Type)  # Выбран инструмент
 signal tool_action_started(position: Vector2)  # Начало действия инструмента
 signal tool_action_updated(position: Vector2)  # Обновление действия
 signal tool_action_finished(position: Vector2)  # Завершение действия
