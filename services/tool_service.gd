@@ -38,6 +38,15 @@ func finish_action(position: Vector2) -> void:
 
 func _on_tool_selected(tool_type: int) -> void:
 	print("[ToolService] Tool selected: ", Util.ToolType.keys()[tool_type])
+	
+	# Обновляем курсор (обратная совместимость)
+	if Cursor.has_method("set_mode"):
+		Cursor.set_mode(tool_type)
+	
+	# Обновляем спрайт курсора
+	if CursorSprite.instance and CursorSprite.instance.has_method("change_shape"):
+		# Возвращаем курсор к инструменту после hover
+		CursorSprite.instance.change_shape(Util.ToolType.ARROW)
 
 func _on_tool_action_started(position: Vector2) -> void:
 	pass  # Логика обработки начала действия

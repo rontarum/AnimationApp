@@ -22,6 +22,9 @@ signal layer_selected(layer_id: int)  # Выбран активный слой
 signal layer_reordered(from_index: int, to_index: int)  # Изменён порядок слоёв
 signal layer_visibility_changed(layer_id: int, visible: bool)  # Видимость слоя
 signal layer_renamed(layer_id: int, new_name: String)  # Переименован слой
+signal layer_rename_requested(layer_id: int, new_name: String)  # UI запрос переименования
+signal layer_create_requested(layer_name: String)  # UI запрос создания
+signal layer_delete_requested(layer_id: int)  # UI запрос удаления
 
 # === CANVAS EVENTS ===
 signal canvas_pixel_changed(position: Vector2i, color: Color)  # Изменён пиксель

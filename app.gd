@@ -5,6 +5,7 @@ extends Node2D
 @onready var tool_service: ToolService = $Services/ToolService
 @onready var layer_service: LayerService = $Services/LayerService
 @onready var canvas_service: CanvasService = $Services/CanvasService
+@onready var color_service = $Services/ColorService
 
 func _ready() -> void:
 	# Инициализация canvas_service с DrawCanvas

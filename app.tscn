@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bpi2121wqipum" path="res://app.gd" id="1_g1skh"]
 [ext_resource type="Script" uid="uid://cd0k2h4amadh2" path="res://draw_container.gd" id="1_u1txy"]
 [ext_resource type="Script" uid="uid://c2myt2dukpvaw" path="res://services/canvas_service.gd" id="2_canvas"]
+[ext_resource type="Script" uid="uid://blodp4ec2uv0s" path="res://services/color_service.gd" id="2_color"]
 [ext_resource type="Script" uid="uid://d0ps33us8meoe" path="res://services/layer_service.gd" id="2_layer"]
 [ext_resource type="Script" uid="uid://c3jbey48lqc5m" path="res://services/tool_service.gd" id="2_tool"]
 [ext_resource type="Shader" uid="uid://bfytwucjiyspp" path="res://checker.gdshader" id="3_itptj"]
@@ -53,6 +54,9 @@ script = ExtResource("2_layer")
 
 [node name="CanvasService" type="Node" parent="Services" unique_id=898736434]
 script = ExtResource("2_canvas")
+
+[node name="ColorService" type="Node" parent="Services" unique_id=1234567890]
+script = ExtResource("2_color")
 
 [node name="BackLayer" type="CanvasLayer" parent="." unique_id=2061429068]
 layer = -1

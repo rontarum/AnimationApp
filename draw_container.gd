@@ -9,7 +9,7 @@ static var instance: DrawContainer
 var mouse_pos: Vector2
 var slide_pos: Vector2
 
-var active_layer: DrawLayer
+var active_layer: Node
 var is_hold: bool = false
 
 var selection_rect: Rect2
@@ -23,7 +23,10 @@ func _init() -> void:
 func _ready() -> void:
 	size = canvas_size
 	Globals.image_copied.connect(_clear)
-	LayersPanel.instance.active_layer_changed.connect(_on_active_layer_changed)
+	
+	# Новая архитектура: подписка на события слоев через EventBus
+	EventBus.layer_selected.connect(_on_layer_selected)
+	
 	queue_redraw()
 
 func _process(delta: float) -> void:
@@ -114,8 +117,20 @@ func _gui_input(event: InputEvent) -> void:
 		selection_rect = Rect2(selection_start_draw, selection_end_draw).abs()
 		queue_redraw()
 
-func _on_active_layer_changed(layer: Layer) -> void:
-	active_layer = draw_canvas.get_child(layer.get_index())
+func _on_layer_selected(layer_id: int) -> void:
+	# Обработка пустого состояния (нет слоёв)
+	if layer_id == -1:
+		active_layer = null
+		print("[DrawContainer] No active layer (empty state)")
+		return
+	
+	# Находим соответствующий draw layer по ID
+	var draw_layer = Services.canvas.get_draw_layer(layer_id)
+	if draw_layer:
+		active_layer = draw_layer
+		print("[DrawContainer] Selected layer: ID=", layer_id)
+	else:
+		print("[DrawContainer] Draw layer not found: ID=", layer_id)
 
 func _on_mouse_entered() -> void:
 	if Cursor.mode == Util.ToolType.BRUSH or Cursor.mode == Util.ToolType.ERASER:

@@ -13,6 +13,7 @@ extends Node
 var tool: Node = null  # ToolService
 var layer: Node = null  # LayerService
 var canvas: Node = null  # CanvasService
+var color: Node = null  # ColorService
 var history: Node = null  # HistoryService
 var clipboard: Node = null  # ClipboardService
 
@@ -26,6 +27,7 @@ func register(service_name: String, service: Node) -> void:
 		"tool": tool = service
 		"layer": layer = service
 		"canvas": canvas = service
+		"color": color = service
 		"history": history = service
 		"clipboard": clipboard = service
 		_:
@@ -33,4 +35,4 @@ func register(service_name: String, service: Node) -> void:
 
 ## Проверка готовности всех сервисов
 func are_all_ready() -> bool:
-	return tool != null and layer != null and canvas != null
+	return tool != null and layer != null and canvas != null and color != null

@@ -24,7 +24,24 @@ func _ready() -> void:
 	state_machine.owner = self
 	state_machine.add_state("arrow", ArrowState.new())
 	state_machine.add_state("brush", BrushState.new())
+	state_machine.add_state("selection", ArrowState.new())  # Пока используем ArrowState
+	state_machine.add_state("eraser", BrushState.new())     # Пока используем BrushState  
+	state_machine.add_state("fill", BrushState.new())       # Пока используем BrushState
 	state_machine.set_initial_state("arrow")
+	
+	# Новая архитектура: синхронизация с AppState
+	EventBus.primary_color_changed.connect(_on_primary_color_changed)
+	EventBus.secondary_color_changed.connect(_on_secondary_color_changed)
+	
+	# Инициализация цветов из AppState
+	primary_swatch = AppState.primary_color
+	secondary_swatch = AppState.secondary_color
+
+func _on_primary_color_changed(new_color: Color) -> void:
+	primary_swatch = new_color
+
+func _on_secondary_color_changed(new_color: Color) -> void:
+	secondary_swatch = new_color
 
 func set_focus(node: Node):
 	focus = node

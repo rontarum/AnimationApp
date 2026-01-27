@@ -86,7 +86,7 @@ func clear_canvas() -> void:
 	EventBus.canvas_cleared.emit()
 
 ## Получение DrawLayer по layer_id
-func get_draw_layer(layer_id: int) -> DrawLayer:
+func get_draw_layer(layer_id: int):
 	return draw_layers.get(layer_id)
 
 # === ОБРАБОТЧИКИ СОБЫТИЙ ===
@@ -97,9 +97,11 @@ func _on_pixel_changed(position: Vector2i, color: Color) -> void:
 func _on_canvas_cleared() -> void:
 	print("[CanvasService] Canvas cleared")
 
-func _on_layer_created(layer_id: int) -> void:
+func _on_layer_created(layer_data: Dictionary) -> void:
 	# Создаём DrawLayer для нового слоя
-	create_draw_layer(layer_id, AppState.canvas_size)
+	var layer_id = layer_data.get("id", -1)
+	if layer_id != -1:
+		create_draw_layer(layer_id, AppState.canvas_size)
 
 func _on_layer_deleted(layer_id: int) -> void:
 	# Удаляем DrawLayer
