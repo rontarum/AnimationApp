@@ -14,6 +14,7 @@ signal tool_selected(tool_type: ToolType.Type)  # Выбран инструме�
 signal tool_action_started(position: Vector2)  # Начало действия инструмента
 signal tool_action_updated(position: Vector2)  # Обновление действия
 signal tool_action_finished(position: Vector2)  # Завершение действия
+signal tool_resized(size: float)
 
 # === LAYER EVENTS ===
 signal layer_created(layer_id: int)  # Создан новый слой

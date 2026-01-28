@@ -7,19 +7,16 @@
 class_name ToolService
 extends Node
 
-# Preload tool классов
-const BrushToolClass = preload("res://core/tools/brush_tool.gd")
-const EraserToolClass = preload("res://core/tools/eraser_tool.gd")
-
 var active_tool: BaseTool = null
+var tool_size: float
 var tool_instances: Dictionary = {}  # ToolType.Type -> BaseTool
 
 func _ready() -> void:
 	Services.register("tool", self)
 	
 	# Создаем instances инструментов
-	tool_instances[ToolType.Type.BRUSH] = BrushToolClass.new()
-	tool_instances[ToolType.Type.ERASER] = EraserToolClass.new()
+	tool_instances[ToolType.Type.BRUSH] = BrushTool.new()
+	tool_instances[ToolType.Type.ERASER] = EraserTool.new()
 	
 	# Подписка на события
 	EventBus.tool_selected.connect(_on_tool_selected)
@@ -38,6 +35,12 @@ func select_tool(tool_type: ToolType.Type) -> void:
 ## Возвращает активный инструмент
 func get_active_tool() -> BaseTool:
 	return active_tool
+
+func resize_tool(value: float) -> void:
+	AppState.tool_size += value
+
+func reset_tool_size() -> void:
+	AppState.tool_size = 1.0
 
 ## Начало действия инструмента
 func start_action(position: Vector2) -> void:

@@ -1,4 +1,4 @@
-class_name Tool extends TextureRect
+class_name ToolButton extends TextureRect
 
 @export var type: ToolType.Type
 

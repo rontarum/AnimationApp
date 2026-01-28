@@ -21,7 +21,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	zoom = Vector2.ONE
-	position = CanvasService.CANVAS_SIZE * 0.5
+	position = CanvasService.canvas_size * 0.5
 	zoom_value = zoom
 
 func _process(delta: float) -> void:

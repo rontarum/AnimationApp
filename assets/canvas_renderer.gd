@@ -41,6 +41,7 @@ func _draw_pixel_preview() -> void:
 	
 	# Rect для preview пикселя
 	var rect: Rect2 = Rect2()
+	
 	rect.position = slide_pos
 	rect.end = slide_pos + Vector2(1, 1)
 	

@@ -18,6 +18,14 @@ var current_tool: ToolType.Type:
 			_current_tool = value
 			EventBus.tool_selected.emit(value)
 
+var _tool_size: float = 1.0
+var tool_size: float:
+	get: return _tool_size
+	set(value):
+		if _tool_size != value:
+			_tool_size = clamp(value, 0.0, 16.0)
+			EventBus.tool_resized.emit(_tool_size)
+
 # === LAYER STATE ===
 var _active_layer_id: int = -1
 var active_layer_id: int:

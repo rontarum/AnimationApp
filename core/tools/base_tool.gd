@@ -26,6 +26,10 @@ func on_release(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 func on_hover(position: Vector2i) -> void:
 	preview_position = position
 
+## Вызывается при изменении размера инструмента. Знак +-
+func on_resize(position: Vector2i, sign: float = -1.0) -> void:
+	pass
+
 ## Возвращает нужно ли рисовать preview для этого инструмента
 func should_draw_preview() -> bool:
 	return false

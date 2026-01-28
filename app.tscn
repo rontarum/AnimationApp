@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="6_8l3i4"]
 [ext_resource type="Texture2D" uid="uid://dq457sq27anje" path="res://assets/icons/tools/arrow.svg" id="8_5oejy"]
 [ext_resource type="Theme" uid="uid://c478ise21qgjv" path="res://app.tres" id="8_gtgpg"]
-[ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://assets/tool.gd" id="9_7iiwk"]
+[ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://assets/tool_button.gd" id="9_7iiwk"]
 [ext_resource type="Script" uid="uid://ccrley6gx0ik2" path="res://assets/ui_components/layers/layers_panel.gd" id="9_j4pmb"]
 [ext_resource type="Texture2D" uid="uid://b3aythki6lfcq" path="res://assets/icons/tools/selection.svg" id="9_ovwn0"]
 [ext_resource type="Texture2D" uid="uid://dmp1jsuld8dbr" path="res://assets/icons/tools/draw/brush.svg" id="10_7iiwk"]

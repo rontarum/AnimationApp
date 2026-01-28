@@ -43,7 +43,7 @@ func _clear() -> void:
 		c.queue_free()
 
 func _gui_input(event: InputEvent) -> void:
-	var active_tool = Services.tool.get_active_tool()
+	var active_tool: BaseTool = Services.tool.get_active_tool()
 	if not active_tool:
 		return
 	
@@ -61,7 +61,6 @@ func _gui_input(event: InputEvent) -> void:
 			return
 		is_hold = true
 		active_tool.on_press(pixel_pos, active_layer, AppState.primary_color)
-		selection_start = event.position
 	
 	# Release
 	if event.is_action_released("action"):
@@ -74,12 +73,11 @@ func _gui_input(event: InputEvent) -> void:
 		if active_layer:
 			active_tool.on_drag(pixel_pos, active_layer, AppState.primary_color)
 		
-		# Selection rect (для будущего SelectionTool)
-		var selection_end: Vector2 = event.position
-		var diff := selection_end - selection_start
-		selection_start_draw = selection_start_draw.lerp(selection_start.snapped(Vector2.ONE), 0.1)
-		selection_end_draw = selection_end_draw.lerp(diff.snapped(Vector2.ONE), 0.1)
-		selection_rect = Rect2(selection_start_draw, selection_end_draw).abs()
+	
+	if event.is_action_pressed("add"):
+		active_tool.on_resize(pixel_pos, 1)
+	if event.is_action_pressed("sub"):
+		active_tool.on_resize(pixel_pos, -1)
 	
 	# Hover (для preview)
 	if event is InputEventMouseMotion:
