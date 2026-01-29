@@ -32,7 +32,12 @@ func get_pixel(point: Vector2i) -> Color:
 
 func set_pixel(point: Vector2i, color: Color) -> void:
 	image.set_pixelv(point, color)
+
+func update_image() -> void:
 	tex.update(image)
+
+func get_image_size() -> Vector2i:
+	return image.get_size()
 
 func _on_layer_visibility_changed(id: int, is_visible: bool) -> void:
 	if id == layer_id:

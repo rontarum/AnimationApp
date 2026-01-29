@@ -28,8 +28,16 @@ func on_hover(position: Vector2i) -> void:
 
 ## Вызывается при изменении размера инструмента. Знак +-
 func on_resize(position: Vector2i, sign: float = -1.0) -> void:
-	pass
+	Services.tool.resize_tool(sign)
 
 ## Возвращает нужно ли рисовать preview для этого инструмента
 func should_draw_preview() -> bool:
+	return false
+
+func limits_check(position: Vector2) -> bool:
+	if position.x < 0 or \
+	position.y < 0 or \
+	position.x >= AppState.canvas_size.x or \
+	position.y >= AppState.canvas_size.y:
+		return true
 	return false

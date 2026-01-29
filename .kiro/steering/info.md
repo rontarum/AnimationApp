@@ -10,6 +10,8 @@ inclusion: always
 - Внутренние рассуждения и пометки (для себя, если не требует внимания пользователя) пиши на английском (экономия токенов)
 - Будь краток, точен, самостоятелен, но прислушивайся к пользователю
 - Минимизируй комментарии своих действий, которые не требуют внимания пользователя
+- Никогда не отправляй одиночное сообщение типа "Understood." Это трата токенов. Ответ всегда ведет к решению/действию/вопросу/завершению. 
+- Перед составлением спеки (requirements, design, tasks), задайся вопросом, действительно ли и насколько это необходимо сейчас? Если необходимо, то каждый ли из трёх её компонентов? Экономим время и токены соизмеримо.
 
 **Контекст пользователя:**
 - Middle Геймдев разработчик с базой Godot и принципами нодовой работы/композиции
@@ -32,6 +34,9 @@ inclusion: always
 - **КРИТИЧНО**: Если переменная представляет enum - используй тип enum, НЕ int!
   - ❌ `var tool_type: int`
   - ✅ `var tool_type: ToolType.Type`
+
+**Дебаг:**
+- Когда отладка системы перестаёт быть необходима, не забудь удалять все print()
 
 ## Цель проекта
 
@@ -69,15 +74,14 @@ res://
 │   └── services.gd         # Service Locator для доступа к сервисам
 │
 ├── assets/services/         # Бизнес-логика (Node-based сервисы)
-│   ├── tool_service.gd     # Управление инструментами
+│   ├── tool_service.gd     # Управление инструментами и их настройками (tool_properties)
 │   ├── layer_service.gd    # Управление слоями через int ID
 │   ├── canvas_service.gd   # Управление холстом
 │   └── color_service.gd    # Управление цветами
-│
-├── services/               # Глобальные сервисы
 │   └── cursor_service.gd   # Управление курсором с override системой
 │
-├── core/                   # Чистая логика (RefCounted)
+│
+├── assets/core              # Чистая логика (RefCounted)
 │   ├── tool_type.gd       # Enum типов инструментов (autoload)
 │   └── tools/             # Классы инструментов
 │       ├── base_tool.gd   # Базовый класс инструмента
@@ -91,6 +95,8 @@ res://
 │   │   ├── draw_layer.gd   # Слой рисования (работает через layer_id)
 │   │   └── cursor_sprite.gd # Визуальный курсор
 │   ├── ui_components/      # UI компоненты
+│   │   ├── layers/         # Панель слоёв
+│   │   └── tool_properties/ # Панель настроек инструментов (PropertiesPanel, BrushProperties, FillProperties)
 │   ├── tool.gd            # Кнопки инструментов
 │   ├── swatch.gd          # Цветовые образцы
 │   └── swatch_picker.gd   # ColorPicker для свотчей
@@ -136,10 +142,12 @@ res://
 - Работает через _draw() в DrawContainer
 
 **Tool классы (core/tools/):**
-- **BaseTool** - базовый класс с интерфейсом (`on_press`, `on_drag`, `on_release`, `on_hover`)
-- **BrushTool** - рисует пиксели `primary_color`
+- **BaseTool** - базовый класс с интерфейсом (`on_press`, `on_drag`, `on_release`, `on_hover`, `on_resize`)
+- **BrushTool** - рисует пиксели `primary_color` или `secondary_color`, поддерживает квадратную и круглую форму
 - **EraserTool** - стирает пиксели (`Color.TRANSPARENT`)
+- **FillTool** - заливка области flood fill алгоритмом (contiguous/non-contiguous режимы)
 - Инструменты вызывают `layer.set_pixel()` напрямую
+- Размер кисти и другие настройки хранятся в ToolService
 
 **DrawLayer (assets/scripts/draw_layer.gd):**
 - Extends TextureRect - визуальное отображение слоя
@@ -151,8 +159,16 @@ res://
 
 **Инструменты:**
 - Кнопки инструментов (`tool.gd`) используют EventBus для уведомлений
-- ToolService управляет экземплярами инструментов
+- ToolService управляет экземплярами инструментов и их настройками
 - Переключение инструмента меняет `active_tool` в ToolService
+- **Настройки инструментов** хранятся в `tool_properties` Dictionary в ToolService
+  - Каждый инструмент имеет свой набор настроек (size, shape, contiguous, etc.)
+  - UI настроек (BrushProperties, FillProperties) синхронизируется через EventBus
+  - PropertiesPanel динамически загружает UI при смене инструмента
+- **Поддерживаемые инструменты:**
+  - Brush: рисование с настройками размера и формы (квадрат/круг)
+  - Eraser: стирание с настройкой размера
+  - Fill: заливка с режимом contiguous (связанная область или весь цвет)
 
 **Цвета:**
 - Swatch'и (`swatch.gd`) работают через ColorService и EventBus

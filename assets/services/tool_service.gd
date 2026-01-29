@@ -8,8 +8,8 @@ class_name ToolService
 extends Node
 
 var active_tool: BaseTool = null
-var tool_size: float
 var tool_instances: Dictionary = {}  # ToolType.Type -> BaseTool
+var tool_properties: Dictionary = {}  # ToolType.Type -> Dictionary
 
 func _ready() -> void:
 	Services.register("tool", self)
@@ -17,6 +17,12 @@ func _ready() -> void:
 	# Создаем instances инструментов
 	tool_instances[ToolType.Type.BRUSH] = BrushTool.new()
 	tool_instances[ToolType.Type.ERASER] = EraserTool.new()
+	tool_instances[ToolType.Type.FILL] = FillTool.new()
+	
+	# Инициализируем properties для каждого инструмента
+	tool_properties[ToolType.Type.BRUSH] = {"size": 1, "shape": 0}  # 0=square, 1=circle
+	tool_properties[ToolType.Type.ERASER] = {"size": 1}
+	tool_properties[ToolType.Type.FILL] = {"contiguous": true}
 	
 	# Подписка на события
 	EventBus.tool_selected.connect(_on_tool_selected)
@@ -36,11 +42,29 @@ func select_tool(tool_type: ToolType.Type) -> void:
 func get_active_tool() -> BaseTool:
 	return active_tool
 
-func resize_tool(value: float) -> void:
-	AppState.tool_size += value
+## Получить property активного инструмента
+func get_tool_property(property: String):
+	var tool_type = AppState.current_tool
+	if tool_properties.has(tool_type) and tool_properties[tool_type].has(property):
+		return tool_properties[tool_type][property]
+	return null
+
+## Установить property активного инструмента
+func set_tool_property(property: String, value) -> void:
+	var tool_type = AppState.current_tool
+	if tool_properties.has(tool_type):
+		tool_properties[tool_type][property] = value
+		EventBus.tool_property_changed.emit(tool_type, property, value)
+
+## Изменить размер кисти/ластика
+func resize_tool(delta: float) -> void:
+	var current_size = get_tool_property("size")
+	if current_size != null:
+		var new_size = clamp(current_size + delta, 1, 10)
+		set_tool_property("size", new_size)
 
 func reset_tool_size() -> void:
-	AppState.tool_size = 1.0
+	set_tool_property("size", 1)
 
 ## Начало действия инструмента
 func start_action(position: Vector2) -> void:

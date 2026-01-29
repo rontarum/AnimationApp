@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cd0k2h4amadh2" path="res://assets/draw_container.gd" id="1_u1txy"]
 [ext_resource type="Script" uid="uid://c2myt2dukpvaw" path="res://assets/services/canvas_service.gd" id="2_canvas"]
 [ext_resource type="Script" uid="uid://blodp4ec2uv0s" path="res://assets/services/color_service.gd" id="2_color"]
-[ext_resource type="Script" uid="uid://c0eujtf53rwtq" path="res://services/cursor_service.gd" id="2_cursor"]
+[ext_resource type="Script" uid="uid://c0eujtf53rwtq" path="res://assets/services/cursor_service.gd" id="2_cursor"]
 [ext_resource type="Script" uid="uid://d0ps33us8meoe" path="res://assets/services/layer_service.gd" id="2_layer"]
 [ext_resource type="Script" uid="uid://c3jbey48lqc5m" path="res://assets/services/tool_service.gd" id="2_tool"]
 [ext_resource type="Shader" uid="uid://bfytwucjiyspp" path="res://assets/shaders/checker.gdshader" id="3_itptj"]
@@ -18,9 +18,16 @@
 [ext_resource type="Texture2D" uid="uid://dmp1jsuld8dbr" path="res://assets/icons/tools/draw/brush.svg" id="10_7iiwk"]
 [ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="10_dv8dk"]
 [ext_resource type="Texture2D" uid="uid://dfnnft4jib4w2" path="res://assets/icons/tools/draw/eraser.svg" id="11_a37lv"]
+[ext_resource type="Script" uid="uid://bnbtbyaulgf1i" path="res://assets/ui_components/tool_properties/properties_panel.gd" id="12_ce3ws"]
 [ext_resource type="Texture2D" uid="uid://caw555qo5ev0h" path="res://assets/icons/tools/draw/fill.svg" id="12_gtgpg"]
+[ext_resource type="PackedScene" uid="uid://b2bmnpmonh82s" path="res://assets/ui_components/tool_properties/brush_properties.tscn" id="12_hvfy4"]
+[ext_resource type="PackedScene" uid="uid://3sg62ii1o76t" path="res://assets/ui_components/tool_properties/fill_properties.tscn" id="13_hvfy4"]
 [ext_resource type="Script" uid="uid://ciru41hkovgfg" path="res://assets/swatch.gd" id="14_a37lv"]
 [ext_resource type="Script" uid="uid://cye24k1erlon3" path="res://assets/swatch_picker.gd" id="16_ra7kh"]
+[ext_resource type="Texture2D" uid="uid://dgl7a6iocu5eh" path="res://assets/icons/buttons/close.png" id="22_1v2j6"]
+[ext_resource type="Script" uid="uid://devyibhtydimx" path="res://assets/ui_components/window_panel.gd" id="22_nc07x"]
+[ext_resource type="Texture2D" uid="uid://c703j2umrhxfv" path="res://assets/icons/buttons/close_hold.png" id="23_nc07x"]
+[ext_resource type="Texture2D" uid="uid://rlg4nvvl0mti" path="res://assets/icons/buttons/close_hover.png" id="24_gdquv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_25sla"]
 shader = ExtResource("3_itptj")
@@ -107,6 +114,34 @@ offset_right = 1664.0
 offset_bottom = 1080.0
 theme = ExtResource("8_gtgpg")
 
+[node name="PropertiesPanel" type="Panel" parent="GUI" unique_id=1925165372]
+offset_left = 1664.0
+offset_top = 32.0
+offset_right = 1920.0
+offset_bottom = 440.0
+theme = ExtResource("8_gtgpg")
+script = ExtResource("12_ce3ws")
+
+[node name="PropertiesPanelMargin" type="MarginContainer" parent="GUI/PropertiesPanel" unique_id=17976452]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="BrushProperties" parent="GUI/PropertiesPanel/PropertiesPanelMargin" unique_id=1673584213 instance=ExtResource("12_hvfy4")]
+visible = false
+layout_mode = 2
+
+[node name="FillProperties" parent="GUI/PropertiesPanel/PropertiesPanelMargin" unique_id=1359495157 instance=ExtResource("13_hvfy4")]
+visible = false
+layout_mode = 2
+
 [node name="LayersPanel" type="Panel" parent="GUI" unique_id=316599511]
 offset_left = 1664.0
 offset_top = 440.0
@@ -116,7 +151,7 @@ theme = ExtResource("8_gtgpg")
 script = ExtResource("9_j4pmb")
 metadata/_custom_type_script = "uid://ccrley6gx0ik2"
 
-[node name="MarginContainer" type="MarginContainer" parent="GUI/LayersPanel" unique_id=196998408]
+[node name="LayersPanelMargin" type="MarginContainer" parent="GUI/LayersPanel" unique_id=196998408]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -125,7 +160,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_top = 64
 
-[node name="LayersContainer" type="Control" parent="GUI/LayersPanel/MarginContainer" unique_id=428511128]
+[node name="LayersContainer" type="Control" parent="GUI/LayersPanel/LayersPanelMargin" unique_id=428511128]
 layout_mode = 2
 mouse_filter = 2
 
@@ -133,8 +168,8 @@ mouse_filter = 2
 layout_mode = 0
 offset_left = 16.0
 offset_top = 16.0
-offset_right = 46.0
-offset_bottom = 47.0
+offset_right = 48.0
+offset_bottom = 48.0
 theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_fonts/font = ExtResource("10_dv8dk")
@@ -149,8 +184,8 @@ text = "+"
 layout_mode = 0
 offset_left = 56.0
 offset_top = 16.0
-offset_right = 86.0
-offset_bottom = 47.0
+offset_right = 88.0
+offset_bottom = 48.0
 theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_fonts/font = ExtResource("10_dv8dk")
@@ -273,5 +308,23 @@ color_modes_visible = false
 script = ExtResource("16_ra7kh")
 metadata/_custom_type_script = "uid://cye24k1erlon3"
 
+[node name="WindowPanel" type="Panel" parent="GUI" unique_id=207319021]
+offset_right = 1920.0
+offset_bottom = 32.0
+theme = ExtResource("8_gtgpg")
+script = ExtResource("22_nc07x")
+
+[node name="ExitButton" type="TextureButton" parent="GUI/WindowPanel" unique_id=1570207681]
+layout_mode = 0
+offset_left = 1888.0
+offset_right = 1920.0
+offset_bottom = 32.0
+texture_normal = ExtResource("22_1v2j6")
+texture_pressed = ExtResource("23_nc07x")
+texture_hover = ExtResource("24_gdquv")
+
 [connection signal="mouse_entered" from="DrawContainer" to="DrawContainer" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="DrawContainer" to="DrawContainer" method="_on_mouse_exited"]
+[connection signal="mouse_entered" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_mouse_entered"]
+[connection signal="mouse_exited" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_mouse_exited"]
+[connection signal="pressed" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_pressed"]

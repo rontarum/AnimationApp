@@ -8,7 +8,7 @@ static var instance: LayersPanel
 
 # --- ССЫЛКИ ---
 @onready var layer_scene := preload("uid://dphwe1t4okc3j")
-@onready var layers_container: Control = $MarginContainer/LayersContainer
+@onready var layers_container: Control = $LayersPanelMargin/LayersContainer
 @onready var new_layer_button: Button = $NewLayerButton
 @onready var delete_layer_button: Button = $DeleteLayerButton
 

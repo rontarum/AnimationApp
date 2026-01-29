@@ -14,7 +14,7 @@ const CanvasRendererScene = preload("res://assets/canvas_renderer.gd")
 func _ready() -> void:
 	# Инициализация canvas_service с DrawCanvas
 	var draw_canvas = $DrawContainer/DrawCanvas
-	canvas_service.initialize(draw_canvas)
+	Services.canvas.initialize(draw_canvas)
 	
 	# Добавляем CanvasRenderer как child DrawContainer
 	var draw_container = $DrawContainer

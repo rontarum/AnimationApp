@@ -10,11 +10,11 @@
 extends Node
 
 # === SERVICE REFERENCES ===
-var tool: Node = null  # ToolService
-var layer: Node = null  # LayerService
-var canvas: Node = null  # CanvasService
-var color: Node = null  # ColorService
-var cursor: Node = null  # CursorService
+var tool: ToolService = null  # ToolService
+var layer: LayerService = null  # LayerService
+var canvas: CanvasService = null  # CanvasService
+var color: ColorService = null  # ColorService
+var cursor: CursorService = null  # CursorService
 var history: Node = null  # HistoryService
 var clipboard: Node = null  # ClipboardService
 

@@ -39,11 +39,13 @@ func _draw_pixel_preview() -> void:
 	if mouse_pos.x >= draw_container.size.x or mouse_pos.y >= draw_container.size.y:
 		return
 	
-	# Rect для preview пикселя
-	var rect: Rect2 = Rect2()
+	var brush_size: int = int(Services.tool.get_tool_property("size") if Services.tool.get_tool_property("size") != null else 1)
+	var half_size: int = int(floor(brush_size / 2.0))
 	
-	rect.position = slide_pos
-	rect.end = slide_pos + Vector2(1, 1)
+	# Rect для preview (всегда квадратный)
+	var rect: Rect2 = Rect2()
+	rect.position = slide_pos - Vector2(half_size, half_size)
+	rect.size = Vector2(brush_size, brush_size)
 	
 	# Получаем цвет текущего пикселя для контрастного stroke
 	var pixel: Color = draw_canvas.get_texture().get_image().get_pixelv(floor(mouse_pos))

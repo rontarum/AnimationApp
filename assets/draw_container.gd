@@ -18,6 +18,7 @@ static var instance: DrawContainer
 var mouse_pos: Vector2
 var active_layer: DrawLayer  # DrawLayer extends TextureRect
 var is_hold: bool = false
+var use_color: Color
 
 # Selection данные (для будущего SelectionTool)
 var selection_rect: Rect2
@@ -43,45 +44,59 @@ func _clear() -> void:
 		c.queue_free()
 
 func _gui_input(event: InputEvent) -> void:
+	if not _in_canvas():
+		return
+	
 	var active_tool: BaseTool = Services.tool.get_active_tool()
 	if not active_tool:
 		return
 	
-	# Проверка границ canvas
-	if mouse_pos.x < 0.0 or mouse_pos.y < 0.0:
-		return
-	if mouse_pos.x >= size.x or mouse_pos.y >= size.y:
-		return
-	
 	var pixel_pos = Vector2i(floor(mouse_pos))
+	
 	
 	# Press
 	if event.is_action_pressed("action"):
 		if not active_layer:
 			return
 		is_hold = true
-		active_tool.on_press(pixel_pos, active_layer, AppState.primary_color)
+		use_color = AppState.primary_color
+		active_tool.on_press(pixel_pos, active_layer, use_color)
+	
+	if event.is_action_pressed("cancel"):
+		if not active_layer:
+			return
+		is_hold = true
+		use_color = AppState.secondary_color
+		active_tool.on_press(pixel_pos, active_layer, use_color)
 	
 	# Release
-	if event.is_action_released("action"):
+	if event.is_action_released("action") or event.is_action_released("cancel"):
 		is_hold = false
 		if active_layer:
-			active_tool.on_release(pixel_pos, active_layer, AppState.primary_color)
+			active_tool.on_release(pixel_pos, active_layer, use_color)
 	
 	# Drag
 	if is_hold and event is InputEventMouseMotion:
 		if active_layer:
-			active_tool.on_drag(pixel_pos, active_layer, AppState.primary_color)
+			active_tool.on_drag(pixel_pos, active_layer, use_color)
 		
 	
-	if event.is_action_pressed("add"):
+	if event.is_action_pressed("add") and not Input.is_key_pressed(KEY_CTRL):
 		active_tool.on_resize(pixel_pos, 1)
-	if event.is_action_pressed("sub"):
+	if event.is_action_pressed("sub") and not Input.is_key_pressed(KEY_CTRL):
 		active_tool.on_resize(pixel_pos, -1)
 	
 	# Hover (для preview)
 	if event is InputEventMouseMotion:
 		active_tool.on_hover(pixel_pos)
+
+func _in_canvas() -> bool:
+	if mouse_pos.x < 0.0 or \
+	mouse_pos.y < 0.0 or \
+	mouse_pos.x >= size.x or \
+	mouse_pos.y >= size.y:
+		return false
+	return true
 
 func _on_layer_selected(layer_id: int) -> void:
 	# Обработка пустого состояния (нет слоёв)
@@ -110,3 +125,5 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	if Services.cursor:
 		Services.cursor.show_cursor()
+	
+	is_hold = false

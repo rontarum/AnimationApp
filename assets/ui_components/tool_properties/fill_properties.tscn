@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://3sg62ii1o76t"]
+
+[ext_resource type="Script" uid="uid://wq3bidk4qhys" path="res://assets/ui_components/tool_properties/fill_properties.gd" id="1_mw0ru"]
+[ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="2_dmbld"]
+
+[node name="FillProperties" type="VBoxContainer" unique_id=1359495157]
+script = ExtResource("1_mw0ru")
+metadata/_custom_type_script = "uid://wq3bidk4qhys"
+
+[node name="ContiguousProperty" type="CheckBox" parent="." unique_id=1591730108]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/font_pressed_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/font_hover_color = Color(0.42847565, 0.45976573, 0.65304166, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.42847565, 0.45976573, 0.65304166, 1)
+theme_override_fonts/font = ExtResource("2_dmbld")
+theme_override_colors/checkbox_checked_color = Color(0.9372549, 0.8745098, 0.8745098, 1)
+theme_override_colors/checkbox_unchecked_color = Color(0.92156863, 0.8627451, 0.8627451, 1)
+button_pressed = true
+text = " Contiguous"
+
+[connection signal="toggled" from="ContiguousProperty" to="." method="_on_contiguous_property_toggled"]
