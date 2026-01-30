@@ -18,6 +18,7 @@ func _ready() -> void:
 	tool_instances[ToolType.Type.BRUSH] = BrushTool.new()
 	tool_instances[ToolType.Type.ERASER] = EraserTool.new()
 	tool_instances[ToolType.Type.FILL] = FillTool.new()
+	tool_instances[ToolType.Type.SELECTION] = SelectionTool.new()
 	
 	# Инициализируем properties для каждого инструмента
 	tool_properties[ToolType.Type.BRUSH] = {"size": 1, "shape": 0}  # 0=square, 1=circle

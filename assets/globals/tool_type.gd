@@ -7,6 +7,7 @@ enum Type {
 	SELECTION,
 	POINTER,
 	GRAB,
+	DRAG,
 	# Draw
 	BRUSH,
 	ERASER,

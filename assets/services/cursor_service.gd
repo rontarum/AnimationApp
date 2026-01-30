@@ -8,6 +8,7 @@ var tool_icons: Dictionary[ToolType.Type, Resource] = {
 	ToolType.Type.ARROW: preload("uid://dcruge44xhvb5"),
 	ToolType.Type.POINTER: preload("uid://dnie07jd2k76c"),
 	ToolType.Type.GRAB: preload("uid://c52jc2rf8n66q"),
+	ToolType.Type.DRAG: preload("uid://dwypmwotmiaop")
 }
 
 var cursor_sprite: CursorSprite

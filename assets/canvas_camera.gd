@@ -14,18 +14,29 @@ var mouse_pos: Vector2
 var new_mouse_pos: Vector2
 var diff: Vector2
 
-var anchor: Vector2
-
 func _init() -> void:
 	instance = self
 
 func _ready() -> void:
 	zoom = Vector2.ONE
-	position = CanvasService.canvas_size * 0.5
+	position = AppState.canvas_size * 0.5
 	zoom_value = zoom
+	
+	EventBus.canvas_resized.connect(func(size): center_view(size); zoom_to(Vector2.ONE))
 
 func _process(delta: float) -> void:
 	_zoom(delta)
+
+func center_view(size: Vector2i) -> void:
+	if size: 
+		position = size * 0.5
+	else:
+		position = AppState.canvas_size * 0.5
+
+func zoom_to(to: Vector2) -> void:
+	zoom = to
+	position = AppState.canvas_size * 0.5
+	zoom_value = to
 
 func _zoom(delta: float) -> void:
 	mouse_pos = get_global_mouse_position()

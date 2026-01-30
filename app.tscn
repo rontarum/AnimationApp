@@ -238,7 +238,7 @@ layout_mode = 2
 texture = ExtResource("10_7iiwk")
 stretch_mode = 3
 script = ExtResource("9_7iiwk")
-type = 4
+type = 5
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
 [node name="Eraser" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=556651360]
@@ -246,7 +246,7 @@ layout_mode = 2
 texture = ExtResource("11_a37lv")
 stretch_mode = 3
 script = ExtResource("9_7iiwk")
-type = 5
+type = 6
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
 [node name="Fill" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=846089963]
@@ -254,7 +254,7 @@ layout_mode = 2
 texture = ExtResource("12_gtgpg")
 stretch_mode = 3
 script = ExtResource("9_7iiwk")
-type = 6
+type = 7
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
 [node name="PrimarySwatchBack" type="ColorRect" parent="GUI/ToolPanel" unique_id=776365483]

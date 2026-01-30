@@ -50,7 +50,7 @@ var secondary_color: Color:
 			EventBus.secondary_color_changed.emit(value)
 
 # === CANVAS STATE ===
-var _canvas_size: Vector2i = Vector2i(640, 360)
+var _canvas_size: Vector2i = Vector2i(32, 32)
 var canvas_size: Vector2i:
 	get: return _canvas_size
 	set(value):

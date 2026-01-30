@@ -28,13 +28,27 @@ func _ready() -> void:
 	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
 
 func get_pixel(point: Vector2i) -> Color:
+	var img_size = image.get_size()
+	if point.x < 0 or point.y < 0 or point.x >= img_size.x or point.y >= img_size.y:
+		return Color.TRANSPARENT
 	return image.get_pixelv(point)
 
 func set_pixel(point: Vector2i, color: Color) -> void:
+	var img_size = image.get_size()
+	if point.x < 0 or point.y < 0 or point.x >= img_size.x or point.y >= img_size.y:
+		return
 	image.set_pixelv(point, color)
 
 func update_image() -> void:
 	tex.update(image)
+
+func resize_layer(new_size: Vector2i) -> void:
+	var temp: Image = Image.create_empty(new_size.x, new_size.y, false, Image.FORMAT_RGBA8)
+	temp.fill(Color.TRANSPARENT)
+	temp.blend_rect(image, image.get_used_rect(), Vector2i.ZERO)
+	image.copy_from(temp)
+	tex = ImageTexture.create_from_image(image)
+	texture = tex
 
 func get_image_size() -> Vector2i:
 	return image.get_size()
