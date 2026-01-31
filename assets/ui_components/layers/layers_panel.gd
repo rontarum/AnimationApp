@@ -12,6 +12,7 @@ static var instance: LayersPanel
 @onready var new_layer_button: Button = $NewLayerButton
 @onready var delete_layer_button: Button = $DeleteLayerButton
 @onready var clear_layer_button: Button = $ClearLayerButton
+@onready var all_visible_button: CheckBox = $LayerVisible
 
 # --- СОСТОЯНИЕ ---
 var active_layer: Layer = null
@@ -28,6 +29,7 @@ func _ready() -> void:
 	new_layer_button.pressed.connect(_on_new_layer_pressed)
 	delete_layer_button.pressed.connect(_on_delete_layer_pressed)
 	clear_layer_button.pressed.connect(_on_clear_layer_pressed)
+	# all_visible_button.toggled уже подключен в редакторе
 	# Подписка на события слоев
 	EventBus.layer_created.connect(_on_layer_created)
 	EventBus.layer_deleted.connect(_on_layer_deleted)
@@ -194,10 +196,12 @@ func _connect_layer_signals(layer: Layer) -> void:
 		layer.drag_ended.connect(_on_layer_drag_ended)
 
 func _on_layer_clicked(layer: Layer) -> void:
-	# Правильная архитектура: UI эмитит событие
+	# Используем команду для выбора слоя
 	var layer_id = layer.get_meta("layer_id", -1)
-	if layer_id != -1:
-		EventBus.layer_selected.emit(layer_id)
+	if layer_id != -1 and layer_id != AppState.active_layer_id:
+		var SelectLayerCommand = preload("res://assets/core/commands/select_layer_command.gd")
+		var command = SelectLayerCommand.new(layer_id)
+		Services.undo_redo.execute_command(command)
 
 func _on_layer_drag_started(layer: Layer, _mouse_pos: Vector2) -> void:
 	if Services.cursor:
@@ -206,10 +210,12 @@ func _on_layer_drag_started(layer: Layer, _mouse_pos: Vector2) -> void:
 	drag_offset_y = layers_container.get_local_mouse_position().y - layer.position.y
 	dragged_layer.z_index = 10
 	
-	# Правильная архитектура: UI эмитит событие
+	# Используем команду для выбора слоя при начале перетаскивания
 	var layer_id = layer.get_meta("layer_id", -1)
-	if layer_id != -1:
-		EventBus.layer_selected.emit(layer_id)
+	if layer_id != -1 and layer_id != AppState.active_layer_id:
+		var SelectLayerCommand = preload("res://assets/core/commands/select_layer_command.gd")
+		var command = SelectLayerCommand.new(layer_id)
+		Services.undo_redo.execute_command(command)
 
 func _on_layer_drag_ended(_layer: Layer) -> void:
 	_finish_drag()
@@ -225,8 +231,10 @@ func _finish_drag() -> void:
 
 func _on_new_layer_pressed() -> void:
 	var layer_name = "Layer" + str(layers_container.get_child_count() + 1)
-	# Правильная архитектура: UI эмитит событие
-	EventBus.layer_create_requested.emit(layer_name)
+	# Используем команду для создания слоя
+	var CreateLayerCommand = preload("res://assets/core/commands/create_layer_command.gd")
+	var command = CreateLayerCommand.new(layer_name)
+	Services.undo_redo.execute_command(command)
 
 func _on_delete_layer_pressed() -> void:
 	if not active_layer or not is_instance_valid(active_layer):
@@ -236,8 +244,10 @@ func _on_delete_layer_pressed() -> void:
 	if layer_id == -1:
 		return
 	
-	# Правильная архитектура: UI эмитит событие
-	EventBus.layer_delete_requested.emit(layer_id)
+	# Используем команду для удаления слоя
+	var DeleteLayerCommand = preload("res://assets/core/commands/delete_layer_command.gd")
+	var command = DeleteLayerCommand.new(layer_id)
+	Services.undo_redo.execute_command(command)
 
 func _on_clear_layer_pressed() -> void:
 	if not active_layer or not is_instance_valid(active_layer):
@@ -247,7 +257,10 @@ func _on_clear_layer_pressed() -> void:
 	if layer_id == -1:
 		return
 	
-	EventBus.layer_clear_requested.emit(layer_id)
+	# Используем команду для очистки слоя
+	var ClearLayerCommand = preload("res://assets/core/commands/clear_layer_command.gd")
+	var command = ClearLayerCommand.new(layer_id)
+	Services.undo_redo.execute_command(command)
 
 func _set_active_layer(layer: Layer) -> void:
 	if active_layer == layer: return
@@ -261,6 +274,7 @@ func _set_active_layer(layer: Layer) -> void:
 
 
 func _on_all_visible_toggled(toggled_on: bool) -> void:
-	for layer_id: int in layer_ui_map.keys():
-		EventBus.layer_visibility_requested.emit(layer_id, toggled_on)
-	EventBus.layer_all_visibility_changed.emit(toggled_on)
+	# Используем команду для массового изменения видимости
+	var AllLayersVisibilityCommand = preload("res://assets/core/commands/all_layers_visibility_command.gd")
+	var command = AllLayersVisibilityCommand.new(toggled_on)
+	Services.undo_redo.execute_command(command)

@@ -77,6 +77,16 @@ func _hotkeys_tools(event: InputEvent) -> void:
 		Services.tool.select_tool(ToolType.Type.FILL)
 	if event.is_action_pressed("selection"):
 		Services.tool.select_tool(ToolType.Type.SELECTION)
+	
+	# Undo/Redo горячие клавиши
+	if event.is_action_pressed("undo"):
+		print("QuickTools: Undo key pressed")
+		if Services.undo_redo and Services.undo_redo.can_undo():
+			Services.undo_redo.undo()
+	if event.is_action_pressed("redo"):
+		print("QuickTools: Redo key pressed")
+		if Services.undo_redo and Services.undo_redo.can_redo():
+			Services.undo_redo.redo()
 		
 		
 		

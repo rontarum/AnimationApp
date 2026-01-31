@@ -47,6 +47,7 @@ func _input(event: InputEvent) -> void:
 	# 1. Release - обрабатываем глобально (можно отпустить вне canvas)
 	if event.is_action_released("action") or event.is_action_released("cancel"):
 		if is_hold:
+			print("[DrawContainer] Release detected, is_hold was=", is_hold)
 			is_hold = false
 			_resolve_cursor_sprite()
 			if active_layer:
@@ -73,11 +74,6 @@ func _input(event: InputEvent) -> void:
 		active_tool.deselect()
 		Services.cursor.clear_override()
 		get_viewport().set_input_as_handled()
-	
-	# 5. Undo (временная логика для теста)
-	if event.is_action_pressed("undo"):
-		Services.canvas.resize_canvas(Vector2i(128, 128))
-		get_viewport().set_input_as_handled()
 
 func _process(_delta: float) -> void:
 	mouse_pos = get_local_mouse_position()
@@ -103,18 +99,20 @@ func _gui_input(event: InputEvent) -> void:
 	
 	# 1. Press - начинаем действие только внутри canvas
 	if event.is_action_pressed("action"):
-		if not active_layer:
+		if not active_layer or is_hold:
 			return
 		is_hold = true
 		use_color = AppState.primary_color
+		print("[DrawContainer] Action pressed, is_hold=", is_hold, ", use_color=", use_color)
 		active_tool.on_press(pixel_pos, active_layer, use_color)
 		get_viewport().set_input_as_handled()
 	
 	if event.is_action_pressed("cancel"):
-		if not active_layer:
+		if not active_layer or is_hold:
 			return
 		is_hold = true
 		use_color = AppState.secondary_color
+		print("[DrawContainer] Cancel pressed, is_hold=", is_hold, ", use_color=", use_color)
 		active_tool.on_press(pixel_pos, active_layer, use_color)
 		get_viewport().set_input_as_handled()
 	

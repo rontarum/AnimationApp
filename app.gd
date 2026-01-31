@@ -10,6 +10,7 @@ const CanvasRendererScene = preload("res://assets/canvas_renderer.gd")
 @onready var canvas_service: CanvasService = $Services/CanvasService
 @onready var color_service = $Services/ColorService
 @onready var cursor_service = $Services/CursorService
+@onready var undo_redo_service: Node = $Services/UndoRedoService
 
 func _ready() -> void:
 	# Инициализация canvas_service с DrawCanvas

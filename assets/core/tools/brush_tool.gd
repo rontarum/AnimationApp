@@ -5,11 +5,15 @@ class_name BrushTool extends BaseTool
 ## Зона ответственности:
 ## - Установка пикселя в указанной позиции
 ## - Обновление preview данных для отрисовки
+## - Создание BrushCommand для undo/redo
 
 var _temp_position: Vector2i
+var _current_command: BrushCommand = null
 
 func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if layer:
+		# Начинаем новую команду
+		_current_command = BrushCommand.new(AppState.active_layer_id, color)
 		_draw_brush(position, layer, color)
 		_temp_position = position
 
@@ -20,6 +24,12 @@ func on_drag(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 			return
 		_draw_brush(position, layer, color)
 		_temp_position = position
+
+func on_release(position: Vector2i, layer: DrawLayer, color: Color) -> void:
+	# Завершаем команду и отправляем в UndoRedoService
+	if _current_command and Services.undo_redo:
+		Services.undo_redo.execute_command(_current_command)
+	_current_command = null
 
 func _draw_brush(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	var brush_size: int = int(Services.tool.get_tool_property("size"))
@@ -32,6 +42,7 @@ func _draw_brush(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	else:  # Circle
 		_draw_circle_brush(position, layer, color, brush_size, half_size)
 	
+	# Обновляем изображение для реалтайм отображения
 	layer.update_image()
 	
 	preview_position = position
@@ -44,6 +55,11 @@ func _draw_square_brush(position: Vector2i, layer: DrawLayer, color: Color, brus
 			if limits_check(pixel_pos):
 				continue
 			
+			# Сначала сохраняем старый цвет в команду
+			if _current_command:
+				_current_command.add_position_before_draw(pixel_pos)
+			
+			# Затем рисуем пиксель для реалтайм отображения
 			var source: Color = layer.get_pixel(pixel_pos)
 			var blended: Color = _blend_colors(source, color)
 			layer.set_pixel(pixel_pos, blended)
@@ -59,6 +75,11 @@ func _draw_circle_brush(position: Vector2i, layer: DrawLayer, color: Color, brus
 			if limits_check(pixel_pos):
 				continue
 				
+			# Сначала сохраняем старый цвет в команду
+			if _current_command:
+				_current_command.add_position_before_draw(pixel_pos)
+			
+			# Затем рисуем пиксель для реалтайм отображения
 			var source: Color = layer.get_pixel(pixel_pos)
 			var blended: Color = _blend_colors(source, color)
 			layer.set_pixel(pixel_pos, blended)

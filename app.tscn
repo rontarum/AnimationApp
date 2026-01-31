@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://c3jbey48lqc5m" path="res://assets/services/tool_service.gd" id="2_tool"]
 [ext_resource type="Shader" uid="uid://bfytwucjiyspp" path="res://assets/shaders/checker.gdshader" id="3_itptj"]
 [ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="6_8l3i4"]
+[ext_resource type="Script" uid="uid://bj82a3ak8qgpf" path="res://assets/services/undo_redo_service.gd" id="7_fr0lj"]
 [ext_resource type="Texture2D" uid="uid://dq457sq27anje" path="res://assets/icons/tools/arrow.svg" id="8_5oejy"]
 [ext_resource type="Theme" uid="uid://c478ise21qgjv" path="res://app.tres" id="8_gtgpg"]
 [ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://assets/tool_button.gd" id="9_7iiwk"]
@@ -69,6 +70,9 @@ script = ExtResource("2_color")
 
 [node name="CursorService" type="Node" parent="Services" unique_id=409477314]
 script = ExtResource("2_cursor")
+
+[node name="UndoRedoService" type="Node" parent="Services" unique_id=686997579]
+script = ExtResource("7_fr0lj")
 
 [node name="BackLayer" type="CanvasLayer" parent="." unique_id=2061429068]
 layer = -1

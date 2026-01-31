@@ -29,6 +29,7 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 	label.text_submitted.connect(_on_name_submitted)
 	EventBus.layer_all_visibility_changed.connect(_on_layer_all_visibility_changed)
+	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
 	#layer_name = str("Layer")
 	#label.text = layer_name
 
@@ -94,7 +95,16 @@ func _on_name_submitted(text: String) -> void:
 func _on_layer_visible_toggled(toggled_on: bool) -> void:
 	var layer_id = get_meta("layer_id", -1)
 	if layer_id != -1:
-		EventBus.layer_visibility_requested.emit(layer_id, toggled_on)
+		# Временно используем прямую загрузку скрипта
+		var LayerVisibilityCommand = preload("res://assets/core/commands/layer_visibility_command.gd")
+		var command = LayerVisibilityCommand.new(layer_id, toggled_on)
+		Services.undo_redo.execute_command(command)
 		
 func _on_layer_all_visibility_changed(val: bool) -> void:
 	layer_visible.set_pressed_no_signal(val)
+
+func _on_layer_visibility_changed(layer_id: int, visible: bool) -> void:
+	# Обновляем UI только для нашего слоя
+	var my_layer_id = get_meta("layer_id", -1)
+	if my_layer_id == layer_id:
+		layer_visible.set_pressed_no_signal(visible)
