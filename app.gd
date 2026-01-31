@@ -21,13 +21,9 @@ func _ready() -> void:
 	var canvas_renderer = CanvasRendererScene.new()
 	canvas_renderer.name = "CanvasRenderer"
 	draw_container.add_child(canvas_renderer)
-	print("[App] CanvasRenderer added to DrawContainer")
 	
 	# Эмитим событие готовности приложения
 	EventBus.app_ready.emit()
-	
-	print("[App] Application ready")
-	print("[App] Services initialized: ", Services.are_all_ready())
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:

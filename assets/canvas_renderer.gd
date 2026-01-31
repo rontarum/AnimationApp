@@ -24,9 +24,10 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	_draw_pixel_preview()
-	_draw_selection_pixels()  # Рисуем пиксели выделения во время движения
-	_draw_selection_gizmo()
+	if not AppState.is_color_picking:
+		_draw_pixel_preview()
+		_draw_selection_pixels()
+		_draw_selection_gizmo()
 	_draw_canvas_border()
 
 ## Рисует pixel preview для активного инструмента
@@ -112,9 +113,16 @@ func _draw_selection_gizmo() -> void:
 	if state == SelectionTool.State.IDLE or selection_rect.size.x < 1 or selection_rect.size.y < 1:
 		return
 	
+	# Клампим rect к границам canvas
+	var canvas_rect = Rect2(Vector2.ZERO, draw_container.size)
+	var clamped_rect = selection_rect.intersection(canvas_rect)
+	
+	# Если rect полностью вне canvas, не рисуем
+	if clamped_rect.size.x < 1 or clamped_rect.size.y < 1:
+		return
+	
 	# Рисуем пунктирную рамку (чередование чёрного и белого)
-	var rect = Rect2(selection_rect.position, selection_rect.size)
-	_draw_dashed_rect(rect)
+	_draw_dashed_rect(clamped_rect)
 
 ## Рисует пунктирную рамку (чёрно-белую)
 func _draw_dashed_rect(rect: Rect2) -> void:

@@ -30,6 +30,7 @@ func _ready() -> void:
 	EventBus.layer_rename_requested.connect(_on_layer_rename_requested)
 	EventBus.layer_create_requested.connect(_on_layer_create_requested)
 	EventBus.layer_delete_requested.connect(_on_layer_delete_requested)
+	EventBus.layer_visibility_requested.connect(_on_layer_visibility_requested)
 
 ## Создание нового слоя
 func create_layer(layer_name: String) -> int:
@@ -133,25 +134,24 @@ func get_active_layer() -> Dictionary:
 func _on_layer_created(layer_data: Dictionary) -> void:
 	var layer_id = layer_data.get("id", -1)
 	var layer_name = layer_data.get("name", "Unknown")
-	print("[LayerService] Layer created: ID=", layer_id, " Name=", layer_name)
 
 func _on_layer_deleted(layer_id: int) -> void:
-	print("[LayerService] Layer deleted: ID=", layer_id)
+	pass
 
 func _on_layer_selected(layer_id: int) -> void:
 	if layer_id == -1:
-		print("[LayerService] No layer selected (empty state)")
+		pass
 	else:
-		print("[LayerService] Layer selected: ID=", layer_id)
+		pass
 
 func _on_layer_reordered(from_index: int, to_index: int) -> void:
-	print("[LayerService] Layer reordered: ", from_index, " -> ", to_index)
+	pass
 
 func _on_layer_visibility_changed(layer_id: int, visible: bool) -> void:
-	print("[LayerService] Layer visibility changed: ID=", layer_id, " visible=", visible)
+	pass
 
 func _on_layer_renamed(layer_id: int, old_name: String, new_name: String) -> void:
-	print("[LayerService] Layer renamed: ID=", layer_id, " ", old_name, " -> ", new_name)
+	pass
 
 func _on_layer_rename_requested(layer_id: int, new_name: String) -> void:
 	# UI запросил переименование - выполняем через сервис
@@ -164,3 +164,6 @@ func _on_layer_create_requested(layer_name: String) -> void:
 func _on_layer_delete_requested(layer_id: int) -> void:
 	# UI запросил удаление - выполняем через сервис
 	delete_layer(layer_id)
+
+func _on_layer_visibility_requested(layer_id: int, visible: bool) -> void:
+	set_layer_visibility(layer_id, visible)

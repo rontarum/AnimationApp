@@ -2,6 +2,8 @@ class_name ToolButton extends TextureRect
 
 @export var type: ToolType.Type
 
+var active_color: Color = Color(3.299, 1.667, 1.519, 1.0)
+
 var is_hovered: bool = false
 
 var is_toggled: bool = false
@@ -19,12 +21,15 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 	
 	# Новая архитектура: подписка на EventBus
-	EventBus.ui_element_focused.connect(_on_element_focused)
+	EventBus.tool_selected.connect(_on_tool_selected)
 
-func _on_element_focused(element: Node) -> void:
-	if element != self:
-		modulate = Color("ffffffff")
 
+func _on_tool_selected(tool: ToolType.Type) -> void:
+	if tool == type:
+		modulate = active_color
+		return
+	modulate = Color.WHITE
+	AppState.focused_element = self
 
 func _on_mouse_entered() -> void:
 	is_hovered = true
@@ -46,9 +51,4 @@ func _on_mouse_exited() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("action") and is_hovered:
-		# Новая архитектура: используем EventBus и AppState
-		AppState.focused_element = self
-		modulate = Color(3.299, 1.669, 1.527)
-		
-		# Выбираем инструмент через ToolService
 		Services.tool.select_tool(type)

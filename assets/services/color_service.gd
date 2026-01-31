@@ -3,31 +3,24 @@ class_name ColorService extends Node
 ## Централизованно управляет primary/secondary цветами и их синхронизацией
 
 func _ready() -> void:
-	print("[ColorService] Initialized")
-	
 	# Регистрация в Services
 	Services.register("color", self)
 	
 	# Подписка на события изменения цветов
 	EventBus.primary_color_changed.connect(_on_primary_color_changed)
 	EventBus.secondary_color_changed.connect(_on_secondary_color_changed)
-	EventBus.color_picked.connect(_on_color_picked)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("swap_colors"):
 		swap_colors()
 
 func _on_primary_color_changed(new_color: Color) -> void:
-	print("[ColorService] Primary color changed to: ", new_color)
+	pass
 	# Здесь можно добавить дополнительную логику обработки изменения primary цвета
 
 func _on_secondary_color_changed(new_color: Color) -> void:
-	print("[ColorService] Secondary color changed to: ", new_color)
+	pass
 	# Здесь можно добавить дополнительную логику обработки изменения secondary цвета
-
-func _on_color_picked(color: Color, source: Node) -> void:
-	print("[ColorService] Color picked: ", color, " from: ", source.name if source else "unknown")
-	# Здесь можно добавить логику обработки выбора цвета
 
 ## Получить текущий primary цвет
 func get_primary_color() -> Color:
@@ -50,7 +43,6 @@ func swap_colors() -> void:
 	var temp = AppState.primary_color
 	AppState.primary_color = AppState.secondary_color
 	AppState.secondary_color = temp
-	print("[ColorService] Colors swapped - Primary: ", AppState.primary_color, " Secondary: ", AppState.secondary_color)
 
 ## Сбросить цвета к значениям по умолчанию
 func reset_colors() -> void:

@@ -27,13 +27,9 @@ func _ready() -> void:
 	
 	# Подписка на события
 	EventBus.tool_selected.connect(_on_tool_selected)
-	EventBus.tool_action_started.connect(_on_tool_action_started)
-	EventBus.tool_action_updated.connect(_on_tool_action_updated)
-	EventBus.tool_action_finished.connect(_on_tool_action_finished)
 	
 	# Устанавливаем начальный инструмент
 	active_tool = tool_instances.get(AppState.current_tool)
-	print("[ToolService] Initialized with ", tool_instances.size(), " tools")
 
 ## Выбор инструмента
 func select_tool(tool_type: ToolType.Type) -> void:
@@ -85,18 +81,7 @@ func finish_action(position: Vector2) -> void:
 # === ОБРАБОТЧИКИ СОБЫТИЙ ===
 
 func _on_tool_selected(tool_type: ToolType.Type) -> void:
-	print("[ToolService] Tool selected: ", ToolType.Type.keys()[tool_type])
-	
 	# Переключаем активный инструмент
 	active_tool = tool_instances.get(tool_type)
 	if not active_tool:
 		push_warning("[ToolService] No tool instance for: ", ToolType.Type.keys()[tool_type])
-
-func _on_tool_action_started(position: Vector2) -> void:
-	pass  # Логика обработки начала действия
-
-func _on_tool_action_updated(position: Vector2) -> void:
-	pass  # Логика обработки обновления действия
-
-func _on_tool_action_finished(position: Vector2) -> void:
-	pass  # Логика обработки завершения действия

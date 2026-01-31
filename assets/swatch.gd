@@ -13,7 +13,6 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 	
 	# Новая архитектура: подписка на EventBus
-	EventBus.ui_element_focused.connect(_on_element_focused)
 	EventBus.primary_color_changed.connect(_on_primary_color_changed)
 	EventBus.secondary_color_changed.connect(_on_secondary_color_changed)
 	

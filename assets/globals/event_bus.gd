@@ -11,9 +11,6 @@ extends Node
 
 # === TOOL EVENTS ===
 signal tool_selected(tool_type: ToolType.Type)  # Выбран инструмент
-signal tool_action_started(position: Vector2)  # Начало действия инструмента
-signal tool_action_updated(position: Vector2)  # Обновление действия
-signal tool_action_finished(position: Vector2)  # Завершение действия
 signal tool_resized(size: float)
 signal tool_property_changed(tool_type: ToolType.Type, property: String, value)  # Изменено свойство инструмента
 
@@ -22,15 +19,17 @@ signal layer_created(layer_id: int)  # Создан новый слой
 signal layer_deleted(layer_id: int)  # Удалён слой
 signal layer_selected(layer_id: int)  # Выбран активный слой
 signal layer_reordered(from_index: int, to_index: int)  # Изменён порядок слоёв
+signal layer_cleared(layer_id: int) # Слой очищен
 signal layer_visibility_changed(layer_id: int, visible: bool)  # Видимость слоя
+signal layer_all_visibility_changed(visible: bool) # Обратный сигнал для UI
 signal layer_renamed(layer_id: int, new_name: String)  # Переименован слой
 signal layer_rename_requested(layer_id: int, new_name: String)  # UI запрос переименования
 signal layer_create_requested(layer_name: String)  # UI запрос создания
 signal layer_delete_requested(layer_id: int)  # UI запрос удаления
+signal layer_clear_requested(layer_id: int) # UI запрос очистки
+signal layer_visibility_requested(layer_id: int, visible: bool)
 
 # === CANVAS EVENTS ===
-signal canvas_pixel_changed(position: Vector2i, color: Color)  # Изменён пиксель
-signal canvas_cleared()  # Холст очищен
 signal canvas_resized(new_size: Vector2i)  # Изменён размер холста
 
 # === COLOR EVENTS ===
@@ -47,7 +46,6 @@ signal ui_element_focused(element: Node)  # UI элемент получил ф�
 signal ui_element_hovered(element: Node, hovered: bool)  # Наведение на UI элемент
 
 # === HISTORY EVENTS ===
-signal action_executed(command: RefCounted)  # Выполнена команда
 signal undo_requested()  # Запрошена отмена
 signal redo_requested()  # Запрошен повтор
 

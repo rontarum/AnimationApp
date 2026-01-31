@@ -16,16 +16,14 @@ func _ready() -> void:
 	Services.register("canvas", self)
 	
 	# Подписка на события
-	EventBus.canvas_cleared.connect(_on_canvas_cleared)
 	EventBus.layer_created.connect(_on_layer_created)
 	EventBus.layer_deleted.connect(_on_layer_deleted)
 	EventBus.canvas_resized.connect(_on_canvas_resized)
-	#EventBus.tool_action_updated.connect(_on_tool_action_updated)
-
+	EventBus.layer_clear_requested.connect(_on_layer_clear_requested)
+	
 ## Инициализация с DrawCanvas
 func initialize(canvas: SubViewport) -> void:
 	draw_canvas = canvas
-	print("[CanvasService] Initialized with canvas")
 
 func resize_canvas(new_size: Vector2i) -> void:
 	if new_size.x < 1 or new_size.y < 1 \
@@ -78,14 +76,17 @@ func _on_canvas_resized(new_size: Vector2i) -> void:
 	for layer_id: int in draw_layers.keys():
 		update_draw_layer(layer_id, new_size)
 
-func _on_canvas_cleared() -> void:
-	print("[CanvasService] Canvas cleared")
-
 func _on_layer_created(layer_data: Dictionary) -> void:
 	# Создаём DrawLayer для нового слоя
 	var layer_id = layer_data.get("id", -1)
 	if layer_id != -1:
 		create_draw_layer(layer_id, AppState.canvas_size)
+
+func _on_layer_clear_requested(layer_id: int) -> void:
+	var draw_layer: DrawLayer = draw_layers.get(layer_id)
+	if draw_layer:
+		draw_layer.clear_image()
+		EventBus.layer_cleared.emit(layer_id)
 
 func _on_layer_deleted(layer_id: int) -> void:
 	# Удаляем DrawLayer

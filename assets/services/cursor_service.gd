@@ -17,7 +17,6 @@ var _is_overridden: bool = false  # Флаг активного override
 
 func _ready() -> void:
 	Services.register("cursor", self)
-	print("[CursorService] Registered in Services")
 	
 	# Ждём один кадр, чтобы GUI CanvasLayer точно существовал
 	await get_tree().process_frame
@@ -28,18 +27,16 @@ func _ready() -> void:
 		cursor_sprite = CursorSprite.new()
 		cursor_sprite.name = "CursorSprite"
 		gui_layer.add_child(cursor_sprite)
+		cursor_sprite.z_index = 3
 	else:
 		push_error("[CursorService] GUI CanvasLayer not found!")
 		return
 	
 	# Подписываемся на события
 	EventBus.tool_selected.connect(_on_tool_selected)
-	EventBus.ui_element_hovered.connect(_on_ui_element_hovered)
-	
+	EventBus.ui_element_hovered.connect(_on_ui_element_hovered)	
 	# Устанавливаем начальную иконку
 	change_icon(AppState.current_tool)
-	
-	print("[CursorService] Initialized")
 
 func _on_tool_selected(tool_type: ToolType.Type) -> void:
 	if not _is_overridden:

@@ -11,6 +11,7 @@ static var instance: LayersPanel
 @onready var layers_container: Control = $LayersPanelMargin/LayersContainer
 @onready var new_layer_button: Button = $NewLayerButton
 @onready var delete_layer_button: Button = $DeleteLayerButton
+@onready var clear_layer_button: Button = $ClearLayerButton
 
 # --- СОСТОЯНИЕ ---
 var active_layer: Layer = null
@@ -26,7 +27,7 @@ func _init() -> void:
 func _ready() -> void:
 	new_layer_button.pressed.connect(_on_new_layer_pressed)
 	delete_layer_button.pressed.connect(_on_delete_layer_pressed)
-	
+	clear_layer_button.pressed.connect(_on_clear_layer_pressed)
 	# Подписка на события слоев
 	EventBus.layer_created.connect(_on_layer_created)
 	EventBus.layer_deleted.connect(_on_layer_deleted)
@@ -99,13 +100,11 @@ func _check_reorder() -> void:
 func _reorder_draw_layers(from_index: int, to_index: int) -> void:
 	var draw_canvas = Services.canvas.draw_canvas
 	if not draw_canvas:
-		print("[LayersPanel] DrawCanvas not found")
 		return
 	
 	if from_index < draw_canvas.get_child_count() and to_index < draw_canvas.get_child_count():
 		var draw_layer = draw_canvas.get_child(from_index)
 		draw_canvas.move_child(draw_layer, to_index)
-		print("[LayersPanel] Reordered draw layers: ", from_index, " -> ", to_index)
 
 # --- ОБРАБОТКА СОБЫТИЙ ---
 
@@ -130,8 +129,6 @@ func _on_layer_created(layer_data: Dictionary) -> void:
 	
 	# Визуально в конец
 	layer_ui.position.y = layers_container.get_child_count() * LAYER_HEIGHT
-	
-	print("[LayersPanel] Created UI: ID=", layer_id, " Name=", layer_name)
 
 func _on_layer_deleted(layer_id: int) -> void:
 	var layer_ui = layer_ui_map.get(layer_id)
@@ -146,8 +143,6 @@ func _on_layer_deleted(layer_id: int) -> void:
 	
 	if active_layer == layer_ui:
 		active_layer = null
-	
-	print("[LayersPanel] Deleted UI: ID=", layer_id)
 	
 	# Выбираем следующий слой ДО удаления ноды
 	if was_active and layers_container.get_child_count() > 1:
@@ -177,18 +172,16 @@ func _on_layer_selected(layer_id: int) -> void:
 		if active_layer and is_instance_valid(active_layer):
 			active_layer.set_active(false)
 		active_layer = null
-		print("[LayersPanel] No active layer (empty state)")
 		return
 	
 	var layer_ui = layer_ui_map.get(layer_id)
 	if layer_ui:
 		_set_active_layer(layer_ui)
-		print("[LayersPanel] Selected: ID=", layer_id)
 	else:
-		print("[LayersPanel] UI not found: ID=", layer_id)
+		pass
 
 func _on_layer_reordered(from_index: int, to_index: int) -> void:
-	print("[LayersPanel] Reordered: ", from_index, " -> ", to_index)
+	pass
 
 # --- ОБРАБОТКА СИГНАЛОВ ОТ LAYER UI ---
 
@@ -234,7 +227,6 @@ func _on_new_layer_pressed() -> void:
 	var layer_name = "Layer" + str(layers_container.get_child_count() + 1)
 	# Правильная архитектура: UI эмитит событие
 	EventBus.layer_create_requested.emit(layer_name)
-	print("[LayersPanel] New layer button: requested creation")
 
 func _on_delete_layer_pressed() -> void:
 	if not active_layer or not is_instance_valid(active_layer):
@@ -246,7 +238,16 @@ func _on_delete_layer_pressed() -> void:
 	
 	# Правильная архитектура: UI эмитит событие
 	EventBus.layer_delete_requested.emit(layer_id)
-	print("[LayersPanel] Delete layer button: requested deletion ID=", layer_id)
+
+func _on_clear_layer_pressed() -> void:
+	if not active_layer or not is_instance_valid(active_layer):
+		return
+	
+	var layer_id = active_layer.get_meta("layer_id", -1)
+	if layer_id == -1:
+		return
+	
+	EventBus.layer_clear_requested.emit(layer_id)
 
 func _set_active_layer(layer: Layer) -> void:
 	if active_layer == layer: return
@@ -257,3 +258,9 @@ func _set_active_layer(layer: Layer) -> void:
 	active_layer = layer
 	if active_layer:
 		active_layer.set_active(true)
+
+
+func _on_all_visible_toggled(toggled_on: bool) -> void:
+	for layer_id: int in layer_ui_map.keys():
+		EventBus.layer_visibility_requested.emit(layer_id, toggled_on)
+	EventBus.layer_all_visibility_changed.emit(toggled_on)

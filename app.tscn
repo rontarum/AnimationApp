@@ -24,10 +24,14 @@
 [ext_resource type="PackedScene" uid="uid://3sg62ii1o76t" path="res://assets/ui_components/tool_properties/fill_properties.tscn" id="13_hvfy4"]
 [ext_resource type="Script" uid="uid://ciru41hkovgfg" path="res://assets/swatch.gd" id="14_a37lv"]
 [ext_resource type="Script" uid="uid://cye24k1erlon3" path="res://assets/swatch_picker.gd" id="16_ra7kh"]
+[ext_resource type="Texture2D" uid="uid://ciqst700fl2hu" path="res://assets/icons/buttons/visible.png" id="17_2ysod"]
+[ext_resource type="Texture2D" uid="uid://dpg14vqp4208s" path="res://assets/icons/buttons/invisible.png" id="18_fr0lj"]
+[ext_resource type="Script" uid="uid://b4c8dmg4qfeb7" path="res://assets/ui_components/layers/IconTriggerButton.gd" id="19_aarq4"]
 [ext_resource type="Texture2D" uid="uid://dgl7a6iocu5eh" path="res://assets/icons/buttons/close.png" id="22_1v2j6"]
 [ext_resource type="Script" uid="uid://devyibhtydimx" path="res://assets/ui_components/window_panel.gd" id="22_nc07x"]
 [ext_resource type="Texture2D" uid="uid://c703j2umrhxfv" path="res://assets/icons/buttons/close_hold.png" id="23_nc07x"]
 [ext_resource type="Texture2D" uid="uid://rlg4nvvl0mti" path="res://assets/icons/buttons/close_hover.png" id="24_gdquv"]
+[ext_resource type="Script" uid="uid://4vk8en6k0dv7" path="res://assets/core/quick_tools.gd" id="29_i77su"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_25sla"]
 shader = ExtResource("3_itptj")
@@ -173,14 +177,31 @@ offset_bottom = 48.0
 theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_fonts/font = ExtResource("10_dv8dk")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_j4pmb")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_dv8dk")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kd73m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
-text = "+"
+text = "📑"
+icon_alignment = 1
 
 [node name="DeleteLayerButton" type="Button" parent="GUI/LayersPanel" unique_id=1604883668]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 16.0
+offset_right = 128.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("10_dv8dk")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_j4pmb")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dv8dk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kd73m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
+text = "🗑️"
+
+[node name="ClearLayerButton" type="Button" parent="GUI/LayersPanel" unique_id=1033440246]
 layout_mode = 0
 offset_left = 56.0
 offset_top = 16.0
@@ -189,12 +210,26 @@ offset_bottom = 48.0
 theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_colors/font_focus_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_fonts/font = ExtResource("10_dv8dk")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_j4pmb")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_dv8dk")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kd73m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
-text = "-"
+text = "🧼"
+
+[node name="LayerVisible" type="CheckBox" parent="GUI/LayersPanel" unique_id=635425103]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 16.0
+offset_right = 240.0
+offset_bottom = 48.0
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_icons/checked = ExtResource("17_2ysod")
+theme_override_icons/unchecked = ExtResource("18_fr0lj")
+button_pressed = true
+script = ExtResource("19_aarq4")
+metadata/_custom_type_script = "uid://b4c8dmg4qfeb7"
 
 [node name="ToolPanel" type="Panel" parent="GUI" unique_id=2114250840]
 offset_right = 64.0
@@ -323,8 +358,17 @@ texture_normal = ExtResource("22_1v2j6")
 texture_pressed = ExtResource("23_nc07x")
 texture_hover = ExtResource("24_gdquv")
 
+[node name="QuickTools" type="Control" parent="GUI" unique_id=534071326]
+z_index = 2
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("29_i77su")
+
 [connection signal="mouse_entered" from="DrawContainer" to="DrawContainer" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="DrawContainer" to="DrawContainer" method="_on_mouse_exited"]
+[connection signal="toggled" from="GUI/LayersPanel/LayerVisible" to="GUI/LayersPanel" method="_on_all_visible_toggled"]
 [connection signal="mouse_entered" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_mouse_entered"]
 [connection signal="mouse_exited" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_mouse_exited"]
 [connection signal="pressed" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_pressed"]

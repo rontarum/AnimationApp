@@ -42,6 +42,10 @@ func set_pixel(point: Vector2i, color: Color) -> void:
 func update_image() -> void:
 	tex.update(image)
 
+func clear_image() -> void:
+	image.fill(Color.TRANSPARENT)
+	tex.update(image)
+
 func resize_layer(new_size: Vector2i) -> void:
 	var temp: Image = Image.create_empty(new_size.x, new_size.y, false, Image.FORMAT_RGBA8)
 	temp.fill(Color.TRANSPARENT)

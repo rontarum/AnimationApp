@@ -83,23 +83,28 @@ res://
 │
 ├── assets/core              # Чистая логика (RefCounted)
 │   ├── tool_type.gd       # Enum типов инструментов (autoload)
+│   ├── quick_tools.gd     # Быстрые инструменты (горячие клавиши)
 │   └── tools/             # Классы инструментов
 │       ├── base_tool.gd   # Базовый класс инструмента
 │       ├── brush_tool.gd  # Кисть
-│       └── eraser_tool.gd # Ластик
+│       ├── eraser_tool.gd # Ластик
+│       ├── fill_tool.gd   # Заливка
+│       └── selection_tool.gd # Выделение
 │
 ├── assets/                 # UI компоненты и ресурсы
 │   ├── canvas_renderer.gd  # Отрисовка overlay (pixel preview, border)
+│   ├── canvas_camera.gd    # Камера холста (зум, панорамирование)
 │   ├── draw_container.gd   # Роутинг input к активному инструменту
 │   ├── scripts/
 │   │   ├── draw_layer.gd   # Слой рисования (работает через layer_id)
 │   │   └── cursor_sprite.gd # Визуальный курсор
 │   ├── ui_components/      # UI компоненты
-│   │   ├── layers/         # Панель слоёв
+│   │   ├── layers/         # Панель слоёв (layers_panel.gd, layer.gd, layer_preview.gd)
 │   │   └── tool_properties/ # Панель настроек инструментов (PropertiesPanel, BrushProperties, FillProperties)
-│   ├── tool.gd            # Кнопки инструментов
+│   ├── tool_button.gd     # Кнопки инструментов
 │   ├── swatch.gd          # Цветовые образцы
-│   └── swatch_picker.gd   # ColorPicker для свотчей
+│   ├── swatch_picker.gd   # ColorPicker для свотчей
+│   └── window_panel.gd    # Базовый класс для панелей окон
 │
 └── app.tscn / app.gd      # Главная сцена - инициализация сервисов
 ```
@@ -146,6 +151,7 @@ res://
 - **BrushTool** - рисует пиксели `primary_color` или `secondary_color`, поддерживает квадратную и круглую форму
 - **EraserTool** - стирает пиксели (`Color.TRANSPARENT`)
 - **FillTool** - заливка области flood fill алгоритмом (contiguous/non-contiguous режимы)
+- **SelectionTool** - выделение прямоугольных областей с возможностью перемещения
 - Инструменты вызывают `layer.set_pixel()` напрямую
 - Размер кисти и другие настройки хранятся в ToolService
 
@@ -166,9 +172,10 @@ res://
   - UI настроек (BrushProperties, FillProperties) синхронизируется через EventBus
   - PropertiesPanel динамически загружает UI при смене инструмента
 - **Поддерживаемые инструменты:**
-  - Brush: рисование с настройками размера и формы (квадрат/круг)
-  - Eraser: стирание с настройкой размера
-  - Fill: заливка с режимом contiguous (связанная область или весь цвет)
+  - **Brush**: рисование с настройками размера и формы (квадрат/круг)
+  - **Eraser**: стирание с настройкой размера
+  - **Fill**: заливка с режимом contiguous (связанная область или весь цвет)
+  - **Selection**: выделение прямоугольных областей с перемещением пикселей
 
 **Цвета:**
 - Swatch'и (`swatch.gd`) работают через ColorService и EventBus
@@ -183,5 +190,11 @@ res://
 
 **Курсор:**
 - CursorService управляет визуальным состоянием
-- Override система: POINTER на UI, GRAB при drag
+- Override система: POINTER на UI, GRAB при drag, DRAG при перемещении выделения
 - CursorSprite отображает текущий курсор
+- Поддерживает различные типы курсоров для разных инструментов
+
+**Камера:**
+- CanvasCamera управляет зумом и панорамированием холста
+- Поддерживает колесо мыши для зума и средняя кнопка для панорамирования
+- Интегрирована с системой координат для корректного преобразования позиций мыши
