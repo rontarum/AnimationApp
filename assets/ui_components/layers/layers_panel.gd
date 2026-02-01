@@ -12,6 +12,7 @@ static var instance: LayersPanel
 @onready var new_layer_button: Button = $NewLayerButton
 @onready var delete_layer_button: Button = $DeleteLayerButton
 @onready var clear_layer_button: Button = $ClearLayerButton
+@onready var all_visible_button: CheckBox = $LayerVisible
 
 # --- СОСТОЯНИЕ ---
 var active_layer: Layer = null
@@ -33,6 +34,7 @@ func _ready() -> void:
 	EventBus.layer_deleted.connect(_on_layer_deleted)
 	EventBus.layer_selected.connect(_on_layer_selected)
 	EventBus.layer_reordered.connect(_on_layer_reordered)
+	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed_sync_all_button)
 
 func _input(event: InputEvent) -> void:
 	if dragged_layer and event is InputEventMouseButton:
@@ -123,6 +125,11 @@ func _on_layer_created(layer_data: Dictionary) -> void:
 	layers_container.add_child(layer_ui, true)
 	layer_ui.set_meta("layer_id", layer_id)  # ID в метаданных
 	layer_ui.rename(layer_name)  # Имя только для UI
+	
+	# Инициализируем кнопку видимости
+	var layer_service_data = Services.layer.get_layer(layer_id)
+	if layer_service_data.has("visible"):
+		layer_ui.layer_visible.set_pressed_no_signal(layer_service_data["visible"])
 	
 	# Регистрируем маппинг
 	layer_ui_map[layer_id] = layer_ui
@@ -261,6 +268,16 @@ func _set_active_layer(layer: Layer) -> void:
 
 
 func _on_all_visible_toggled(toggled_on: bool) -> void:
-	for layer_id: int in layer_ui_map.keys():
-		EventBus.layer_visibility_requested.emit(layer_id, toggled_on)
-	EventBus.layer_all_visibility_changed.emit(toggled_on)
+	EventBus.layer_all_visibility_requested.emit(toggled_on)
+
+func _on_layer_visibility_changed_sync_all_button(_layer_id: int, _visible: bool) -> void:
+	# Синхронизируем состояние общей кнопки видимости
+	# Проверяем, все ли слои видимы
+	var all_visible = true
+	for layer_id in layer_ui_map.keys():
+		var layer_data = Services.layer.get_layer(layer_id)
+		if not layer_data.get("visible", true):
+			all_visible = false
+			break
+	
+	all_visible_button.set_pressed_no_signal(all_visible)

@@ -31,6 +31,7 @@ func _ready() -> void:
 	EventBus.layer_create_requested.connect(_on_layer_create_requested)
 	EventBus.layer_delete_requested.connect(_on_layer_delete_requested)
 	EventBus.layer_visibility_requested.connect(_on_layer_visibility_requested)
+	EventBus.layer_all_visibility_requested.connect(_on_layer_all_visibility_requested)
 
 ## Создание нового слоя
 func create_layer(layer_name: String) -> int:
@@ -158,12 +159,188 @@ func _on_layer_rename_requested(layer_id: int, new_name: String) -> void:
 	rename_layer(layer_id, new_name)
 
 func _on_layer_create_requested(layer_name: String) -> void:
-	# UI запросил создание - выполняем через сервис
-	create_layer(layer_name)
+	# UI запросил создание - выполняем через сервис с undo/redo
+	create_layer_with_undo(layer_name)
+
+## Создание слоя с поддержкой undo/redo
+func create_layer_with_undo(layer_name: String) -> void:
+	var layer_id: int
+	if _freed_ids.size() > 0:
+		layer_id = _freed_ids[0]  # Peek, не pop
+	else:
+		layer_id = _next_layer_id
+	
+	History.undo_redo.create_action("Create Layer")
+	History.undo_redo.add_do_method(Callable(self, "_do_create_layer").bind(layer_name, layer_id))
+	History.undo_redo.add_undo_method(Callable(self, "_undo_create_layer").bind(layer_id))
+	History.undo_redo.commit_action()
+
+func _do_create_layer(layer_name: String, layer_id: int) -> void:
+	# Переиспользуем освободившийся ID или создаём новый
+	if _freed_ids.has(layer_id):
+		_freed_ids.erase(layer_id)
+	else:
+		_next_layer_id = layer_id + 1
+	
+	layers[layer_id] = {
+		"id": layer_id,
+		"name": layer_name,
+		"visible": true
+	}
+	
+	AppState.layer_count = layers.size()
+	EventBus.layer_created.emit({
+		"id": layer_id,
+		"name": layer_name
+	})
+	
+	select_layer(layer_id)
+
+func _undo_create_layer(layer_id: int) -> void:
+	if not layers.has(layer_id):
+		return
+	
+	var was_active = (AppState.active_layer_id == layer_id)
+	
+	layers.erase(layer_id)
+	_freed_ids.append(layer_id)
+	_freed_ids.sort()
+	
+	AppState.layer_count = layers.size()
+	EventBus.layer_deleted.emit(layer_id)
+	
+	if was_active and layers.size() == 0:
+		AppState.active_layer_id = -1
 
 func _on_layer_delete_requested(layer_id: int) -> void:
-	# UI запросил удаление - выполняем через сервис
-	delete_layer(layer_id)
+	# UI запросил удаление - выполняем через сервис с undo/redo
+	delete_layer_with_undo(layer_id)
+
+## Удаление слоя с поддержкой undo/redo
+func delete_layer_with_undo(layer_id: int) -> void:
+	if not layers.has(layer_id):
+		push_error("[LayerService] Layer not found: " + str(layer_id))
+		return
+	
+	var layer_data = layers[layer_id].duplicate()
+	var was_active = (AppState.active_layer_id == layer_id)
+	
+	# Сохраняем изображение слоя
+	var draw_layer = Services.canvas.get_draw_layer(layer_id)
+	var image_data: PackedByteArray = PackedByteArray()
+	if draw_layer and draw_layer.image:
+		image_data = draw_layer.image.get_data()
+	
+	History.undo_redo.create_action("Delete Layer")
+	History.undo_redo.add_do_method(Callable(self, "_do_delete_layer").bind(layer_id))
+	History.undo_redo.add_undo_method(Callable(self, "_undo_delete_layer").bind(layer_id, layer_data, was_active, image_data))
+	History.undo_redo.commit_action()
+
+func _do_delete_layer(layer_id: int) -> void:
+	if not layers.has(layer_id):
+		return
+	
+	var was_active = (AppState.active_layer_id == layer_id)
+	
+	layers.erase(layer_id)
+	_freed_ids.append(layer_id)
+	_freed_ids.sort()
+	
+	AppState.layer_count = layers.size()
+	EventBus.layer_deleted.emit(layer_id)
+	
+	if was_active and layers.size() == 0:
+		AppState.active_layer_id = -1
+
+func _undo_delete_layer(layer_id: int, layer_data: Dictionary, was_active: bool, image_data: PackedByteArray) -> void:
+	# Восстанавливаем слой
+	if _freed_ids.has(layer_id):
+		_freed_ids.erase(layer_id)
+	
+	layers[layer_id] = layer_data
+	
+	AppState.layer_count = layers.size()
+	EventBus.layer_created.emit({
+		"id": layer_id,
+		"name": layer_data["name"]
+	})
+	
+	# Восстанавливаем изображение слоя
+	if image_data.size() > 0:
+		await get_tree().process_frame  # Ждём создания DrawLayer
+		var draw_layer = Services.canvas.get_draw_layer(layer_id)
+		if draw_layer and draw_layer.image:
+			var img_size = draw_layer.image.get_size()
+			draw_layer.image.set_data(img_size.x, img_size.y, false, Image.FORMAT_RGBA8, image_data)
+			draw_layer.update_image()
+	
+	# Восстанавливаем видимость
+	if not layer_data.get("visible", true):
+		EventBus.layer_visibility_changed.emit(layer_id, false)
+	
+	if was_active:
+		select_layer(layer_id)
 
 func _on_layer_visibility_requested(layer_id: int, visible: bool) -> void:
-	set_layer_visibility(layer_id, visible)
+	set_layer_visibility_with_undo(layer_id, visible)
+
+## Изменение видимости всех слоёв с поддержкой undo/redo
+func set_all_layers_visibility_with_undo(visible: bool) -> void:
+	if layers.size() == 0:
+		return
+	
+	# Собираем старые состояния
+	var old_states: Dictionary = {}
+	for layer_id in layers.keys():
+		old_states[layer_id] = layers[layer_id]["visible"]
+	
+	History.undo_redo.create_action("Toggle All Layers Visibility")
+	History.undo_redo.add_do_method(Callable(self, "_do_set_all_layers_visibility").bind(visible))
+	History.undo_redo.add_undo_method(Callable(self, "_do_restore_all_layers_visibility").bind(old_states))
+	History.undo_redo.commit_action()
+
+func _do_set_all_layers_visibility(visible: bool) -> void:
+	for layer_id in layers.keys():
+		layers[layer_id]["visible"] = visible
+		EventBus.layer_visibility_changed.emit(layer_id, visible)
+	EventBus.layer_all_visibility_changed.emit(visible)
+
+func _do_restore_all_layers_visibility(old_states: Dictionary) -> void:
+	for layer_id in old_states.keys():
+		if layers.has(layer_id):
+			var visible = old_states[layer_id]
+			layers[layer_id]["visible"] = visible
+			EventBus.layer_visibility_changed.emit(layer_id, visible)
+	
+	# Определяем общее состояние для UI кнопки
+	var all_visible = true
+	for layer_id in layers.keys():
+		if not layers[layer_id]["visible"]:
+			all_visible = false
+			break
+	EventBus.layer_all_visibility_changed.emit(all_visible)
+
+## Изменение видимости слоя с поддержкой undo/redo
+func set_layer_visibility_with_undo(layer_id: int, visible: bool) -> void:
+	if not layers.has(layer_id):
+		push_error("[LayerService] Layer not found: " + str(layer_id))
+		return
+	
+	var old_visible = layers[layer_id]["visible"]
+	if old_visible == visible:
+		return  # Нет изменений
+	
+	History.undo_redo.create_action("Toggle Layer Visibility")
+	History.undo_redo.add_do_method(Callable(self, "_do_set_layer_visibility").bind(layer_id, visible))
+	History.undo_redo.add_undo_method(Callable(self, "_do_set_layer_visibility").bind(layer_id, old_visible))
+	History.undo_redo.commit_action()
+
+func _do_set_layer_visibility(layer_id: int, visible: bool) -> void:
+	if not layers.has(layer_id):
+		return
+	
+	layers[layer_id]["visible"] = visible
+	EventBus.layer_visibility_changed.emit(layer_id, visible)
+
+func _on_layer_all_visibility_requested(visible: bool) -> void:
+	set_all_layers_visibility_with_undo(visible)

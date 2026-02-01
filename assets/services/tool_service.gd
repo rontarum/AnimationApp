@@ -27,6 +27,7 @@ func _ready() -> void:
 	
 	# Подписка на события
 	EventBus.tool_selected.connect(_on_tool_selected)
+	EventBus.layer_selected.connect(_on_layer_selected)
 	
 	# Устанавливаем начальный инструмент
 	active_tool = tool_instances.get(AppState.current_tool)
@@ -85,3 +86,9 @@ func _on_tool_selected(tool_type: ToolType.Type) -> void:
 	active_tool = tool_instances.get(tool_type)
 	if not active_tool:
 		push_warning("[ToolService] No tool instance for: ", ToolType.Type.keys()[tool_type])
+
+func _on_layer_selected(layer_id: int) -> void:
+	# При смене слоя сбрасываем выделение в SelectionTool
+	var selection_tool = tool_instances.get(ToolType.Type.SELECTION) as SelectionTool
+	if selection_tool:
+		selection_tool.deselect()

@@ -28,7 +28,9 @@ func _ready() -> void:
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	label.text_submitted.connect(_on_name_submitted)
+	# layer_visible.toggled уже подключен в сцене
 	EventBus.layer_all_visibility_changed.connect(_on_layer_all_visibility_changed)
+	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
 	#layer_name = str("Layer")
 	#label.text = layer_name
 
@@ -98,3 +100,9 @@ func _on_layer_visible_toggled(toggled_on: bool) -> void:
 		
 func _on_layer_all_visibility_changed(val: bool) -> void:
 	layer_visible.set_pressed_no_signal(val)
+
+func _on_layer_visibility_changed(layer_id: int, visible: bool) -> void:
+	# Синхронизируем UI кнопку только для нашего слоя
+	var my_layer_id = get_meta("layer_id", -1)
+	if my_layer_id == layer_id:
+		layer_visible.set_pressed_no_signal(visible)

@@ -28,6 +28,7 @@ signal layer_create_requested(layer_name: String)  # UI запрос созда�
 signal layer_delete_requested(layer_id: int)  # UI запрос удаления
 signal layer_clear_requested(layer_id: int) # UI запрос очистки
 signal layer_visibility_requested(layer_id: int, visible: bool)
+signal layer_all_visibility_requested(visible: bool)  # UI запрос изменения видимости всех слоёв
 
 # === CANVAS EVENTS ===
 signal canvas_resized(new_size: Vector2i)  # Изменён размер холста

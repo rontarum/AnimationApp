@@ -134,7 +134,8 @@ res://
 - Маппинг: `layer_id (int) -> layer_data (Dictionary)`
 - Автоинкремент ID через `_next_layer_id`
 
-**5. History (autoload) - годот-API undo/redo система**
+**5. History (autoload) - Godot-API undo/redo система**
+- Работает на основе встроенного класса UndoRedo
 - Работает исправно на основных инструментах
 - Еще не сделано для слоёв
 

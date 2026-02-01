@@ -142,9 +142,27 @@ func _finish_moving(layer: DrawLayer) -> void:
 				# За границами холста - прозрачный пиксель
 				new_pixels[relative_pos] = Color.TRANSPARENT
 	
+	# Сохраняем старые пиксели для undo
+	var old_pixels = selected_pixels.duplicate(true)
+	
 	selected_pixels = new_pixels
 	current_state = State.SELECTED
+	
+	# Сохраняем позицию и пиксели выделения для undo/redo (ДО finish_changes)
+	var final_position = selection_rect.position
+	var final_pixels = new_pixels.duplicate(true)
+	var undo_redo = History.undo_redo
+	
+	# Создаём отдельный action для позиции выделения
+	undo_redo.create_action("Move selection")
+	undo_redo.add_do_method(_set_selection_state.bind(final_position, final_pixels))
+	undo_redo.add_undo_method(_set_selection_state.bind(original_position, old_pixels))
+	
+	# Завершаем изменения слоя (это создаст свой action для изображения)
 	layer.finish_changes()
+	
+	# Коммитим action для позиции
+	undo_redo.commit_action(false)
 
 ## Очищаем выделение
 func _clear_selection() -> void:
@@ -233,3 +251,8 @@ func deselect() -> void:
 	_clear_selection()
 	if Services.cursor:
 		Services.cursor.show_cursor()
+
+## Установить состояние выделения (для undo/redo) - позицию и пиксели
+func _set_selection_state(position: Vector2i, pixels: Dictionary) -> void:
+	selection_rect.position = position
+	selected_pixels = pixels.duplicate(true)

@@ -63,8 +63,10 @@ func finish_changes() -> void:
 	undo_redo.commit_action(false)
 
 func clear_image() -> void:
+	start_changes()
 	image.fill(Color.TRANSPARENT)
 	update_image()
+	finish_changes()
 
 func resize_layer(new_size: Vector2i) -> void:
 	var temp: Image = Image.create_empty(new_size.x, new_size.y, false, Image.FORMAT_RGBA8)
