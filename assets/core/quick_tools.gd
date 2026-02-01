@@ -3,6 +3,8 @@ class_name QuickTools extends Control
 var mouse_pos: Vector2
 var vp_image: Image
 
+
+
 var preview_color: Color = Color.TRANSPARENT
 var outline_color: Color = Color.WHITE
 var preview_size: Vector2 = Vector2(32.0, 32.0)
@@ -23,7 +25,25 @@ func _draw() -> void:
 
 func _input(event: InputEvent) -> void:
 	_hotkeys_tools(event)
+	_quick_picker(event)
 	
+	if event.is_action_pressed("undo") and not Input.is_key_pressed(KEY_SHIFT):
+		History.undo_redo.undo()
+	if event.is_action_pressed("redo"):
+		History.undo_redo.redo()
+
+
+func _hotkeys_tools(event: InputEvent) -> void:
+	if event.is_action_pressed("brush"):
+		Services.tool.select_tool(ToolType.Type.BRUSH)
+	if event.is_action_pressed("eraser"):
+		Services.tool.select_tool(ToolType.Type.ERASER)
+	if event.is_action_pressed("fill"):
+		Services.tool.select_tool(ToolType.Type.FILL)
+	if event.is_action_pressed("selection"):
+		Services.tool.select_tool(ToolType.Type.SELECTION)
+
+func _quick_picker(event: InputEvent) -> void:
 	if event.is_action_pressed("picker"):
 		AppState.is_color_picking = true
 		
@@ -67,17 +87,3 @@ func _input(event: InputEvent) -> void:
 		vp_image = get_viewport().get_texture().get_image()
 		preview_color = vp_image.get_pixelv(mouse_pos)
 		queue_redraw()
-
-func _hotkeys_tools(event: InputEvent) -> void:
-	if event.is_action_pressed("brush"):
-		Services.tool.select_tool(ToolType.Type.BRUSH)
-	if event.is_action_pressed("eraser"):
-		Services.tool.select_tool(ToolType.Type.ERASER)
-	if event.is_action_pressed("fill"):
-		Services.tool.select_tool(ToolType.Type.FILL)
-	if event.is_action_pressed("selection"):
-		Services.tool.select_tool(ToolType.Type.SELECTION)
-		
-		
-		
-		

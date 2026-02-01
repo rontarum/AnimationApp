@@ -10,6 +10,11 @@ class_name BaseTool extends RefCounted
 var preview_position: Vector2i = Vector2i(-1, -1)
 var preview_color: Color = Color.TRANSPARENT
 
+var undo_redo: UndoRedo
+
+func _init() -> void:
+	undo_redo = History.undo_redo
+
 ## Вызывается при нажатии кнопки мыши на canvas
 func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	pass

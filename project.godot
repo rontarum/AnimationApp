@@ -26,6 +26,7 @@ ToolType="*res://assets/globals/tool_type.gd"
 EventBus="*res://assets/globals/event_bus.gd"
 Services="*res://assets/globals/services.gd"
 AppState="*res://assets/globals/app_state.gd"
+History="*uid://dtyqlg68dtont"
 
 [display]
 

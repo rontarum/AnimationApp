@@ -8,11 +8,16 @@ class_name EraserTool extends BaseTool
 
 func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if layer:
+		layer.start_changes()
 		_draw_eraser(position, layer)
 
 func on_drag(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if layer:
 		_draw_eraser(position, layer)
+
+func on_release(position: Vector2i, layer: DrawLayer, color: Color) -> void:
+	if layer:
+		layer.finish_changes()
 
 func _draw_eraser(position: Vector2i, layer: DrawLayer) -> void:
 	var brush_size: int = int(Services.tool.get_tool_property("size"))

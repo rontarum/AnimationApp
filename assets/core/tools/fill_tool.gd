@@ -9,6 +9,7 @@ class_name FillTool extends BaseTool
 func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if not layer:
 		return
+	layer.start_changes()
 	
 	var target_color: Color = layer.get_pixel(position)
 	
@@ -22,6 +23,10 @@ func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 		_flood_fill_contiguous(position, layer, target_color, color)
 	else:
 		_flood_fill_all(layer, target_color, color)
+
+func on_release(position: Vector2i, layer: DrawLayer, color: Color) -> void:
+	if layer:
+		layer.finish_changes()
 
 func on_hover(position: Vector2i) -> void:
 	preview_position = position

@@ -101,6 +101,7 @@ func _finish_selection(layer: DrawLayer) -> void:
 
 ## Начинаем перемещение
 func _start_moving(position: Vector2i, layer: DrawLayer) -> void:
+	layer.start_changes()
 	current_state = State.MOVING
 	move_offset = position - selection_rect.position
 	original_position = selection_rect.position
@@ -109,6 +110,7 @@ func _start_moving(position: Vector2i, layer: DrawLayer) -> void:
 	# Прозрачные пиксели не трогаем - под ними могут быть другие пиксели
 	_clear_area_selective(layer, original_position)
 	layer.update_image()
+
 
 ## Обновляем перемещение
 func _update_moving(position: Vector2i, layer: DrawLayer) -> void:
@@ -142,6 +144,7 @@ func _finish_moving(layer: DrawLayer) -> void:
 	
 	selected_pixels = new_pixels
 	current_state = State.SELECTED
+	layer.finish_changes()
 
 ## Очищаем выделение
 func _clear_selection() -> void:

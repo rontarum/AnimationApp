@@ -35,6 +35,9 @@ func _ready() -> void:
 	EventBus.layer_selected.connect(_on_layer_selected)
 	EventBus.canvas_resized.connect(_on_canvas_resized)
 
+func _process(_delta: float) -> void:
+	mouse_pos = get_local_mouse_position()
+
 func _input(event: InputEvent) -> void:
 	# === ГЛОБАЛЬНАЯ ОБРАБОТКА (работает везде) ===
 	
@@ -73,14 +76,8 @@ func _input(event: InputEvent) -> void:
 		active_tool.deselect()
 		Services.cursor.clear_override()
 		get_viewport().set_input_as_handled()
-	
-	# 5. Undo (временная логика для теста)
-	if event.is_action_pressed("undo"):
-		Services.canvas.resize_canvas(Vector2i(128, 128))
-		get_viewport().set_input_as_handled()
 
-func _process(_delta: float) -> void:
-	mouse_pos = get_local_mouse_position()
+
 
 func _clear() -> void:
 	for c in draw_canvas.get_children():

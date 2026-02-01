@@ -10,6 +10,7 @@ var _temp_position: Vector2i
 
 func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if layer:
+		layer.start_changes()
 		_draw_brush(position, layer, color)
 		_temp_position = position
 
@@ -21,6 +22,10 @@ func on_drag(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 		_draw_brush(position, layer, color)
 		_temp_position = position
 
+func on_release(position: Vector2i, layer: DrawLayer, color: Color) -> void:
+	if layer:
+		layer.finish_changes()
+
 func _draw_brush(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	var brush_size: int = int(Services.tool.get_tool_property("size"))
 	var brush_shape: int = int(Services.tool.get_tool_property("shape"))  # 0=square, 1=circle
@@ -31,8 +36,6 @@ func _draw_brush(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 		_draw_square_brush(position, layer, color, brush_size, half_size)
 	else:  # Circle
 		_draw_circle_brush(position, layer, color, brush_size, half_size)
-	
-	layer.update_image()
 	
 	preview_position = position
 	preview_color = color
@@ -46,6 +49,7 @@ func _draw_square_brush(position: Vector2i, layer: DrawLayer, color: Color, brus
 			
 			var source: Color = layer.get_pixel(pixel_pos)
 			var blended: Color = _blend_colors(source, color)
+			
 			layer.set_pixel(pixel_pos, blended)
 
 func _draw_circle_brush(position: Vector2i, layer: DrawLayer, color: Color, brush_size: int, half_size: int) -> void:
