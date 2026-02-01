@@ -48,10 +48,6 @@ signal ui_element_hovered(element: Node, hovered: bool)  # Наведение н
 # === HISTORY EVENTS ===
 signal undo_requested()  # Запрошена отмена
 signal redo_requested()  # Запрошен повтор
-signal command_executed(description: String)  # Команда выполнена
-signal command_undone(description: String)  # Команда отменена
-signal undo_availability_changed(available: bool)  # Доступность undo изменилась
-signal redo_availability_changed(available: bool)  # Доступность redo изменилась
 
 # === SYSTEM EVENTS ===
 signal app_ready()  # Приложение готово

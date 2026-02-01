@@ -15,7 +15,6 @@ var layer: LayerService = null  # LayerService
 var canvas: CanvasService = null  # CanvasService
 var color: ColorService = null  # ColorService
 var cursor: CursorService = null  # CursorService
-var undo_redo: Node = null  # UndoRedoService
 var history: Node = null  # HistoryService
 var clipboard: Node = null  # ClipboardService
 
@@ -31,7 +30,6 @@ func register(service_name: String, service: Node) -> void:
 		"canvas": canvas = service
 		"color": color = service
 		"cursor": cursor = service
-		"undo_redo": undo_redo = service
 		"history": history = service
 		"clipboard": clipboard = service
 		_:

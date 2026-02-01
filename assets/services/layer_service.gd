@@ -20,15 +20,17 @@ var _freed_ids: Array[int] = []
 func _ready() -> void:
 	Services.register("layer", self)
 	
-	# Подписка на события (только для внутренней синхронизации)
+	# Подписка на события
 	EventBus.layer_created.connect(_on_layer_created)
 	EventBus.layer_deleted.connect(_on_layer_deleted)
 	EventBus.layer_selected.connect(_on_layer_selected)
 	EventBus.layer_reordered.connect(_on_layer_reordered)
 	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
 	EventBus.layer_renamed.connect(_on_layer_renamed)
-	# Переименование пока остаётся через события (не критично для undo/redo)
 	EventBus.layer_rename_requested.connect(_on_layer_rename_requested)
+	EventBus.layer_create_requested.connect(_on_layer_create_requested)
+	EventBus.layer_delete_requested.connect(_on_layer_delete_requested)
+	EventBus.layer_visibility_requested.connect(_on_layer_visibility_requested)
 
 ## Создание нового слоя
 func create_layer(layer_name: String) -> int:
@@ -123,10 +125,6 @@ func reorder_layer(from_index: int, to_index: int) -> void:
 func get_layer(layer_id: int) -> Dictionary:
 	return layers.get(layer_id, {})
 
-## Получение данных слоя по ID (алиас для совместимости с командами)
-func get_layer_data(layer_id: int) -> Dictionary:
-	return get_layer(layer_id)
-
 ## Получение активного слоя
 func get_active_layer() -> Dictionary:
 	return get_layer(AppState.active_layer_id)
@@ -155,7 +153,17 @@ func _on_layer_visibility_changed(layer_id: int, visible: bool) -> void:
 func _on_layer_renamed(layer_id: int, old_name: String, new_name: String) -> void:
 	pass
 
-# Обработчик переименования остаётся для UI запросов
 func _on_layer_rename_requested(layer_id: int, new_name: String) -> void:
 	# UI запросил переименование - выполняем через сервис
 	rename_layer(layer_id, new_name)
+
+func _on_layer_create_requested(layer_name: String) -> void:
+	# UI запросил создание - выполняем через сервис
+	create_layer(layer_name)
+
+func _on_layer_delete_requested(layer_id: int) -> void:
+	# UI запросил удаление - выполняем через сервис
+	delete_layer(layer_id)
+
+func _on_layer_visibility_requested(layer_id: int, visible: bool) -> void:
+	set_layer_visibility(layer_id, visible)
