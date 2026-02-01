@@ -1,45 +1,86 @@
 class_name DrawLayer extends TextureRect
 
+## DrawLayer - слой рисования на canvas
+## 
+## Зона ответственности:
+## - Хранение и управление Image данными
+## - Методы set_pixel/get_pixel для рисования
+## - Работает через layer_id (int), не зависит от UI Layer
+
 var image: Image
 var tex: ImageTexture
-var layer: Layer
+var layer_id: int = -1
+var undo_redo: UndoRedo
+var image_data_before: PackedByteArray
+var image_data_after: PackedByteArray
 
-var is_active: bool = false
-
-func _init(_size: Vector2i, _layer: Layer, _image: Image = null) -> void:
+func _init(_size: Vector2i, _layer_id: int, _image: Image = null) -> void:
+	layer_id = _layer_id
+	
 	if _image:
 		image = _image
-		tex = ImageTexture.create_from_image(image)
-		texture = tex
-		return
+	else:
+		image = Image.create_empty(_size.x, _size.y, false, Image.FORMAT_RGBA8)
+		image.fill(Color.TRANSPARENT)  # Прозрачный по умолчанию
 	
-	image = Image.create_empty(_size.x, _size.y, false, Image.FORMAT_RGBA8)
-	var random_color: Color = Color(randf_range(0.0, 1.0), randf_range(0.0, 1.0), randf_range(0.0, 1.0), 1.0)
-	image.fill(random_color)
 	tex = ImageTexture.create_from_image(image)
 	texture = tex
-	
-	layer = _layer
-	layer.visibility_changed.connect(_on_visibility_changed)
-	layer.activity_changed.connect(_on_activity_changed)
-	layer.moved.connect(_on_layer_moved)
-	layer.tree_exiting.connect(func(): queue_free())
 
 func _ready() -> void:
-	queue_redraw()
+	# Подписка на события через EventBus
+	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
+	undo_redo = History.undo_redo
 
 func get_pixel(point: Vector2i) -> Color:
+	var img_size = image.get_size()
+	if point.x < 0 or point.y < 0 or point.x >= img_size.x or point.y >= img_size.y:
+		return Color.TRANSPARENT
 	return image.get_pixelv(point)
 
 func set_pixel(point: Vector2i, color: Color) -> void:
+	var img_size = image.get_size()
+	if point.x < 0 or point.y < 0 or point.x >= img_size.x or point.y >= img_size.y:
+		return
+	
 	image.set_pixelv(point, color)
+	update_image()
+
+
+func update_image() -> void:
 	tex.update(image)
 
-func _on_visibility_changed() -> void:
-	visible = layer.is_visible()
+# Вызываем это ПЕРЕД началом изменений (Input.is_action_just_pressed)
+func start_changes() -> void:
+	image_data_before = image.get_data()
 
-func _on_activity_changed(value: bool) -> void:
-	is_active = value
+# Вызываем это ПОСЛЕ завершения изменений (Input.is_action_just_released)
+func finish_changes() -> void:
+	image_data_after = image.get_data()
+	
+	undo_redo.create_action("Image changes")
+	undo_redo.add_do_method(_apply_image_data.bind(image_data_after))
+	undo_redo.add_undo_method(_apply_image_data.bind(image_data_before))
+	undo_redo.commit_action(false)
 
-func _on_layer_moved() -> void:
-	get_parent().move_child(self, layer.get_index())
+func clear_image() -> void:
+	image.fill(Color.TRANSPARENT)
+	update_image()
+
+func resize_layer(new_size: Vector2i) -> void:
+	var temp: Image = Image.create_empty(new_size.x, new_size.y, false, Image.FORMAT_RGBA8)
+	temp.fill(Color.TRANSPARENT)
+	temp.blend_rect(image, image.get_used_rect(), Vector2i.ZERO)
+	image.copy_from(temp)
+	tex = ImageTexture.create_from_image(image)
+	texture = tex
+
+func get_image_size() -> Vector2i:
+	return image.get_size()
+
+func _apply_image_data(image_data: PackedByteArray) -> void:
+	image.set_data(image.get_width(), image.get_height(), false, Image.FORMAT_RGBA8, image_data)
+	update_image()
+
+func _on_layer_visibility_changed(id: int, is_visible: bool) -> void:
+	if id == layer_id:
+		visible = is_visible

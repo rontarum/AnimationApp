@@ -22,12 +22,13 @@ var is_active: bool = false
 @onready var preview: TextureRect = $LayerMargin/LayerHbox/LayerPreview
 @onready var label: LineEdit = $LayerMargin/LayerHbox/LayerLabel
 @onready var current_color: Color = common_color
+@onready var layer_visible: IconTriggerButton = $LayerMargin/LayerVisible
 
 func _ready() -> void:
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	label.text_submitted.connect(_on_name_submitted)
-	
+	EventBus.layer_all_visibility_changed.connect(_on_layer_all_visibility_changed)
 	#layer_name = str("Layer")
 	#label.text = layer_name
 
@@ -36,7 +37,7 @@ func set_preview(tex: Texture2D) -> void:
 
 func set_active(val: bool) -> void:
 	is_active = val
-	current_color = active_color if val else common_color
+	current_color = pressed_color if val else common_color
 	_animate_color(current_color)
 	activity_changed.emit(is_active)
 
@@ -61,7 +62,9 @@ func _gui_input(event: InputEvent) -> void:
 			_animate_color(pressed_color)
 		elif event.is_released():
 			drag_ended.emit(self)
-			_animate_color(current_color)
+			# Возвращаем правильный цвет после отпускания
+			var target_color = active_color if is_active else common_color
+			_animate_color(target_color)
 			
 	if event.is_action("cancel"):
 		label.edit()
@@ -75,6 +78,23 @@ func _animate_color(to: Color) -> void:
 func _on_name_submitted(text: String) -> void:
 	if text == "":
 		label.text = layer_name
+	else:
+		# Правильная архитектура: UI эмитит событие, не вызывает сервис напрямую
+		var layer_id = get_meta("layer_id", -1)
+		if layer_id != -1:
+			layer_name = text
+			EventBus.layer_rename_requested.emit(layer_id, text)
+			name_changed.emit(self, text)
+		else:
+			push_error("[Layer] No layer_id found in metadata")
+	
 	label.apply_ime()
 	label.release_focus()
-	name_changed.emit(self, label.text)
+
+func _on_layer_visible_toggled(toggled_on: bool) -> void:
+	var layer_id = get_meta("layer_id", -1)
+	if layer_id != -1:
+		EventBus.layer_visibility_requested.emit(layer_id, toggled_on)
+		
+func _on_layer_all_visibility_changed(val: bool) -> void:
+	layer_visible.set_pressed_no_signal(val)
