@@ -3,6 +3,9 @@ extends Camera2D
 
 static var instance: CanvasCamera
 
+const MIN_ZOOM: float = 1.0
+const MAX_ZOOM: float = 64.0
+
 @export var zoom_step: float = 2.0
 var zoom_value: Vector2
 
@@ -47,6 +50,8 @@ func _zoom(delta: float) -> void:
 	if Input.is_action_just_pressed("zoom_out"):
 		zoom_value /= zoom_step
 	
+	zoom_value = _clamp_zoom(zoom_value)
+	
 	zoom = lerp(zoom, zoom_value, 36.9 * delta)
 	new_mouse_pos = get_global_mouse_position()
 	if (zoom - zoom_value).length() > 0.001:
@@ -54,7 +59,7 @@ func _zoom(delta: float) -> void:
 	else:
 		diff = Vector2(0.0, 0.0)
 	
-	position = _drag() + diff
+	position = _clamp_position(_drag() + diff)
 
 func _drag() -> Vector2:
 	var mouse_vp := get_viewport().get_mouse_position()
@@ -74,5 +79,40 @@ func _drag() -> Vector2:
 	
 	if is_dragging:
 		var move_vector: Vector2 = mouse_vp - drag_mouse
-		return drag_camera - move_vector * 1.0 / zoom.x
+		var new_position = drag_camera - move_vector * 1.0 / zoom.x
+		return new_position
 	return position
+
+func _clamp_zoom(zoom_vector: Vector2) -> Vector2:
+	var clamped_value = clamp(zoom_vector.x, MIN_ZOOM, MAX_ZOOM)
+	return Vector2(clamped_value, clamped_value)
+
+func _clamp_position(pos: Vector2) -> Vector2:
+	var canvas_size = AppState.canvas_size
+	var viewport_size = get_viewport().get_visible_rect().size
+	var current_zoom = zoom.x
+	
+	# Рассчитываем видимую область в пикселях холста
+	var visible_area = viewport_size / current_zoom
+	var half_visible = visible_area / 16
+	
+	# Определяем границы позиции камеры
+	var min_x = half_visible.x
+	var max_x = canvas_size.x - half_visible.x
+	var min_y = half_visible.y  
+	var max_y = canvas_size.y - half_visible.y
+	
+	# Если холст меньше видимой области, центрируем камеру
+	if max_x < min_x:
+		var center_x = canvas_size.x * 0.5
+		min_x = center_x
+		max_x = center_x
+	if max_y < min_y:
+		var center_y = canvas_size.y * 0.5
+		min_y = center_y
+		max_y = center_y
+	
+	return Vector2(
+		clamp(pos.x, min_x, max_x),
+		clamp(pos.y, min_y, max_y)
+	)
