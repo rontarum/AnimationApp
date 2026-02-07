@@ -19,6 +19,9 @@ var layer_texture: ImageTexture
 
 var is_active: bool = false
 
+@onready var preview_texture := ImageTexture.create_from_image(
+	Image.create(AppState.canvas_size.x, AppState.canvas_size.y, false, Image.FORMAT_RGBA8))
+
 @onready var preview: TextureRect = $LayerMargin/LayerHbox/LayerPreview
 @onready var label: LineEdit = $LayerMargin/LayerHbox/LayerLabel
 @onready var current_color: Color = common_color
@@ -31,6 +34,7 @@ func _ready() -> void:
 	# layer_visible.toggled уже подключен в сцене
 	EventBus.layer_all_visibility_changed.connect(_on_layer_all_visibility_changed)
 	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
+	EventBus.layer_image_updated.connect(_on_layer_image_updated)
 	#layer_name = str("Layer")
 	#label.text = layer_name
 
@@ -106,3 +110,10 @@ func _on_layer_visibility_changed(layer_id: int, visible: bool) -> void:
 	var my_layer_id = get_meta("layer_id", -1)
 	if my_layer_id == layer_id:
 		layer_visible.set_pressed_no_signal(visible)
+
+func _on_layer_image_updated(layer_id: int, image: Image) -> void:
+	var self_id = get_meta("layer_id", -1)
+	if self_id != layer_id:
+		return
+	preview_texture.update(image)
+	set_preview(preview_texture)

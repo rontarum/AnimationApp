@@ -31,6 +31,23 @@ func resize_canvas(new_size: Vector2i) -> void:
 		return
 	AppState.canvas_size = new_size
 
+func save_canvas_image() -> void:
+	var canvas_size := AppState.canvas_size
+	var image := Image.create(canvas_size.x, canvas_size.y, false, Image.FORMAT_RGBA8)
+	image.fill(Color.TRANSPARENT)
+	for dr: DrawLayer in draw_layers.values():
+		var img := dr.get_image()
+		image.blend_rect(img, Rect2(Vector2.ZERO, img.get_size()), Vector2.ZERO)
+	
+	image.save_png("res://preview.png")
+
+func save_layers_as_pngs() -> void:
+	for dr: DrawLayer in draw_layers.values():
+		var img := dr.get_image()
+		var layers: LayerService = Services.layer
+		var nam: String = layers.get_layer_name(dr.layer_id)
+		img.save_png("res://%s-%s.png" % [dr.get_index(), nam])
+
 ## Создание DrawLayer для слоя
 func create_draw_layer(layer_id: int, size: Vector2i) -> Node:
 	if not draw_canvas:

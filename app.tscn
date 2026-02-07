@@ -32,6 +32,10 @@
 [ext_resource type="Texture2D" uid="uid://c703j2umrhxfv" path="res://assets/icons/buttons/close_hold.png" id="23_nc07x"]
 [ext_resource type="Texture2D" uid="uid://rlg4nvvl0mti" path="res://assets/icons/buttons/close_hover.png" id="24_gdquv"]
 [ext_resource type="Script" uid="uid://4vk8en6k0dv7" path="res://assets/core/quick_tools.gd" id="29_i77su"]
+[ext_resource type="Script" uid="uid://iktgaqyqpajx" path="res://assets/ui_components/main_tabs.gd" id="32_aarq4"]
+[ext_resource type="FontFile" uid="uid://b2rsg2bd1xobp" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="32_fr0lj"]
+[ext_resource type="Script" uid="uid://csfl8n3j2a70m" path="res://assets/ui_components/tab.gd" id="33_7kyky"]
+[ext_resource type="Script" uid="uid://irvwlf3ugikf" path="res://assets/ui_components/draw_menu.gd" id="35_y55fp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_25sla"]
 shader = ExtResource("3_itptj")
@@ -49,6 +53,20 @@ bg_color = Color(0.8069084, 0.60483414, 0.6426659, 1)
 bg_color = Color(0.8873913, 0.7471103, 0.76985294, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dv8dk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y55fp"]
+bg_color = Color(0.9647059, 0.9372549, 0.9372549, 1)
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aarq4"]
+bg_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7kyky"]
+bg_color = Color(0.89411765, 0.8745098, 0.8901961, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fr0lj"]
+bg_color = Color(0.450598, 0.48735636, 0.6811352, 1)
 
 [node name="App" type="Node2D" unique_id=592660395]
 script = ExtResource("1_g1skh")
@@ -358,12 +376,131 @@ texture_normal = ExtResource("22_1v2j6")
 texture_pressed = ExtResource("23_nc07x")
 texture_hover = ExtResource("24_gdquv")
 
+[node name="TabBar" type="TabBar" parent="GUI" unique_id=1044621474]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -126.0
+offset_right = 126.0
+offset_bottom = 32.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme = ExtResource("8_gtgpg")
+current_tab = 0
+close_with_middle_mouse = false
+select_with_rmb = true
+tab_count = 3
+tab_0/title = "Draw 🎨"
+tab_1/title = "Anim 🎞️"
+tab_2/title = "Evo ✨"
+
+[node name="MainTabs" type="Control" parent="GUI" unique_id=805282800]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 834.0
+offset_right = 1088.0
+offset_bottom = 32.0
+focus_mode = 2
+script = ExtResource("32_aarq4")
+metadata/_custom_type_script = "uid://iktgaqyqpajx"
+
+[node name="DrawTab" type="Panel" parent="GUI/MainTabs" unique_id=1856376460]
+layout_mode = 0
+offset_right = 86.0
+offset_bottom = 32.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_y55fp")
+script = ExtResource("33_7kyky")
+metadata/_custom_type_script = "uid://csfl8n3j2a70m"
+metadata/_edit_group_ = true
+
+[node name="DrawTabLabel" type="Label" parent="GUI/MainTabs/DrawTab" unique_id=415138935]
+layout_mode = 0
+offset_right = 86.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("32_fr0lj")
+text = "Draw 🎨"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimTab" type="Panel" parent="GUI/MainTabs" unique_id=467943780]
+layout_mode = 0
+offset_left = 86.0
+offset_right = 172.0
+offset_bottom = 32.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_y55fp")
+script = ExtResource("33_7kyky")
+metadata/_custom_type_script = "uid://csfl8n3j2a70m"
+metadata/_edit_group_ = true
+
+[node name="AnimTabLabel" type="Label" parent="GUI/MainTabs/AnimTab" unique_id=513427645]
+layout_mode = 0
+offset_right = 86.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("32_fr0lj")
+text = "Anim 🎞️"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EvoTab" type="Panel" parent="GUI/MainTabs" unique_id=1108561998]
+layout_mode = 0
+offset_left = 172.0
+offset_right = 258.0
+offset_bottom = 32.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_y55fp")
+script = ExtResource("33_7kyky")
+metadata/_custom_type_script = "uid://csfl8n3j2a70m"
+metadata/_edit_group_ = true
+
+[node name="EvoTabLabel" type="Label" parent="GUI/MainTabs/EvoTab" unique_id=1444671385]
+layout_mode = 0
+offset_right = 86.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("32_fr0lj")
+text = "Evo ✨"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DrawMenu" type="MenuButton" parent="GUI" unique_id=743182743]
+offset_right = 64.0
+offset_bottom = 32.0
+theme = ExtResource("8_gtgpg")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("32_fr0lj")
+theme_override_styles/normal = SubResource("StyleBoxFlat_aarq4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7kyky")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fr0lj")
+text = "Menu"
+flat = false
+item_count = 7
+popup/item_0/text = "📑 New"
+popup/item_0/id = 0
+popup/item_1/text = "📁 Open"
+popup/item_1/id = 1
+popup/item_2/text = "💾 Save"
+popup/item_2/id = 5
+popup/item_3/text = "💾 Save as"
+popup/item_3/id = 6
+popup/item_4/text = "📦 Import"
+popup/item_4/id = 2
+popup/item_5/text = "   Export PNG"
+popup/item_5/id = 3
+popup/item_6/text = "   Layers as PNG's"
+popup/item_6/id = 4
+script = ExtResource("35_y55fp")
+
 [node name="QuickTools" type="Control" parent="GUI" unique_id=534071326]
 z_index = 2
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+mouse_filter = 2
 script = ExtResource("29_i77su")
 
 [connection signal="mouse_entered" from="DrawContainer" to="DrawContainer" method="_on_mouse_entered"]

@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://dphwe1t4okc3j"]
 
-[ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="1_6vp7s"]
 [ext_resource type="Script" uid="uid://ci0ea10afo41n" path="res://assets/ui_components/layers/layer.gd" id="1_g5dus"]
 [ext_resource type="Script" uid="uid://be0nms7e6yr7c" path="res://assets/ui_components/layers/layer_preview.gd" id="2_g5dus"]
 [ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="3_f14fd"]
@@ -50,7 +49,6 @@ theme_override_constants/separation = 12
 [node name="LayerPreview" type="TextureRect" parent="LayerMargin/LayerHbox" unique_id=32068877]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
-texture = ExtResource("1_6vp7s")
 expand_mode = 2
 stretch_mode = 5
 script = ExtResource("2_g5dus")

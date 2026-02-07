@@ -1,5 +1,7 @@
 [gd_resource type="Theme" format=3 uid="uid://c478ise21qgjv"]
 
+[ext_resource type="FontFile" uid="uid://b2rsg2bd1xobp" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="1_e4kvo"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atqe7"]
 content_margin_left = 0.0
 content_margin_top = 0.0
@@ -9,5 +11,50 @@ bg_color = Color(0.9647059, 0.9372549, 0.9372549, 1)
 shadow_color = Color(0.2716998, 0.29337206, 0.45043758, 0.081)
 shadow_size = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5dn5"]
+bg_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jdddt"]
+bg_color = Color(0.9490196, 0.9254902, 0.92941177, 1)
+shadow_color = Color(0.26666668, 0.29411766, 0.4509804, 0.08235294)
+shadow_size = 4
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_psc4s"]
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+bg_color = Color(0.8980392, 0.8784314, 0.89411765, 1)
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e4kvo"]
+content_margin_left = 8.0
+content_margin_right = 8.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_66x7e"]
+content_margin_left = 8.0
+content_margin_right = 8.0
+bg_color = Color(0.9647059, 0.9372549, 0.9372549, 1)
+
 [resource]
+MenuButton/fonts/font = ExtResource("1_e4kvo")
 Panel/styles/panel = SubResource("StyleBoxFlat_atqe7")
+PopupMenu/colors/font_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+PopupMenu/fonts/font = ExtResource("1_e4kvo")
+PopupMenu/fonts/font_separator = ExtResource("1_e4kvo")
+PopupMenu/fonts/title_font = ExtResource("1_e4kvo")
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_q5dn5")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_jdddt")
+TabBar/colors/drop_mark_color = Color(0.9843137, 0.6627451, 0.9764706, 1)
+TabBar/colors/font_hovered_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+TabBar/colors/font_selected_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+TabBar/colors/font_unselected_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
+TabBar/font_sizes/font_size = 16
+TabBar/fonts/font = ExtResource("1_e4kvo")
+TabBar/styles/tab_hovered = SubResource("StyleBoxFlat_psc4s")
+TabBar/styles/tab_selected = SubResource("StyleBoxFlat_e4kvo")
+TabBar/styles/tab_unselected = SubResource("StyleBoxFlat_66x7e")

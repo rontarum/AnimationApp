@@ -25,11 +25,15 @@ func _init(_size: Vector2i, _layer_id: int, _image: Image = null) -> void:
 	
 	tex = ImageTexture.create_from_image(image)
 	texture = tex
+	EventBus.layer_image_updated.emit(layer_id, image)
 
 func _ready() -> void:
 	# Подписка на события через EventBus
 	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed)
 	undo_redo = History.undo_redo
+
+func get_image() -> Image:
+	return image
 
 func get_pixel(point: Vector2i) -> Color:
 	var img_size = image.get_size()
@@ -45,9 +49,9 @@ func set_pixel(point: Vector2i, color: Color) -> void:
 	image.set_pixelv(point, color)
 	update_image()
 
-
 func update_image() -> void:
 	tex.update(image)
+	EventBus.layer_image_updated.emit(layer_id, image)
 
 # Вызываем это ПЕРЕД началом изменений (Input.is_action_just_pressed)
 func start_changes() -> void:

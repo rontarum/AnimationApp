@@ -35,6 +35,7 @@ func _ready() -> void:
 	EventBus.layer_selected.connect(_on_layer_selected)
 	EventBus.layer_reordered.connect(_on_layer_reordered)
 	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed_sync_all_button)
+	
 
 func _input(event: InputEvent) -> void:
 	if dragged_layer and event is InputEventMouseButton:
@@ -189,6 +190,9 @@ func _on_layer_selected(layer_id: int) -> void:
 
 func _on_layer_reordered(from_index: int, to_index: int) -> void:
 	pass
+
+
+
 
 # --- ОБРАБОТКА СИГНАЛОВ ОТ LAYER UI ---
 

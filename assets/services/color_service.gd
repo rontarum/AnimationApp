@@ -5,7 +5,7 @@ class_name ColorService extends Node
 func _ready() -> void:
 	# Регистрация в Services
 	Services.register("color", self)
-	
+
 	# Подписка на события изменения цветов
 	EventBus.primary_color_changed.connect(_on_primary_color_changed)
 	EventBus.secondary_color_changed.connect(_on_secondary_color_changed)
@@ -26,7 +26,7 @@ func _on_secondary_color_changed(new_color: Color) -> void:
 func get_primary_color() -> Color:
 	return AppState.primary_color
 
-## Получить текущий secondary цвет  
+## Получить текущий secondary цвет
 func get_secondary_color() -> Color:
 	return AppState.secondary_color
 

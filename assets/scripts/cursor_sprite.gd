@@ -8,6 +8,7 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	scale = Vector2(0.5, 0.5)
 	offset = Vector2(16.0, 24.0)
+	top_level = true
 
 func _process(delta: float) -> void:
 	global_position = get_global_mouse_position()

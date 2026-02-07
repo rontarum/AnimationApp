@@ -126,6 +126,9 @@ func reorder_layer(from_index: int, to_index: int) -> void:
 func get_layer(layer_id: int) -> Dictionary:
 	return layers.get(layer_id, {})
 
+func get_layer_name(layer_id: int) -> String:
+	return layers[layer_id]["name"]
+
 ## Получение активного слоя
 func get_active_layer() -> Dictionary:
 	return get_layer(AppState.active_layer_id)
