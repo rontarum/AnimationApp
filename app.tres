@@ -2,6 +2,31 @@
 
 [ext_resource type="FontFile" uid="uid://b2rsg2bd1xobp" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="1_e4kvo"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e4kvo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w3ndf"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9529412, 0.9098039, 0.9098039, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_glokj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eo6rf"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9647059, 0.9372549, 0.9372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_glokj"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9372549, 0.8745098, 0.8745098, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atqe7"]
 content_margin_left = 0.0
 content_margin_top = 0.0
@@ -40,7 +65,45 @@ content_margin_left = 8.0
 content_margin_right = 8.0
 bg_color = Color(0.9647059, 0.9372549, 0.9372549, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qbtl4"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9372549, 0.8745098, 0.8745098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5r3ee"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9529412, 0.9098039, 0.9098039, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_86tca"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9647059, 0.9372549, 0.9372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig803"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9372549, 0.8745098, 0.8745098, 1)
+
 [resource]
+Button/colors/font_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Button/colors/font_hover_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Button/colors/font_hover_pressed_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Button/colors/font_pressed_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Button/fonts/font = ExtResource("1_e4kvo")
+Button/styles/focus = SubResource("StyleBoxEmpty_e4kvo")
+Button/styles/hover = SubResource("StyleBoxFlat_w3ndf")
+Button/styles/hover_pressed = SubResource("StyleBoxEmpty_glokj")
+Button/styles/normal = SubResource("StyleBoxFlat_eo6rf")
+Button/styles/pressed = SubResource("StyleBoxFlat_glokj")
 MenuButton/fonts/font = ExtResource("1_e4kvo")
 Panel/styles/panel = SubResource("StyleBoxFlat_atqe7")
 PopupMenu/colors/font_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
@@ -58,3 +121,24 @@ TabBar/fonts/font = ExtResource("1_e4kvo")
 TabBar/styles/tab_hovered = SubResource("StyleBoxFlat_psc4s")
 TabBar/styles/tab_selected = SubResource("StyleBoxFlat_e4kvo")
 TabBar/styles/tab_unselected = SubResource("StyleBoxFlat_66x7e")
+Tree/colors/drop_position_color = Color(0.26666668, 0.29411766, 0.4509804, 0.5176471)
+Tree/colors/font_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Tree/colors/font_hovered_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Tree/colors/font_hovered_selected_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Tree/colors/font_selected_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+Tree/constants/draw_guides = 0
+Tree/constants/h_separation = 4
+Tree/constants/icon_h_separation = 8
+Tree/constants/icon_max_width = 24
+Tree/constants/inner_item_margin_left = 8
+Tree/constants/item_margin = 12
+Tree/font_sizes/font_size = 16
+Tree/fonts/font = ExtResource("1_e4kvo")
+Tree/styles/focus = SubResource("StyleBoxFlat_qbtl4")
+Tree/styles/hovered = SubResource("StyleBoxFlat_5r3ee")
+Tree/styles/hovered_dimmed = SubResource("StyleBoxFlat_qbtl4")
+Tree/styles/hovered_selected = SubResource("StyleBoxFlat_qbtl4")
+Tree/styles/hovered_selected_focus = SubResource("StyleBoxFlat_qbtl4")
+Tree/styles/panel = SubResource("StyleBoxFlat_86tca")
+Tree/styles/selected = SubResource("StyleBoxFlat_ig803")
+Tree/styles/selected_focus = SubResource("StyleBoxFlat_qbtl4")

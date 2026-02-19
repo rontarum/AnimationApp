@@ -9,6 +9,9 @@
 
 extends Node
 
+# === GLOBAL EVENTS ===
+signal tab_changed(tab: int)
+
 # === TOOL EVENTS ===
 signal tool_selected(tool_type: ToolType.Type)  # Выбран инструмент
 signal tool_resized(size: float)

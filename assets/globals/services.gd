@@ -10,17 +10,12 @@
 extends Node
 
 # === SERVICE REFERENCES ===
-var tool: ToolService = null  # ToolService
-var layer: LayerService = null  # LayerService
-var canvas: CanvasService = null  # CanvasService
-var color: ColorService = null  # ColorService
-var cursor: CursorService = null  # CursorService
-var history: Node = null  # HistoryService
-var clipboard: Node = null  # ClipboardService
-
-func _ready() -> void:
-	# Сервисы будут зарегистрированы при их создании
-	pass
+var tool: ToolService = null
+var layer: LayerService = null
+var canvas: CanvasService = null
+var color: ColorService = null
+var cursor: CursorService = null
+var tree: TreeService = null
 
 ## Регистрация сервиса
 func register(service_name: String, service: Node) -> void:
@@ -30,11 +25,11 @@ func register(service_name: String, service: Node) -> void:
 		"canvas": canvas = service
 		"color": color = service
 		"cursor": cursor = service
-		"history": history = service
-		"clipboard": clipboard = service
+		"tree": tree = service
 		_:
 			push_error("Unknown service: " + service_name)
 
 ## Проверка готовности всех сервисов
 func are_all_ready() -> bool:
-	return tool != null and layer != null and canvas != null and color != null and cursor != null
+	return tool != null and layer != null and canvas != null \
+	and color != null and cursor != null and tree != null

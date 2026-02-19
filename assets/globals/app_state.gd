@@ -9,6 +9,13 @@
 
 extends Node
 
+# === GLOBAL ===
+var current_tab: int = 0:
+	set(val):
+		if current_tab != val:
+			current_tab = val
+			EventBus.tab_changed.emit(current_tab)
+
 # === TOOL STATE ===
 var _current_tool: ToolType.Type = ToolType.Type.ARROW
 var current_tool: ToolType.Type:
@@ -93,3 +100,9 @@ func _ready() -> void:
 	# Инициализация начальных значений
 	_primary_color = Color.WHITE
 	_secondary_color = Color.BLACK
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.pressed and event.keycode == KEY_ESCAPE:
+			EventBus.app_closing.emit()
+			get_tree().quit()

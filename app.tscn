@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://c3jbey48lqc5m" path="res://assets/services/tool_service.gd" id="2_tool"]
 [ext_resource type="Shader" uid="uid://bfytwucjiyspp" path="res://assets/shaders/checker.gdshader" id="3_itptj"]
 [ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="6_8l3i4"]
+[ext_resource type="Script" uid="uid://chphxac4aywbo" path="res://assets/services/tree_service.gd" id="7_ixia8"]
 [ext_resource type="Texture2D" uid="uid://dq457sq27anje" path="res://assets/icons/tools/arrow.svg" id="8_5oejy"]
 [ext_resource type="Theme" uid="uid://c478ise21qgjv" path="res://app.tres" id="8_gtgpg"]
 [ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://assets/tool_button.gd" id="9_7iiwk"]
@@ -18,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://dmp1jsuld8dbr" path="res://assets/icons/tools/draw/brush.svg" id="10_7iiwk"]
 [ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="10_dv8dk"]
 [ext_resource type="Texture2D" uid="uid://dfnnft4jib4w2" path="res://assets/icons/tools/draw/eraser.svg" id="11_a37lv"]
+[ext_resource type="Script" uid="uid://0xb6t0yglqmg" path="res://assets/scripts/ui.gd" id="11_rfw64"]
 [ext_resource type="Script" uid="uid://bnbtbyaulgf1i" path="res://assets/ui_components/tool_properties/properties_panel.gd" id="12_ce3ws"]
 [ext_resource type="Texture2D" uid="uid://caw555qo5ev0h" path="res://assets/icons/tools/draw/fill.svg" id="12_gtgpg"]
 [ext_resource type="PackedScene" uid="uid://b2bmnpmonh82s" path="res://assets/ui_components/tool_properties/brush_properties.tscn" id="12_hvfy4"]
@@ -30,6 +32,7 @@
 [ext_resource type="Texture2D" uid="uid://dgl7a6iocu5eh" path="res://assets/icons/buttons/close.png" id="22_1v2j6"]
 [ext_resource type="Script" uid="uid://devyibhtydimx" path="res://assets/ui_components/window_panel.gd" id="22_nc07x"]
 [ext_resource type="Texture2D" uid="uid://c703j2umrhxfv" path="res://assets/icons/buttons/close_hold.png" id="23_nc07x"]
+[ext_resource type="Script" uid="uid://ky8asunx38dk" path="res://assets/ui_components/tree/tree.gd" id="24_ej54m"]
 [ext_resource type="Texture2D" uid="uid://rlg4nvvl0mti" path="res://assets/icons/buttons/close_hover.png" id="24_gdquv"]
 [ext_resource type="Script" uid="uid://4vk8en6k0dv7" path="res://assets/core/quick_tools.gd" id="29_i77su"]
 [ext_resource type="Script" uid="uid://iktgaqyqpajx" path="res://assets/ui_components/main_tabs.gd" id="32_aarq4"]
@@ -53,6 +56,10 @@ bg_color = Color(0.8069084, 0.60483414, 0.6426659, 1)
 bg_color = Color(0.8873913, 0.7471103, 0.76985294, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dv8dk"]
+
+[sub_resource type="GDScript" id="GDScript_e13ls"]
+script/source = "class_name TreePanel extends Panel
+"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y55fp"]
 bg_color = Color(0.9647059, 0.9372549, 0.9372549, 1)
@@ -88,6 +95,9 @@ script = ExtResource("2_color")
 [node name="CursorService" type="Node" parent="Services" unique_id=409477314]
 script = ExtResource("2_cursor")
 
+[node name="TreeService" type="Node" parent="Services" unique_id=1369464644]
+script = ExtResource("7_ixia8")
+
 [node name="BackLayer" type="CanvasLayer" parent="." unique_id=2061429068]
 layer = -1
 
@@ -118,25 +128,17 @@ render_target_update_mode = 4
 script = ExtResource("1_3npyw")
 metadata/_custom_type_script = "uid://ti52tkbtccx4"
 
-[node name="GUI" type="CanvasLayer" parent="." unique_id=444308579]
+[node name="UI" type="CanvasLayer" parent="." unique_id=444308579]
+script = ExtResource("11_rfw64")
 
-[node name="Palette" type="TextureRect" parent="GUI" unique_id=498864223]
-visible = false
-texture_filter = 1
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 141.0
-offset_bottom = 48.0
-texture = ExtResource("6_8l3i4")
-
-[node name="FramePanel" type="Panel" parent="GUI" unique_id=1663417840]
+[node name="TimelinePanel" type="Panel" parent="UI" unique_id=1663417840]
 offset_left = 64.0
 offset_top = 952.0
 offset_right = 1664.0
 offset_bottom = 1080.0
 theme = ExtResource("8_gtgpg")
 
-[node name="PropertiesPanel" type="Panel" parent="GUI" unique_id=1925165372]
+[node name="PropertiesPanel" type="Panel" parent="UI" unique_id=1925165372]
 offset_left = 1664.0
 offset_top = 32.0
 offset_right = 1920.0
@@ -144,7 +146,7 @@ offset_bottom = 440.0
 theme = ExtResource("8_gtgpg")
 script = ExtResource("12_ce3ws")
 
-[node name="PropertiesPanelMargin" type="MarginContainer" parent="GUI/PropertiesPanel" unique_id=17976452]
+[node name="PropertiesPanelMargin" type="MarginContainer" parent="UI/PropertiesPanel" unique_id=17976452]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -156,15 +158,15 @@ theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="BrushProperties" parent="GUI/PropertiesPanel/PropertiesPanelMargin" unique_id=1673584213 instance=ExtResource("12_hvfy4")]
+[node name="BrushProperties" parent="UI/PropertiesPanel/PropertiesPanelMargin" unique_id=1673584213 instance=ExtResource("12_hvfy4")]
 visible = false
 layout_mode = 2
 
-[node name="FillProperties" parent="GUI/PropertiesPanel/PropertiesPanelMargin" unique_id=1359495157 instance=ExtResource("13_hvfy4")]
+[node name="FillProperties" parent="UI/PropertiesPanel/PropertiesPanelMargin" unique_id=1359495157 instance=ExtResource("13_hvfy4")]
 visible = false
 layout_mode = 2
 
-[node name="LayersPanel" type="Panel" parent="GUI" unique_id=316599511]
+[node name="LayersPanel" type="Panel" parent="UI" unique_id=316599511 groups=["Draw"]]
 offset_left = 1664.0
 offset_top = 440.0
 offset_right = 1920.0
@@ -173,7 +175,7 @@ theme = ExtResource("8_gtgpg")
 script = ExtResource("9_j4pmb")
 metadata/_custom_type_script = "uid://ccrley6gx0ik2"
 
-[node name="LayersPanelMargin" type="MarginContainer" parent="GUI/LayersPanel" unique_id=196998408]
+[node name="LayersPanelMargin" type="MarginContainer" parent="UI/LayersPanel" unique_id=196998408]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -182,11 +184,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_top = 64
 
-[node name="LayersContainer" type="Control" parent="GUI/LayersPanel/LayersPanelMargin" unique_id=428511128]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/LayersPanel/LayersPanelMargin" unique_id=1623528511]
+layout_mode = 2
+
+[node name="LayersContainer" type="Control" parent="UI/LayersPanel/LayersPanelMargin/ScrollContainer" unique_id=428511128]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="NewLayerButton" type="Button" parent="GUI/LayersPanel" unique_id=259111858]
+[node name="NewLayerButton" type="Button" parent="UI/LayersPanel" unique_id=259111858]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 16.0
@@ -203,7 +208,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
 text = "📑"
 icon_alignment = 1
 
-[node name="DeleteLayerButton" type="Button" parent="GUI/LayersPanel" unique_id=1604883668]
+[node name="DeleteLayerButton" type="Button" parent="UI/LayersPanel" unique_id=1604883668]
 layout_mode = 0
 offset_left = 96.0
 offset_top = 16.0
@@ -219,7 +224,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_kd73m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
 text = "🗑️"
 
-[node name="ClearLayerButton" type="Button" parent="GUI/LayersPanel" unique_id=1033440246]
+[node name="ClearLayerButton" type="Button" parent="UI/LayersPanel" unique_id=1033440246]
 layout_mode = 0
 offset_left = 56.0
 offset_top = 16.0
@@ -235,7 +240,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_kd73m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_dv8dk")
 text = "🧼"
 
-[node name="LayerVisible" type="CheckBox" parent="GUI/LayersPanel" unique_id=635425103]
+[node name="LayerVisible" type="CheckBox" parent="UI/LayersPanel" unique_id=635425103]
 layout_mode = 0
 offset_left = 208.0
 offset_top = 16.0
@@ -249,12 +254,41 @@ button_pressed = true
 script = ExtResource("19_aarq4")
 metadata/_custom_type_script = "uid://b4c8dmg4qfeb7"
 
-[node name="ToolPanel" type="Panel" parent="GUI" unique_id=2114250840]
+[node name="TreePanel" type="Panel" parent="UI" unique_id=1556675572 groups=["Animation"]]
+visible = false
+offset_left = 1664.0
+offset_top = 440.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme = ExtResource("8_gtgpg")
+script = SubResource("GDScript_e13ls")
+
+[node name="TreePanelMargin" type="MarginContainer" parent="UI/TreePanel" unique_id=2122334769]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Tree" type="Tree" parent="UI/TreePanel/TreePanelMargin" unique_id=314793216]
+layout_mode = 2
+theme = ExtResource("8_gtgpg")
+allow_search = false
+hide_folding = true
+hide_root = true
+auto_tooltip = false
+script = ExtResource("24_ej54m")
+
+[node name="ToolPanel" type="Panel" parent="UI" unique_id=2114250840]
 offset_right = 64.0
 offset_bottom = 1080.0
 theme = ExtResource("8_gtgpg")
 
-[node name="ToolPanelMargin" type="MarginContainer" parent="GUI/ToolPanel" unique_id=1698405047]
+[node name="ToolPanelMargin" type="MarginContainer" parent="UI/ToolPanel" unique_id=1698405047]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -265,12 +299,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_top = 80
 
-[node name="ToolBar" type="VBoxContainer" parent="GUI/ToolPanel/ToolPanelMargin" unique_id=1041358034]
+[node name="ToolBar" type="VBoxContainer" parent="UI/ToolPanel/ToolPanelMargin" unique_id=1041358034]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 30
 
-[node name="Arrow" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=1825272624]
+[node name="Arrow" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=1825272624]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture = ExtResource("8_5oejy")
@@ -278,7 +312,7 @@ stretch_mode = 3
 script = ExtResource("9_7iiwk")
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
-[node name="Selection" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=311916120]
+[node name="Selection" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=311916120 groups=["Draw"]]
 layout_mode = 2
 texture = ExtResource("9_ovwn0")
 stretch_mode = 3
@@ -286,7 +320,7 @@ script = ExtResource("9_7iiwk")
 type = 1
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
-[node name="Brush" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=41989449]
+[node name="Brush" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=41989449 groups=["Draw"]]
 layout_mode = 2
 texture = ExtResource("10_7iiwk")
 stretch_mode = 3
@@ -294,7 +328,7 @@ script = ExtResource("9_7iiwk")
 type = 5
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
-[node name="Eraser" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=556651360]
+[node name="Eraser" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=556651360 groups=["Draw"]]
 layout_mode = 2
 texture = ExtResource("11_a37lv")
 stretch_mode = 3
@@ -302,7 +336,7 @@ script = ExtResource("9_7iiwk")
 type = 6
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
-[node name="Fill" type="TextureRect" parent="GUI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=846089963]
+[node name="Fill" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=846089963 groups=["Draw"]]
 layout_mode = 2
 texture = ExtResource("12_gtgpg")
 stretch_mode = 3
@@ -310,7 +344,7 @@ script = ExtResource("9_7iiwk")
 type = 7
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
-[node name="PrimarySwatchBack" type="ColorRect" parent="GUI/ToolPanel" unique_id=776365483]
+[node name="PrimarySwatchBack" type="ColorRect" parent="UI/ToolPanel" unique_id=776365483 groups=["Draw"]]
 layout_mode = 0
 offset_left = 15.0
 offset_top = 936.0
@@ -318,7 +352,7 @@ offset_right = 49.0
 offset_bottom = 970.0
 color = Color(0.26666668, 0.29411766, 0.4509804, 0.23529412)
 
-[node name="PrimarySwatch" type="ColorRect" parent="GUI/ToolPanel/PrimarySwatchBack" unique_id=602396128]
+[node name="PrimarySwatch" type="ColorRect" parent="UI/ToolPanel/PrimarySwatchBack" unique_id=602396128]
 layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
@@ -329,7 +363,7 @@ script = ExtResource("14_a37lv")
 metadata/_custom_type_script = "uid://ciru41hkovgfg"
 metadata/_edit_lock_ = true
 
-[node name="SecondarySwatchBack" type="ColorRect" parent="GUI/ToolPanel" unique_id=1380034595]
+[node name="SecondarySwatchBack" type="ColorRect" parent="UI/ToolPanel" unique_id=1380034595 groups=["Draw"]]
 layout_mode = 0
 offset_left = 15.0
 offset_top = 976.0
@@ -337,7 +371,7 @@ offset_right = 49.0
 offset_bottom = 1010.0
 color = Color(0.26666668, 0.29411766, 0.4509804, 0.23529412)
 
-[node name="SecondarySwatch" type="ColorRect" parent="GUI/ToolPanel/SecondarySwatchBack" unique_id=811122496]
+[node name="SecondarySwatch" type="ColorRect" parent="UI/ToolPanel/SecondarySwatchBack" unique_id=811122496]
 layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
@@ -350,7 +384,7 @@ order = 1
 metadata/_custom_type_script = "uid://ciru41hkovgfg"
 metadata/_edit_lock_ = true
 
-[node name="SwatchPicker" type="ColorPicker" parent="GUI" unique_id=1490217654]
+[node name="SwatchPicker" type="ColorPicker" parent="UI" unique_id=1490217654]
 offset_left = 96.0
 offset_top = 352.0
 offset_right = 394.0
@@ -361,13 +395,13 @@ color_modes_visible = false
 script = ExtResource("16_ra7kh")
 metadata/_custom_type_script = "uid://cye24k1erlon3"
 
-[node name="WindowPanel" type="Panel" parent="GUI" unique_id=207319021]
+[node name="WindowPanel" type="Panel" parent="UI" unique_id=207319021]
 offset_right = 1920.0
 offset_bottom = 32.0
 theme = ExtResource("8_gtgpg")
 script = ExtResource("22_nc07x")
 
-[node name="ExitButton" type="TextureButton" parent="GUI/WindowPanel" unique_id=1570207681]
+[node name="ExitButton" type="TextureButton" parent="UI/WindowPanel" unique_id=1570207681]
 layout_mode = 0
 offset_left = 1888.0
 offset_right = 1920.0
@@ -376,26 +410,7 @@ texture_normal = ExtResource("22_1v2j6")
 texture_pressed = ExtResource("23_nc07x")
 texture_hover = ExtResource("24_gdquv")
 
-[node name="TabBar" type="TabBar" parent="GUI" unique_id=1044621474]
-visible = false
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -126.0
-offset_right = 126.0
-offset_bottom = 32.0
-grow_horizontal = 2
-size_flags_horizontal = 4
-theme = ExtResource("8_gtgpg")
-current_tab = 0
-close_with_middle_mouse = false
-select_with_rmb = true
-tab_count = 3
-tab_0/title = "Draw 🎨"
-tab_1/title = "Anim 🎞️"
-tab_2/title = "Evo ✨"
-
-[node name="MainTabs" type="Control" parent="GUI" unique_id=805282800]
+[node name="MainTabs" type="Control" parent="UI" unique_id=805282800]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 834.0
@@ -405,7 +420,7 @@ focus_mode = 2
 script = ExtResource("32_aarq4")
 metadata/_custom_type_script = "uid://iktgaqyqpajx"
 
-[node name="DrawTab" type="Panel" parent="GUI/MainTabs" unique_id=1856376460]
+[node name="DrawTab" type="Panel" parent="UI/MainTabs" unique_id=1856376460]
 layout_mode = 0
 offset_right = 86.0
 offset_bottom = 32.0
@@ -414,7 +429,7 @@ script = ExtResource("33_7kyky")
 metadata/_custom_type_script = "uid://csfl8n3j2a70m"
 metadata/_edit_group_ = true
 
-[node name="DrawTabLabel" type="Label" parent="GUI/MainTabs/DrawTab" unique_id=415138935]
+[node name="DrawTabLabel" type="Label" parent="UI/MainTabs/DrawTab" unique_id=415138935]
 layout_mode = 0
 offset_right = 86.0
 offset_bottom = 32.0
@@ -424,7 +439,7 @@ text = "Draw 🎨"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AnimTab" type="Panel" parent="GUI/MainTabs" unique_id=467943780]
+[node name="AnimTab" type="Panel" parent="UI/MainTabs" unique_id=467943780]
 layout_mode = 0
 offset_left = 86.0
 offset_right = 172.0
@@ -434,7 +449,7 @@ script = ExtResource("33_7kyky")
 metadata/_custom_type_script = "uid://csfl8n3j2a70m"
 metadata/_edit_group_ = true
 
-[node name="AnimTabLabel" type="Label" parent="GUI/MainTabs/AnimTab" unique_id=513427645]
+[node name="AnimTabLabel" type="Label" parent="UI/MainTabs/AnimTab" unique_id=513427645]
 layout_mode = 0
 offset_right = 86.0
 offset_bottom = 32.0
@@ -444,7 +459,7 @@ text = "Anim 🎞️"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EvoTab" type="Panel" parent="GUI/MainTabs" unique_id=1108561998]
+[node name="EvoTab" type="Panel" parent="UI/MainTabs" unique_id=1108561998]
 layout_mode = 0
 offset_left = 172.0
 offset_right = 258.0
@@ -454,7 +469,7 @@ script = ExtResource("33_7kyky")
 metadata/_custom_type_script = "uid://csfl8n3j2a70m"
 metadata/_edit_group_ = true
 
-[node name="EvoTabLabel" type="Label" parent="GUI/MainTabs/EvoTab" unique_id=1444671385]
+[node name="EvoTabLabel" type="Label" parent="UI/MainTabs/EvoTab" unique_id=1444671385]
 layout_mode = 0
 offset_right = 86.0
 offset_bottom = 32.0
@@ -464,7 +479,7 @@ text = "Evo ✨"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DrawMenu" type="MenuButton" parent="GUI" unique_id=743182743]
+[node name="DrawMenu" type="MenuButton" parent="UI" unique_id=743182743 groups=["Draw"]]
 offset_right = 64.0
 offset_bottom = 32.0
 theme = ExtResource("8_gtgpg")
@@ -496,7 +511,53 @@ popup/item_6/text = "   Layers as PNG's"
 popup/item_6/id = 4
 script = ExtResource("35_y55fp")
 
-[node name="QuickTools" type="Control" parent="GUI" unique_id=534071326]
+[node name="ExportPNGDialog" type="FileDialog" parent="UI/DrawMenu" unique_id=608686330]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Save PNG"
+initial_position = 1
+dialog_hide_on_ok = true
+display_mode = 1
+access = 2
+filters = PackedStringArray("*.png")
+use_native_dialog = true
+hidden_files_toggle_enabled = false
+file_filter_toggle_enabled = false
+file_sort_options_enabled = false
+folder_creation_enabled = false
+
+[node name="ExportLayersDialog" type="FileDialog" parent="UI/DrawMenu" unique_id=2141452856]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Open a Directory"
+initial_position = 1
+dialog_hide_on_ok = true
+file_mode = 2
+display_mode = 1
+access = 2
+use_native_dialog = true
+
+[node name="ImportImageDialog" type="FileDialog" parent="UI/DrawMenu" unique_id=1200636834]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 1
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png")
+use_native_dialog = true
+
+[node name="PaletteGrid" type="TextureRect" parent="UI" unique_id=419585461 groups=["Draw"]]
+texture_filter = 1
+custom_minimum_size = Vector2(208, 64)
+offset_left = 64.0
+offset_top = 32.0
+offset_right = 298.0
+offset_bottom = 104.0
+texture = ExtResource("6_8l3i4")
+
+[node name="QuickTools" type="Control" parent="UI" unique_id=534071326]
 z_index = 2
 layout_mode = 3
 anchors_preset = 0
@@ -505,7 +566,10 @@ script = ExtResource("29_i77su")
 
 [connection signal="mouse_entered" from="DrawContainer" to="DrawContainer" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="DrawContainer" to="DrawContainer" method="_on_mouse_exited"]
-[connection signal="toggled" from="GUI/LayersPanel/LayerVisible" to="GUI/LayersPanel" method="_on_all_visible_toggled"]
-[connection signal="mouse_entered" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_mouse_entered"]
-[connection signal="mouse_exited" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_mouse_exited"]
-[connection signal="pressed" from="GUI/WindowPanel/ExitButton" to="GUI/WindowPanel" method="_on_exit_button_pressed"]
+[connection signal="toggled" from="UI/LayersPanel/LayerVisible" to="UI/LayersPanel" method="_on_all_visible_toggled"]
+[connection signal="mouse_entered" from="UI/WindowPanel/ExitButton" to="UI/WindowPanel" method="_on_exit_button_mouse_entered"]
+[connection signal="mouse_exited" from="UI/WindowPanel/ExitButton" to="UI/WindowPanel" method="_on_exit_button_mouse_exited"]
+[connection signal="pressed" from="UI/WindowPanel/ExitButton" to="UI/WindowPanel" method="_on_exit_button_pressed"]
+[connection signal="file_selected" from="UI/DrawMenu/ExportPNGDialog" to="UI/DrawMenu" method="_on_export_png_dialog_file_selected"]
+[connection signal="dir_selected" from="UI/DrawMenu/ExportLayersDialog" to="UI/DrawMenu" method="_on_export_layers_dialog_dir_selected"]
+[connection signal="file_selected" from="UI/DrawMenu/ImportImageDialog" to="UI/DrawMenu" method="_on_import_image_dialog_file_selected"]

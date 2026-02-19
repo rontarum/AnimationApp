@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://ba74y3gi7coc1"]
+
+[ext_resource type="Shader" uid="uid://cijtd12yg4fat" path="res://tests/animations_test.gdshader" id="1_ynvqf"]
+[ext_resource type="Texture2D" uid="uid://xn5l8csvt0im" path="res://tests/penguin_mesh/body.png" id="2_v4tuq"]
+[ext_resource type="Script" uid="uid://btc4krtk2ui6s" path="res://tests/sprite_mesh.gd" id="3_v4tuq"]
+[ext_resource type="Texture2D" uid="uid://i3u46muotqv3" path="res://assets/icons/controls/vertex_base.svg" id="4_65f7l"]
+[ext_resource type="Texture2D" uid="uid://dln82mei8mqls" path="res://assets/icons/controls/vertex_hovered.svg" id="5_n5r7t"]
+[ext_resource type="Texture2D" uid="uid://fkchfv65jhd6" path="res://assets/icons/controls/vertex_active.svg" id="6_wg4p0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v4tuq"]
+shader = ExtResource("1_ynvqf")
+shader_parameter/idx = 8
+
+[node name="AnimationsTest" type="Node2D" unique_id=1823771519]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=59133426]
+zoom = Vector2(64, 64)
+
+[node name="PolySprite" type="Node2D" parent="." unique_id=1854999880]
+
+[node name="SpriteMesh" type="MeshInstance2D" parent="PolySprite" unique_id=1222929933]
+texture_filter = 1
+texture_repeat = 1
+material = SubResource("ShaderMaterial_v4tuq")
+texture = ExtResource("2_v4tuq")
+script = ExtResource("3_v4tuq")
+vertex_icons = Array[Texture2D]([ExtResource("4_65f7l"), ExtResource("5_n5r7t"), ExtResource("6_wg4p0")])

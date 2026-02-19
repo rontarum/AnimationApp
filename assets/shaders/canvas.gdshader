@@ -2,7 +2,6 @@ shader_type canvas_item;
 
 uniform sampler2D screen_tex: hint_screen_texture;
 uniform vec2 mouse_pos;
-
 uniform int state = 0;
 uniform bool is_picking = false;
 uniform vec4 swatch: source_color;

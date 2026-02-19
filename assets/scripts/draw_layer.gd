@@ -66,6 +66,11 @@ func finish_changes() -> void:
 	undo_redo.add_undo_method(_apply_image_data.bind(image_data_before))
 	undo_redo.commit_action(false)
 
+func set_image(new_image: Image) -> void:
+	image.copy_from(new_image)
+	update_image()
+	
+
 func clear_image() -> void:
 	start_changes()
 	image.fill(Color.TRANSPARENT)

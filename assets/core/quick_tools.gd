@@ -24,7 +24,7 @@ func _draw() -> void:
 	draw_circle(mouse_pos, 6.0, outline_color, false, -1.0, false)
 
 func _input(event: InputEvent) -> void:
-	_hotkeys_tools(event)
+	_draw_hotkeys(event)
 	_quick_picker(event)
 	
 	if event.is_action_pressed("undo") and not Input.is_key_pressed(KEY_SHIFT):
@@ -33,7 +33,9 @@ func _input(event: InputEvent) -> void:
 		History.undo_redo.redo()
 
 
-func _hotkeys_tools(event: InputEvent) -> void:
+func _draw_hotkeys(event: InputEvent) -> void:
+	if AppState.current_tab != 0:
+		return
 	if event.is_action_pressed("brush"):
 		Services.tool.select_tool(ToolType.Type.BRUSH)
 	if event.is_action_pressed("eraser"):
@@ -44,6 +46,9 @@ func _hotkeys_tools(event: InputEvent) -> void:
 		Services.tool.select_tool(ToolType.Type.SELECTION)
 
 func _quick_picker(event: InputEvent) -> void:
+	if AppState.current_tab != 0:
+		return
+		
 	if event.is_action_pressed("picker"):
 		AppState.is_color_picking = true
 		

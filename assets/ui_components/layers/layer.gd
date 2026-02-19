@@ -51,7 +51,6 @@ func rename(new_name: String) -> void:
 	label.text = new_name
 	name = new_name
 
-
 func _on_mouse_entered() -> void:
 	if not is_active:
 		_animate_color(active_color)

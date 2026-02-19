@@ -32,15 +32,18 @@ func _gui_input(event: InputEvent) -> void:
 
 func _on_mouse_entered() -> void:
 	if _id != main_tabs.active_tab:
+		Services.cursor.set_override(ToolType.Type.POINTER)
 		tween = _create_tween()
 		tween.tween_property(self, "self_modulate", hover_color, 0.07)
 
 func _on_mouse_exited() -> void:
+	Services.cursor.set_override(ToolType.Type.ARROW)
 	if _id != main_tabs.active_tab:
 		tween = _create_tween()
 		tween.tween_property(self, "self_modulate", Color.WHITE, 0.07)
 
 func _on_active_tab_changed(id: int) -> void:
+	Services.cursor.set_override(ToolType.Type.ARROW)
 	if id != _id:
 		tween = _create_tween()
 		tween.tween_property(self, "self_modulate", Color.WHITE, 0.1)
