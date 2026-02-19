@@ -22,14 +22,13 @@ func _ready() -> void:
 	await get_tree().process_frame
 	
 	# Находим GUI CanvasLayer и добавляем туда CursorSprite
-	var ui_layer = get_tree().root.get_node_or_null("App/UI")
+	var ui_layer = %CursorLayer
 	if ui_layer:
 		cursor_sprite = CursorSprite.new()
 		cursor_sprite.name = "CursorSprite"
 		ui_layer.add_child(cursor_sprite)
-		cursor_sprite.z_index = 3
 	else:
-		push_error("[CursorService] UI CanvasLayer not found!")
+		push_error("[CursorService] CursorLayer CanvasLayer not found!")
 		return
 	
 	# Подписываемся на события

@@ -133,6 +133,52 @@ func get_layer_name(layer_id: int) -> String:
 func get_active_layer() -> Dictionary:
 	return get_layer(AppState.active_layer_id)
 
+## Получение всех слоёв (для сохранения)
+func get_all_layers() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for layer_id: int in layers.keys():
+		result.append(layers[layer_id].duplicate())
+	return result
+
+## Очистка всех слоёв (для нового проекта - без undo/redo)
+func clear_layers() -> void:
+	layers.clear()
+	_next_layer_id = 0
+	_freed_ids.clear()
+	AppState.layer_count = 0
+	AppState.active_layer_id = -1
+	EventBus.canvas_cleared.emit()
+
+## Полная очистка слоёв для нового проекта (без undo/redo)
+func hard_clear_layers() -> void:
+	# Очищаем без создания undo/redo действий
+	layers.clear()
+	_next_layer_id = 0
+	_freed_ids.clear()
+	AppState.layer_count = 0
+	AppState.active_layer_id = -1
+	EventBus.canvas_cleared.emit()
+
+## Восстановление слоёв из сохранённых данных
+func restore_layers(layers_data: Array[Dictionary]) -> void:
+	clear_layers()
+	for layer_data: Dictionary in layers_data:
+		var layer_id: int = layer_data.get("id", 0)
+		var layer_name: String = layer_data.get("name", "Layer")
+		var visible: bool = layer_data.get("visible", true)
+		
+		layers[layer_id] = {
+			"id": layer_id,
+			"name": layer_name,
+			"visible": visible
+		}
+		
+		# Обновляем счётчик ID
+		if layer_id >= _next_layer_id:
+			_next_layer_id = layer_id + 1
+	
+	AppState.layer_count = layers.size()
+
 # === ОБРАБОТЧИКИ СОБЫТИЙ ===
 
 func _on_layer_created(layer_data: Dictionary) -> void:

@@ -35,6 +35,7 @@ signal layer_all_visibility_requested(visible: bool)  # UI запрос изме
 
 # === CANVAS EVENTS ===
 signal canvas_resized(new_size: Vector2i)  # Изменён размер холста
+signal canvas_cleared()  # Холст очищен
 signal layer_image_updated(layer_id: int, new_image: Image)
 
 # === COLOR EVENTS ===

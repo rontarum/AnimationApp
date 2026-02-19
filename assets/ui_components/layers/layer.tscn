@@ -7,6 +7,12 @@
 [ext_resource type="Texture2D" uid="uid://ciqst700fl2hu" path="res://assets/icons/buttons/visible.png" id="5_udprr"]
 [ext_resource type="Texture2D" uid="uid://dpg14vqp4208s" path="res://assets/icons/buttons/invisible.png" id="6_t4cdv"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_udprr"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5dus"]
 draw_center = false
 border_width_left = 1
@@ -34,6 +40,11 @@ theme_override_constants/margin_bottom = 12
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_udprr")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_udprr")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_udprr")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_udprr")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_udprr")
 theme_override_icons/checked = ExtResource("5_udprr")
 theme_override_icons/unchecked = ExtResource("6_t4cdv")
 button_pressed = true

@@ -39,6 +39,7 @@
 [ext_resource type="FontFile" uid="uid://b2rsg2bd1xobp" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="32_fr0lj"]
 [ext_resource type="Script" uid="uid://csfl8n3j2a70m" path="res://assets/ui_components/tab.gd" id="33_7kyky"]
 [ext_resource type="Script" uid="uid://irvwlf3ugikf" path="res://assets/ui_components/draw_menu.gd" id="35_y55fp"]
+[ext_resource type="Script" uid="uid://bi6i344cvm805" path="res://assets/ui_components/new_project_dialog.gd" id="36_y55fp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_25sla"]
 shader = ExtResource("3_itptj")
@@ -56,6 +57,23 @@ bg_color = Color(0.8069084, 0.60483414, 0.6426659, 1)
 bg_color = Color(0.8873913, 0.7471103, 0.76985294, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dv8dk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m77ee"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 5.0
+bg_color = Color(0.9647059, 0.9372549, 0.9372549, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m77ee"]
+content_margin_left = 16.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ku62k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ej54m"]
+content_margin_left = 16.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f3ilm"]
 
 [sub_resource type="GDScript" id="GDScript_e13ls"]
 script/source = "class_name TreePanel extends Panel
@@ -248,6 +266,11 @@ offset_right = 240.0
 offset_bottom = 48.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_m77ee")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_m77ee")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ku62k")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ej54m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_f3ilm")
 theme_override_icons/checked = ExtResource("17_2ysod")
 theme_override_icons/unchecked = ExtResource("18_fr0lj")
 button_pressed = true
@@ -548,6 +571,108 @@ access = 2
 filters = PackedStringArray("*.png")
 use_native_dialog = true
 
+[node name="ProjectSaveDialog" type="FileDialog" parent="UI/DrawMenu" unique_id=1128873626]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Save Project"
+initial_position = 1
+dialog_hide_on_ok = true
+display_mode = 1
+access = 2
+filters = PackedStringArray("*.tres")
+use_native_dialog = true
+
+[node name="ProjectOpenDialog" type="FileDialog" parent="UI/DrawMenu" unique_id=2147064947]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 1
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.tres")
+use_native_dialog = true
+
+[node name="NewProjectDialog" type="Window" parent="UI/DrawMenu" unique_id=2089897618]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "New Project"
+initial_position = 1
+size = Vector2i(296, 232)
+visible = false
+script = ExtResource("36_y55fp")
+
+[node name="Panel" type="Panel" parent="UI/DrawMenu/NewProjectDialog" unique_id=533029351]
+custom_minimum_size = Vector2(300, 150)
+offset_left = -4.0
+offset_right = 296.0
+offset_bottom = 232.0
+
+[node name="Label" type="Label" parent="UI/DrawMenu/NewProjectDialog" unique_id=1386607691]
+offset_left = 20.0
+offset_top = 64.0
+offset_right = 280.0
+offset_bottom = 90.0
+theme_override_colors/font_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("32_fr0lj")
+text = "New Project"
+horizontal_alignment = 1
+
+[node name="WidthLabel" type="Label" parent="UI/DrawMenu/NewProjectDialog" unique_id=853579347]
+offset_left = 68.0
+offset_top = 112.0
+offset_right = 148.0
+offset_bottom = 138.0
+theme_override_colors/font_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("32_fr0lj")
+text = "Width:"
+vertical_alignment = 1
+
+[node name="WidthSpin" type="SpinBox" parent="UI/DrawMenu/NewProjectDialog" unique_id=1366883012]
+offset_left = 156.0
+offset_top = 112.0
+offset_right = 246.0
+offset_bottom = 143.0
+theme = ExtResource("8_gtgpg")
+min_value = 4.0
+max_value = 648.0
+value = 32.0
+rounded = true
+custom_arrow_step = 8.0
+
+[node name="HeightLabel" type="Label" parent="UI/DrawMenu/NewProjectDialog" unique_id=1069471398]
+offset_left = 68.0
+offset_top = 144.0
+offset_right = 148.0
+offset_bottom = 170.0
+theme_override_colors/font_color = Color(0.26666668, 0.29411766, 0.4509804, 1)
+theme_override_fonts/font = ExtResource("32_fr0lj")
+text = "Height:"
+vertical_alignment = 1
+
+[node name="HeightSpin" type="SpinBox" parent="UI/DrawMenu/NewProjectDialog" unique_id=683223]
+offset_left = 156.0
+offset_top = 144.0
+offset_right = 246.0
+offset_bottom = 175.0
+min_value = 8.0
+max_value = 640.0
+value = 32.0
+
+[node name="CancelButton" type="Button" parent="UI/DrawMenu/NewProjectDialog" unique_id=1122515529]
+offset_left = 12.0
+offset_top = 192.0
+offset_right = 92.0
+offset_bottom = 223.0
+text = "Cancel"
+
+[node name="CreateButton" type="Button" parent="UI/DrawMenu/NewProjectDialog" unique_id=1272165248]
+offset_left = 204.0
+offset_top = 192.0
+offset_right = 284.0
+offset_bottom = 223.0
+text = "Create"
+
 [node name="PaletteGrid" type="TextureRect" parent="UI" unique_id=419585461 groups=["Draw"]]
 texture_filter = 1
 custom_minimum_size = Vector2(208, 64)
@@ -564,6 +689,10 @@ anchors_preset = 0
 mouse_filter = 2
 script = ExtResource("29_i77su")
 
+[node name="CursorLayer" type="CanvasLayer" parent="." unique_id=256653785]
+unique_name_in_owner = true
+layer = 2048
+
 [connection signal="mouse_entered" from="DrawContainer" to="DrawContainer" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="DrawContainer" to="DrawContainer" method="_on_mouse_exited"]
 [connection signal="toggled" from="UI/LayersPanel/LayerVisible" to="UI/LayersPanel" method="_on_all_visible_toggled"]
@@ -573,3 +702,8 @@ script = ExtResource("29_i77su")
 [connection signal="file_selected" from="UI/DrawMenu/ExportPNGDialog" to="UI/DrawMenu" method="_on_export_png_dialog_file_selected"]
 [connection signal="dir_selected" from="UI/DrawMenu/ExportLayersDialog" to="UI/DrawMenu" method="_on_export_layers_dialog_dir_selected"]
 [connection signal="file_selected" from="UI/DrawMenu/ImportImageDialog" to="UI/DrawMenu" method="_on_import_image_dialog_file_selected"]
+[connection signal="file_selected" from="UI/DrawMenu/ProjectSaveDialog" to="UI/DrawMenu" method="_on_project_save_dialog_file_selected"]
+[connection signal="file_selected" from="UI/DrawMenu/ProjectOpenDialog" to="UI/DrawMenu" method="_on_project_open_dialog_file_selected"]
+[connection signal="confirmed" from="UI/DrawMenu/NewProjectDialog" to="UI/DrawMenu" method="_on_new_project_dialog_confirmed"]
+[connection signal="pressed" from="UI/DrawMenu/NewProjectDialog/CancelButton" to="UI/DrawMenu/NewProjectDialog" method="hide"]
+[connection signal="pressed" from="UI/DrawMenu/NewProjectDialog/CreateButton" to="UI/DrawMenu" method="_on_new_project_dialog_confirmed"]

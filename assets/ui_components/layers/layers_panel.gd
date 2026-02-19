@@ -35,6 +35,7 @@ func _ready() -> void:
 	EventBus.layer_selected.connect(_on_layer_selected)
 	EventBus.layer_reordered.connect(_on_layer_reordered)
 	EventBus.layer_visibility_changed.connect(_on_layer_visibility_changed_sync_all_button)
+	EventBus.canvas_cleared.connect(_clear_all_ui_layers)
 	
 
 func _input(event: InputEvent) -> void:
@@ -273,6 +274,14 @@ func _set_active_layer(layer: Layer) -> void:
 
 func _on_all_visible_toggled(toggled_on: bool) -> void:
 	EventBus.layer_all_visibility_requested.emit(toggled_on)
+
+func _clear_all_ui_layers() -> void:
+	# Удаляем все UI слои
+	for layer_ui in layer_ui_map.values():
+		if is_instance_valid(layer_ui):
+			layer_ui.queue_free()
+	layer_ui_map.clear()
+	active_layer = null
 
 func _on_layer_visibility_changed_sync_all_button(_layer_id: int, _visible: bool) -> void:
 	# Синхронизируем состояние общей кнопки видимости

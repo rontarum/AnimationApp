@@ -13,6 +13,7 @@ extends Node
 var current_tab: int = 0:
 	set(val):
 		if current_tab != val:
+			ProjectManager.auto_save()  # Автосохранение при переключении вкладки
 			current_tab = val
 			EventBus.tab_changed.emit(current_tab)
 
@@ -102,6 +103,8 @@ func _ready() -> void:
 	_secondary_color = Color.BLACK
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("save"):
+		ProjectManager.auto_save()
 	if event is InputEventKey:
 		if event.pressed and event.keycode == KEY_ESCAPE:
 			EventBus.app_closing.emit()
