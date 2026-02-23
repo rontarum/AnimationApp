@@ -130,6 +130,11 @@ func clear_canvas() -> void:
 func get_draw_layer(layer_id: int):
 	return draw_layers.get(layer_id)
 
+func get_all_layers() -> Dictionary:
+	if draw_layers:
+		return draw_layers
+	return {}
+
 ## Получение всех изображений слоёв (для сохранения)
 func get_all_layer_images() -> Dictionary:
 	var result: Dictionary = {}

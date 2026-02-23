@@ -35,6 +35,9 @@ func _ready() -> void:
 func get_image() -> Image:
 	return image
 
+func get_layer_name() -> String:
+	return Services.layer.get_layer_name(layer_id)
+
 func get_pixel(point: Vector2i) -> Color:
 	var img_size = image.get_size()
 	if point.x < 0 or point.y < 0 or point.x >= img_size.x or point.y >= img_size.y:

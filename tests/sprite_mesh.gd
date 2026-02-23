@@ -15,6 +15,9 @@ var first_vertex: Vector2
 var last_vertex: Vector2
 var active_vertex: Vector2
 
+func _ready() -> void:
+	queue_redraw()
+
 func draw_vertex(canvas_item: RID, state: VertexState, pos: Vector2) -> void:
 	var rs := RenderingServer
 	var icon: Texture2D
@@ -52,12 +55,12 @@ func draw_on_canvas(canvas_item: RID) -> void:
 	var rs := RenderingServer
 	rs.canvas_item_clear(canvas_item)
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		mouse_pixel_pos = round(get_global_mouse_position())
-		var rs := RenderingServer
-		if not draw_canvas:
-			draw_canvas = rs.canvas_item_create()
-			rs.canvas_item_set_parent(draw_canvas, get_canvas_item())
-			rs.canvas_item_set_transform(draw_canvas, transform)
-		draw_vertex(draw_canvas, VertexState.PASSIVE, mouse_pixel_pos)
+#func _input(event: InputEvent) -> void:
+	#if event is InputEventMouseMotion:
+		#mouse_pixel_pos = round(get_global_mouse_position())
+		#var rs := RenderingServer
+		#if not draw_canvas:
+			#draw_canvas = rs.canvas_item_create()
+			#rs.canvas_item_set_parent(draw_canvas, get_canvas_item())
+			#rs.canvas_item_set_transform(draw_canvas, transform)
+		#draw_vertex(draw_canvas, VertexState.PASSIVE, mouse_pixel_pos)
