@@ -33,6 +33,9 @@ signal layer_clear_requested(layer_id: int) # UI запрос очистки
 signal layer_visibility_requested(layer_id: int, visible: bool)
 signal layer_all_visibility_requested(visible: bool)  # UI запрос изменения видимости всех слоёв
 
+# === ITEM EVENTS ===
+signal item_selected(item_id: int)
+
 # === CANVAS EVENTS ===
 signal canvas_resized(new_size: Vector2i)  # Изменён размер холста
 signal canvas_cleared()  # Холст очищен

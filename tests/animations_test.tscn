@@ -18,10 +18,11 @@ zoom = Vector2(64, 64)
 
 [node name="PolySprite" type="Node2D" parent="." unique_id=1854999880]
 
-[node name="SpriteMesh" type="MeshInstance2D" parent="PolySprite" unique_id=1222929933]
+[node name="SpriteMesh" type="MeshInstance2D" parent="PolySprite" unique_id=8093187]
 texture_filter = 1
 texture_repeat = 1
 material = SubResource("ShaderMaterial_v4tuq")
 texture = ExtResource("2_65f7l")
 script = ExtResource("3_v4tuq")
 vertex_icons = Array[Texture2D]([ExtResource("4_65f7l"), ExtResource("5_n5r7t"), ExtResource("6_wg4p0")])
+metadata/_custom_type_script = "uid://btc4krtk2ui6s"

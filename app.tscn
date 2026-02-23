@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://dmp1jsuld8dbr" path="res://assets/icons/tools/draw/brush.svg" id="10_7iiwk"]
 [ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="10_dv8dk"]
 [ext_resource type="Texture2D" uid="uid://dfnnft4jib4w2" path="res://assets/icons/tools/draw/eraser.svg" id="11_a37lv"]
+[ext_resource type="Script" uid="uid://dn8g6knbddtc7" path="res://assets/life_container.gd" id="11_i2c86"]
 [ext_resource type="Script" uid="uid://0xb6t0yglqmg" path="res://assets/scripts/ui.gd" id="11_rfw64"]
 [ext_resource type="Script" uid="uid://bnbtbyaulgf1i" path="res://assets/ui_components/tool_properties/properties_panel.gd" id="12_ce3ws"]
 [ext_resource type="Texture2D" uid="uid://caw555qo5ev0h" path="res://assets/icons/tools/draw/fill.svg" id="12_gtgpg"]
@@ -152,28 +153,30 @@ canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
 render_target_update_mode = 4
 
-[node name="CanvasCamera" type="Camera2D" parent="DrawContainer" unique_id=1125928295]
+[node name="DrawCamera" type="Camera2D" parent="DrawContainer" unique_id=1125928295]
 script = ExtResource("1_3npyw")
 min_zoom = 4.0
 max_zoom = 8.0
 metadata/_custom_type_script = "uid://ti52tkbtccx4"
 
-[node name="LifeContainer" type="SubViewportContainer" parent="." unique_id=1106880611 groups=["Life"]]
+[node name="LifeContainer" type="SubViewportContainer" parent="." unique_id=454031329 groups=["Life"]]
 visible = false
 material = SubResource("ShaderMaterial_i2c86")
 custom_minimum_size = Vector2(640, 360)
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 640.0
+offset_bottom = 360.0
 stretch = true
+script = ExtResource("11_i2c86")
+metadata/_custom_type_script = "uid://dn8g6knbddtc7"
 
-[node name="LifeView" type="SubViewport" parent="LifeContainer" unique_id=2070882144]
+[node name="LifeCanvas" type="SubViewport" parent="LifeContainer" unique_id=2070882144]
 transparent_bg = true
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
 render_target_update_mode = 0
 
-[node name="DeckCamera" type="Camera2D" parent="LifeContainer" unique_id=637166127]
+[node name="LifeCamera" type="Camera2D" parent="LifeContainer" unique_id=637166127]
 script = ExtResource("1_3npyw")
 metadata/_custom_type_script = "uid://ti52tkbtccx4"
 

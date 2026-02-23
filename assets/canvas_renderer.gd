@@ -15,8 +15,11 @@ class_name CanvasRenderer extends Node2D
 var mouse_pos: Vector2 = Vector2.ZERO
 var slide_pos: Vector2 = Vector2.ZERO
 
+func _ready() -> void:
+	add_to_group("Draw", true)
+
 func _process(delta: float) -> void:
-	if not draw_container:
+	if not draw_container or not visible:
 		return
 	
 	mouse_pos = draw_container.get_local_mouse_position()

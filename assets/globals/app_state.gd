@@ -40,6 +40,15 @@ var layer_count: int:
 	get: return _layer_count
 	set(value): _layer_count = value
 
+# === ITEM STATE ===
+var _active_item_id: int = -1
+var active_item_id: int:
+	get: return _active_item_id
+	set(value):
+		if _active_item_id != value:
+			_active_item_id = value
+			EventBus.item_selected.emit(value)
+
 # === COLOR STATE ===
 var _primary_color: Color = Color.WHITE
 var primary_color: Color:

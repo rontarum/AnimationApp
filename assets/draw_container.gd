@@ -12,8 +12,6 @@ extends SubViewportContainer
 
 @onready var draw_canvas: SubViewport = $DrawCanvas
 
-static var instance: DrawContainer
-
 var mouse_pos: Vector2
 var active_layer: DrawLayer  # DrawLayer extends TextureRect
 var is_hold: bool = false
@@ -24,9 +22,6 @@ var selection_rect: Rect2
 var selection_start: Vector2
 var selection_start_draw: Vector2
 var selection_end_draw: Vector2
-
-func _init() -> void:
-	instance = self
 
 func _ready() -> void:
 	size = AppState.canvas_size
