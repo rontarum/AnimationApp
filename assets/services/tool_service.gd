@@ -28,6 +28,7 @@ func _ready() -> void:
 	# Подписка на события
 	EventBus.tool_selected.connect(_on_tool_selected)
 	EventBus.layer_selected.connect(_on_layer_selected)
+	EventBus.tab_changed.connect(_on_tab_changed)
 	
 	# Устанавливаем начальный инструмент
 	active_tool = tool_instances.get(AppState.current_tool)
@@ -80,6 +81,9 @@ func finish_action(position: Vector2) -> void:
 	EventBus.tool_action_finished.emit(position)
 
 # === ОБРАБОТЧИКИ СОБЫТИЙ ===
+
+func _on_tab_changed(tab: int) -> void:
+	select_tool(ToolType.Type.ARROW)
 
 func _on_tool_selected(tool_type: ToolType.Type) -> void:
 	# Переключаем активный инструмент

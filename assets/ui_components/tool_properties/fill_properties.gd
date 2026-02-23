@@ -13,11 +13,6 @@ func _ready() -> void:
 	var current_contiguous = Services.tool.get_tool_property("contiguous")
 	if current_contiguous != null:
 		is_contiguous = current_contiguous
-		_update_ui()
-
-func _update_ui() -> void:
-	# Обновляем CheckButton (должен быть подключен в сцене)
-	pass
 
 func _on_contiguous_property_toggled(toggled_on: bool) -> void:
 	if is_contiguous != toggled_on:
@@ -28,4 +23,3 @@ func _on_tool_property_changed(tool_type: ToolType.Type, property: String, value
 	# Обновляем UI если изменился наш параметр
 	if tool_type == ToolType.Type.FILL and property == "contiguous":
 		is_contiguous = value
-		_update_ui()

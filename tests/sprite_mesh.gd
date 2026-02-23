@@ -22,23 +22,18 @@ var active_vertex: Vector2
 func _ready() -> void:
 	var size := texture.get_size()
 	
-	vertex = PackedVector2Array([
-		Vector2(0, 0),
-		Vector2(size.x, 0),
-		Vector2(size.x, size.y),
-		Vector2(0, size.y)
-	])
-	copy_uv()
-	index = PackedInt32Array([0, 1, 2, 0, 2, 3])
-	
 	surface.resize(Mesh.ARRAY_MAX)
 	surface[Mesh.ARRAY_VERTEX] = vertex
 	surface[Mesh.ARRAY_TEX_UV] = uv
 	surface[Mesh.ARRAY_INDEX] = index
 	
 	generated_mesh = ArrayMesh.new()
-	generated_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface)
+	#generated_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface)
 	#mesh = generated_mesh
+	
+	vertex = create_polygon()
+	index = Geometry2D.triangulate_delaunay(vertex)
+	
 	queue_redraw()
 
 func add_point(point: Vector2) -> void:
@@ -66,9 +61,49 @@ func draw_vertex(canvas_item: RID, state: VertexState, pos: Vector2) -> void:
 func _draw() -> void:
 	# Отрисовка текстуры для удобства редактирования точек
 	if not mesh:
-		draw_texture(texture, position, Color.AQUA)
+		draw_texture(texture, position)
+		
+	#if vertex:
+		#var polygon := vertex
+		#polygon.push_back(vertex[0])
+		#draw_polyline(polygon, Color.AQUA)
+		#for v in vertex:
+			#draw_circle(v, 0.04, Color.AQUA)
+	if index:
+		draw_triangulation(vertex, index)
+
+func draw_triangulation(poly: PackedVector2Array, indices: PackedInt32Array):
+	for i in range(0, indices.size(), 3):
+		var a := poly[indices[i]]
+		var b := poly[indices[i+1]]
+		var c := poly[indices[i+2]]
+		
+		draw_line(a, b, Color.CORAL, 0.048)
+		draw_line(b, c, Color.CORAL, 0.048)
+		draw_line(c, a, Color.CORAL, 0.048)
+
+func create_polygon() -> PackedVector2Array:
+	var image := texture.get_image()
 	
+	var points: Array[Vector2] = []
+	var w := image.get_width()
+	var h := image.get_height()
 	
+	for y in range(h):
+		for x in range(w):
+			if image.get_pixel(x, y).a > 0.1:
+				points.append(Vector2(x, y))
+				points.append(Vector2(x + 1, y))
+				points.append(Vector2(x + 1, y + 1))
+				points.append(Vector2(x, y + 1))
+	if points.size() < 3:
+		return PackedVector2Array(points)
+	
+	var hull := Geometry2D.convex_hull(points)
+	if hull.size() > 1 and hull[0] == hull[hull.size() - 1]:
+		hull.remove_at(hull.size() - 1)
+	hull.append(floor(image.get_size() * 0.5))
+	return hull
 
 func draw_on_canvas(canvas_item: RID) -> void:
 	var rs := RenderingServer

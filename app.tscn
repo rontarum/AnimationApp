@@ -25,6 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://b2bmnpmonh82s" path="res://assets/ui_components/tool_properties/brush_properties.tscn" id="12_hvfy4"]
 [ext_resource type="PackedScene" uid="uid://3sg62ii1o76t" path="res://assets/ui_components/tool_properties/fill_properties.tscn" id="13_hvfy4"]
 [ext_resource type="Script" uid="uid://ciru41hkovgfg" path="res://assets/swatch.gd" id="14_a37lv"]
+[ext_resource type="PackedScene" uid="uid://dxjdp4scr0pec" path="res://assets/ui_components/tool_properties/mesh_properties.tscn" id="16_ej54m"]
 [ext_resource type="Script" uid="uid://cye24k1erlon3" path="res://assets/swatch_picker.gd" id="16_ra7kh"]
 [ext_resource type="Texture2D" uid="uid://ciqst700fl2hu" path="res://assets/icons/buttons/visible.png" id="17_2ysod"]
 [ext_resource type="Texture2D" uid="uid://dpg14vqp4208s" path="res://assets/icons/buttons/invisible.png" id="18_fr0lj"]
@@ -35,8 +36,11 @@
 [ext_resource type="Script" uid="uid://ky8asunx38dk" path="res://assets/ui_components/tree/tree.gd" id="24_ej54m"]
 [ext_resource type="Texture2D" uid="uid://rlg4nvvl0mti" path="res://assets/icons/buttons/close_hover.png" id="24_gdquv"]
 [ext_resource type="Script" uid="uid://4vk8en6k0dv7" path="res://assets/core/quick_tools.gd" id="29_i77su"]
+[ext_resource type="Texture2D" uid="uid://cyql5s31p2kgf" path="res://assets/icons/tools/life/mesh_tool.svg" id="30_f3ilm"]
+[ext_resource type="Texture2D" uid="uid://btvfewa6ecbkj" path="res://assets/icons/tools/life/bud_tool.svg" id="31_jf0jj"]
 [ext_resource type="Script" uid="uid://iktgaqyqpajx" path="res://assets/ui_components/main_tabs.gd" id="32_aarq4"]
 [ext_resource type="FontFile" uid="uid://b2rsg2bd1xobp" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="32_fr0lj"]
+[ext_resource type="Texture2D" uid="uid://cpu57go6nw1ep" path="res://assets/icons/tools/life/stick_tool.svg" id="32_i2c86"]
 [ext_resource type="Script" uid="uid://csfl8n3j2a70m" path="res://assets/ui_components/tab.gd" id="33_7kyky"]
 [ext_resource type="Script" uid="uid://irvwlf3ugikf" path="res://assets/ui_components/draw_menu.gd" id="35_y55fp"]
 [ext_resource type="Script" uid="uid://bi6i344cvm805" path="res://assets/ui_components/new_project_dialog.gd" id="36_y55fp"]
@@ -46,6 +50,12 @@ shader = ExtResource("3_itptj")
 shader_parameter/size = 64.0
 shader_parameter/light_col = Color(0.94, 0.92, 0.92, 1)
 shader_parameter/gray_col = Color(0.7882353, 0.8156863, 0.8784314, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i2c86"]
+shader = ExtResource("3_itptj")
+shader_parameter/size = 64.0
+shader_parameter/light_col = Color(0.94, 0.92, 0.92, 1)
+shader_parameter/gray_col = Color(0.78, 0.81, 0.87, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j4pmb"]
 bg_color = Color(0.9222606, 0.86270624, 0.8628575, 1)
@@ -124,7 +134,7 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.9490196, 0.9254902, 0.92941177, 1)
 
-[node name="DrawContainer" type="SubViewportContainer" parent="." unique_id=1656024856]
+[node name="DrawContainer" type="SubViewportContainer" parent="." unique_id=1656024856 groups=["Draw"]]
 texture_filter = 1
 texture_repeat = 1
 material = SubResource("ShaderMaterial_25sla")
@@ -143,6 +153,27 @@ size = Vector2i(640, 360)
 render_target_update_mode = 4
 
 [node name="CanvasCamera" type="Camera2D" parent="DrawContainer" unique_id=1125928295]
+script = ExtResource("1_3npyw")
+min_zoom = 4.0
+max_zoom = 8.0
+metadata/_custom_type_script = "uid://ti52tkbtccx4"
+
+[node name="LifeContainer" type="SubViewportContainer" parent="." unique_id=1106880611 groups=["Life"]]
+visible = false
+material = SubResource("ShaderMaterial_i2c86")
+custom_minimum_size = Vector2(640, 360)
+offset_right = 40.0
+offset_bottom = 40.0
+stretch = true
+
+[node name="LifeView" type="SubViewport" parent="LifeContainer" unique_id=2070882144]
+transparent_bg = true
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(640, 360)
+render_target_update_mode = 0
+
+[node name="DeckCamera" type="Camera2D" parent="LifeContainer" unique_id=637166127]
 script = ExtResource("1_3npyw")
 metadata/_custom_type_script = "uid://ti52tkbtccx4"
 
@@ -181,6 +212,10 @@ visible = false
 layout_mode = 2
 
 [node name="FillProperties" parent="UI/PropertiesPanel/PropertiesPanelMargin" unique_id=1359495157 instance=ExtResource("13_hvfy4")]
+visible = false
+layout_mode = 2
+
+[node name="MeshProperties" parent="UI/PropertiesPanel/PropertiesPanelMargin" unique_id=1656925718 instance=ExtResource("16_ej54m")]
 visible = false
 layout_mode = 2
 
@@ -277,7 +312,7 @@ button_pressed = true
 script = ExtResource("19_aarq4")
 metadata/_custom_type_script = "uid://b4c8dmg4qfeb7"
 
-[node name="TreePanel" type="Panel" parent="UI" unique_id=1556675572 groups=["Animation"]]
+[node name="TreePanel" type="Panel" parent="UI" unique_id=1556675572 groups=["Life"]]
 visible = false
 offset_left = 1664.0
 offset_top = 440.0
@@ -327,6 +362,11 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 30
 
+[node name="---DrawTools---" type="Control" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=1749347529]
+visible = false
+layout_mode = 2
+metadata/_edit_lock_ = true
+
 [node name="Arrow" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=1825272624]
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -365,6 +405,38 @@ texture = ExtResource("12_gtgpg")
 stretch_mode = 3
 script = ExtResource("9_7iiwk")
 type = 7
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="---LifeTools---" type="Control" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=1090334504]
+visible = false
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="Mesh" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=745097881 groups=["Life"]]
+visible = false
+layout_mode = 2
+texture = ExtResource("30_f3ilm")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+type = 8
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="Bud" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=330386567 groups=["Life"]]
+visible = false
+layout_mode = 2
+texture = ExtResource("31_jf0jj")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+type = 9
+metadata/_custom_type_script = "uid://b8klfhqu10b6j"
+
+[node name="Stick" type="TextureRect" parent="UI/ToolPanel/ToolPanelMargin/ToolBar" unique_id=1583990299 groups=["Life"]]
+visible = false
+layout_mode = 2
+texture = ExtResource("32_i2c86")
+stretch_mode = 3
+script = ExtResource("9_7iiwk")
+type = 10
 metadata/_custom_type_script = "uid://b8klfhqu10b6j"
 
 [node name="PrimarySwatchBack" type="ColorRect" parent="UI/ToolPanel" unique_id=776365483 groups=["Draw"]]
@@ -462,7 +534,7 @@ text = "Draw 🎨"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AnimTab" type="Panel" parent="UI/MainTabs" unique_id=467943780]
+[node name="LifeTab" type="Panel" parent="UI/MainTabs" unique_id=467943780]
 layout_mode = 0
 offset_left = 86.0
 offset_right = 172.0
@@ -472,13 +544,13 @@ script = ExtResource("33_7kyky")
 metadata/_custom_type_script = "uid://csfl8n3j2a70m"
 metadata/_edit_group_ = true
 
-[node name="AnimTabLabel" type="Label" parent="UI/MainTabs/AnimTab" unique_id=513427645]
+[node name="LifeTabLabel" type="Label" parent="UI/MainTabs/LifeTab" unique_id=513427645]
 layout_mode = 0
 offset_right = 86.0
 offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 1)
 theme_override_fonts/font = ExtResource("32_fr0lj")
-text = "Anim 🎞️"
+text = "Life 🌱"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -502,7 +574,7 @@ text = "Evo ✨"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DrawMenu" type="MenuButton" parent="UI" unique_id=743182743 groups=["Draw"]]
+[node name="DrawMenu" type="MenuButton" parent="UI" unique_id=743182743]
 offset_right = 64.0
 offset_bottom = 32.0
 theme = ExtResource("8_gtgpg")

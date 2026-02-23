@@ -3,8 +3,8 @@ extends Camera2D
 
 static var instance: CanvasCamera
 
-const MIN_ZOOM: float = 1.0
-const MAX_ZOOM: float = 64.0
+@export var min_zoom: float = 1.0
+@export var max_zoom: float = 64.0
 
 @export var zoom_step: float = 2.0
 var zoom_value: Vector2
@@ -83,7 +83,7 @@ func _drag() -> Vector2:
 	return position
 
 func _clamp_zoom(zoom_vector: Vector2) -> Vector2:
-	var clamped_value = clamp(zoom_vector.x, MIN_ZOOM, MAX_ZOOM)
+	var clamped_value = clamp(zoom_vector.x, min_zoom, max_zoom)
 	return Vector2(clamped_value, clamped_value)
 
 func _clamp_position(pos: Vector2) -> Vector2:

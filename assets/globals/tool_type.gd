@@ -1,4 +1,4 @@
-extends Node
+class_name ToolType extends Node
 
 ## Типы инструментов редактора
 enum Type {
@@ -12,4 +12,8 @@ enum Type {
 	BRUSH,
 	ERASER,
 	FILL,
+	# Life
+	MESH,
+	BUD,
+	STICK,
 }

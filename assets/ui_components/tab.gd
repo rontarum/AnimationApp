@@ -55,8 +55,6 @@ func _on_active_tab_changed(id: int) -> void:
 
 func _create_tween() -> Tween:
 	if tween:
-		if tween.is_running():
-			tween.stop()
 		tween.kill()
 	tween = create_tween()
 	return tween

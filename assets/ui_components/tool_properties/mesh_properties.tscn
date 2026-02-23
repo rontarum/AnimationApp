@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://dxjdp4scr0pec"]
+
+[ext_resource type="FontFile" uid="uid://b2rsg2bd1xobp" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="1_4jfwq"]
+[ext_resource type="Script" uid="uid://bg3amn50t6c28" path="res://assets/ui_components/tool_properties/tool_properties.gd" id="1_fsqpr"]
+
+[node name="MeshProperties" type="VBoxContainer" unique_id=1574646888]
+offset_right = 178.0
+offset_bottom = 389.0
+script = ExtResource("1_fsqpr")
+metadata/_custom_type_script = "uid://bg3amn50t6c28"
+
+[node name="Label" type="Label" parent="." unique_id=1122024674]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.27058825, 0.29411766, 0.4509804, 0.07058824)
+theme_override_colors/font_outline_color = Color(0.27058825, 0.29411766, 0.4509804, 0.07058824)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("1_4jfwq")
+theme_override_font_sizes/font_size = 18
+text = "Mesh properties"
+vertical_alignment = 1
+
+[node name="AutoCoverButton" type="Button" parent="." unique_id=561748807]
+layout_mode = 2
+text = "🌠 Auto cover"
+alignment = 0
+
+[node name="ClearAllButton" type="Button" parent="." unique_id=182669795]
+layout_mode = 2
+text = "🧼 Clear all"
+alignment = 0
+
+[node name="Spacer" type="Control" parent="." unique_id=1938594180]
+custom_minimum_size = Vector2(0, 256)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=667762471]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MakeMeshButton" type="Button" parent="HBoxContainer" unique_id=659813367]
+layout_mode = 2
+text = "🧩 Make"
+alignment = 0
+
+[node name="DeleteMeshButton" type="Button" parent="HBoxContainer" unique_id=1764065539]
+layout_mode = 2
+text = "❌ Delete"
+alignment = 2

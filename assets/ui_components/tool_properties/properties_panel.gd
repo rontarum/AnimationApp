@@ -10,6 +10,7 @@ class_name PropertiesPanel extends Panel
 var tool_ui_scenes: Dictionary = {
 	ToolType.Type.BRUSH: preload("res://assets/ui_components/tool_properties/brush_properties.tscn"),
 	ToolType.Type.FILL: preload("res://assets/ui_components/tool_properties/fill_properties.tscn"),
+	ToolType.Type.MESH: preload("uid://dxjdp4scr0pec")
 }
 
 var current_properties_ui: ToolProperties = null

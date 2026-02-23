@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dln82mei8mqls"
-path="res://.godot/imported/vertex_hovered.svg-d06f8d43fe9e65247fa6878e412abc6f.ctex"
+uid="uid://cpu57go6nw1ep"
+path="res://.godot/imported/stick_tool.svg-2b59e6013f0080a6ee5b9f54472bf193.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/controls/vertex_hovered.svg"
-dest_files=["res://.godot/imported/vertex_hovered.svg-d06f8d43fe9e65247fa6878e412abc6f.ctex"]
+source_file="res://assets/icons/tools/life/stick_tool.svg"
+dest_files=["res://.godot/imported/stick_tool.svg-2b59e6013f0080a6ee5b9f54472bf193.ctex"]
 
 [params]
 
@@ -38,6 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=8.0
+svg/scale=1.0
 editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

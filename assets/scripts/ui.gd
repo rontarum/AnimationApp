@@ -2,7 +2,7 @@ class_name UI extends CanvasLayer
 
 var _tab_groups: Dictionary = {
 	0: "Draw",
-	1: "Animation",
+	1: "Life",
 	2: "Evo"
 }
 

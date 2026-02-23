@@ -24,6 +24,9 @@ func _draw() -> void:
 	draw_circle(mouse_pos, 6.0, outline_color, false, -1.0, false)
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("arrow"):
+		Services.tool.select_tool(ToolType.Type.ARROW)
+	
 	_draw_hotkeys(event)
 	_quick_picker(event)
 	

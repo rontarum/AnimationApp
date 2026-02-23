@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ba74y3gi7coc1"]
 
 [ext_resource type="Shader" uid="uid://cijtd12yg4fat" path="res://tests/animations_test.gdshader" id="1_ynvqf"]
-[ext_resource type="Texture2D" uid="uid://xn5l8csvt0im" path="res://tests/penguin_mesh/body.png" id="2_v4tuq"]
+[ext_resource type="Texture2D" uid="uid://cnil0lhqeonxn" path="res://tests/penguin_mesh/top_wing.png" id="2_65f7l"]
 [ext_resource type="Script" uid="uid://btc4krtk2ui6s" path="res://tests/sprite_mesh.gd" id="3_v4tuq"]
 [ext_resource type="Texture2D" uid="uid://i3u46muotqv3" path="res://assets/icons/controls/vertex_base.svg" id="4_65f7l"]
 [ext_resource type="Texture2D" uid="uid://dln82mei8mqls" path="res://assets/icons/controls/vertex_hovered.svg" id="5_n5r7t"]
@@ -22,6 +22,6 @@ zoom = Vector2(64, 64)
 texture_filter = 1
 texture_repeat = 1
 material = SubResource("ShaderMaterial_v4tuq")
-texture = ExtResource("2_v4tuq")
+texture = ExtResource("2_65f7l")
 script = ExtResource("3_v4tuq")
 vertex_icons = Array[Texture2D]([ExtResource("4_65f7l"), ExtResource("5_n5r7t"), ExtResource("6_wg4p0")])
