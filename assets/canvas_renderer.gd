@@ -9,8 +9,9 @@ class_name CanvasRenderer extends Node2D
 ## 
 ## НЕ содержит логику инструментов - только визуализация
 
-@onready var draw_container: DrawContainer = get_parent()
-@onready var draw_canvas: SubViewport = draw_container.draw_canvas
+@export var draw_container: DrawContainer
+@export var draw_canvas: SubViewport
+@export var draw_camera: CanvasCamera
 
 var mouse_pos: Vector2 = Vector2.ZERO
 var slide_pos: Vector2 = Vector2.ZERO
@@ -69,7 +70,7 @@ func _draw_pixel_preview() -> void:
 	draw_rect(rect, stroke, false)
 	
 	# Дополнительный маркер при большом зуме
-	if CanvasCamera.instance and CanvasCamera.instance.zoom_value.x >= 8.0:
+	if draw_camera and draw_camera.zoom_value.x >= 8.0:
 		draw_rect(Rect2(mouse_pos - Vector2(0.04, 0.04), Vector2(0.08, 0.08)), stroke, false, -1.0)
 
 ## Рисует border вокруг canvas

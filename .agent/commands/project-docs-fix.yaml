@@ -1,0 +1,32 @@
+command: project-docs-fix
+
+description: >
+  Automatically synchronize project architecture document with the template
+  and optionally with current codebase structure.
+
+arguments:
+  - template_path (required)
+  - project_docs_path (required)
+  - scan_codebase (true | false, default: false)
+
+execution:
+  1. Load template from template_path.
+  2. Load existing project document from project_docs_path.
+  3. If scan_codebase=true:
+       Scan all GDScript files and extract:
+         - class_name
+         - extends
+         - signals
+         - dependencies
+         - detected layer role
+  4. Compare:
+       - Template structure
+       - Existing document structure
+       - Actual code structure (if scanned)
+  5. Rebuild architecture document:
+       - Preserve required template sections
+       - Remove undocumented structural noise
+       - Insert missing sections
+       - Update system listings
+       - Update dependency blocks
+  7. Overwrite project_doc_path with synchronized version.

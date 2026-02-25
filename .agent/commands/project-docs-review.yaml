@@ -1,0 +1,34 @@
+command: project-docs-review
+
+description: >
+  Compare an existing project architecture document against a template
+  and report structural and semantic mismatches (or not if all is good).
+
+arguments:
+  - template_path (required)
+  - project_docs_path (required)
+  - review_path (default: .agent/readme)
+  - strict_mode (true | false, default: false)
+
+execution:
+  1. Load template file from template_path.
+  2. Load project document from project_docs_path.
+  3. Extract:
+     - Section hierarchy
+     - Required headers
+     - Expected structural blocks
+  4. Compare structure:
+     - Missing sections
+     - Extra undocumented sections
+     - Wrong nesting levels
+  5. Compare semantic coverage:
+     - Systems mentioned in template but not documented
+     - Autoloads missing descriptions
+     - Services without dependencies listed
+     - Core classes without responsibility defined
+  6. Detect architectural violations if described:
+     - Layer rule inconsistencies
+     - Undefined dependency constraints
+  7. Create project_docs_review.md in review_path directory and generate structured validation report.
+  8. If strict_mode=true:
+       return failure status on any mismatch.

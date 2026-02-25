@@ -1,10 +1,5 @@
 class_name SpriteMesh extends MeshInstance2D
 
-enum VertexState {PASSIVE, HOVERED, ACTIVE}
-enum EdgeState {BOUND, PASSIVE, ACTIVE, POLYGON}
-
-@export var vertex_icons: Array[Texture2D]
-
 var vertex: PackedVector2Array = []
 var uv: PackedVector2Array = []
 var index: PackedInt32Array = []
@@ -18,14 +13,7 @@ var active_vertex: Vector2
 func _ready() -> void:
 	queue_redraw()
 
-func draw_vertex(canvas_item: RID, state: VertexState, pos: Vector2) -> void:
-	var rs := RenderingServer
-	var icon: Texture2D
-	icon = vertex_icons[state]
-	var offset := Vector2(0.25, 0.25)
-	var rect := Rect2(pos - offset, Vector2(0.5, 0.5))
-	rs.canvas_item_clear(canvas_item)
-	rs.canvas_item_add_texture_rect(canvas_item, rect, icon )
+
 
 func _draw() -> void:
 	# Отрисовка текстуры для удобства редактирования точек

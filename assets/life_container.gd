@@ -1,6 +1,7 @@
 class_name LifeContainer extends SubViewportContainer
 
 @onready var life_canvas: SubViewport = $LifeCanvas
+@onready var life_camera: CanvasCamera = %LifeCamera
 
 var root_item: Node2D = Node2D.new()
 var active_item: SpriteMesh
@@ -8,11 +9,16 @@ var active_item: SpriteMesh
 var mouse_pos: Vector2
 
 func _ready() -> void:
+	size = AppState.canvas_size * 2.0
+	life_camera.set_canvas_size(size)
+	
 	root_item.name = "RootItem"
 	#root_item.position = life_canvas.size * 0.5
 	life_canvas.add_child(root_item, true)
 	
+	EventBus.canvas_resized.connect(_on_canvas_resized)
 	EventBus.tab_changed.connect(_on_tab_changed)
+	visibility_changed.connect(func(): life_camera.enabled = visible)
 
 func _on_tab_changed(tab: int) -> void:
 	if tab == 1:
@@ -35,4 +41,8 @@ func _items_from_layers() -> void:
 		var item := SpriteMesh.new()
 		item.name = layer.get_layer_name()
 		item.texture = ImageTexture.create_from_image(image)
+		item.position = rect.position * 0.5
 		root_item.add_child(item)
+
+func _on_canvas_resized(new_size: Vector2i) -> void:
+	size = new_size * 2.0

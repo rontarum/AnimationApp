@@ -1,0 +1,21 @@
+command: project-analyze
+
+description: >
+  Perform full architectural analysis and regenerate project.md
+  using external template file.
+
+arguments:
+  - template_path (required)
+  - include_paths (optional)
+  - exclude_paths (optional)
+  - depth_mode (light | full, default: full)
+
+execution:
+  1. Load template from template_path.
+  2. Scan all GDScript files.
+  3. Extract class metadata and dependencies.
+  4. Classify architectural layers.
+  5. Detect dependency violations.
+  6. Infer architectural style.
+  7. Populate template sections dynamically.
+  8. Overwrite (or create new steering if not exists) project.md.

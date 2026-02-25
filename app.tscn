@@ -12,12 +12,14 @@
 [ext_resource type="Texture2D" uid="uid://bj4i008u7ki5p" path="res://Rssurect64Png.png" id="6_8l3i4"]
 [ext_resource type="Script" uid="uid://chphxac4aywbo" path="res://assets/services/tree_service.gd" id="7_ixia8"]
 [ext_resource type="Texture2D" uid="uid://dq457sq27anje" path="res://assets/icons/tools/arrow.svg" id="8_5oejy"]
+[ext_resource type="Script" uid="uid://b1e3etcrcv07b" path="res://assets/services/life_service.gd" id="8_b6hms"]
 [ext_resource type="Theme" uid="uid://c478ise21qgjv" path="res://app.tres" id="8_gtgpg"]
 [ext_resource type="Script" uid="uid://b8klfhqu10b6j" path="res://assets/tool_button.gd" id="9_7iiwk"]
 [ext_resource type="Script" uid="uid://ccrley6gx0ik2" path="res://assets/ui_components/layers/layers_panel.gd" id="9_j4pmb"]
 [ext_resource type="Texture2D" uid="uid://b3aythki6lfcq" path="res://assets/icons/tools/selection.svg" id="9_ovwn0"]
 [ext_resource type="Texture2D" uid="uid://dmp1jsuld8dbr" path="res://assets/icons/tools/draw/brush.svg" id="10_7iiwk"]
 [ext_resource type="FontFile" uid="uid://bk85m64o2hoo2" path="res://assets/fonts/Montserrat-Ace-Medium.otf" id="10_dv8dk"]
+[ext_resource type="Script" uid="uid://c1pb74fcafelo" path="res://assets/canvas_renderer.gd" id="11_0dgav"]
 [ext_resource type="Texture2D" uid="uid://dfnnft4jib4w2" path="res://assets/icons/tools/draw/eraser.svg" id="11_a37lv"]
 [ext_resource type="Script" uid="uid://dn8g6knbddtc7" path="res://assets/life_container.gd" id="11_i2c86"]
 [ext_resource type="Script" uid="uid://0xb6t0yglqmg" path="res://assets/scripts/ui.gd" id="11_rfw64"]
@@ -26,9 +28,13 @@
 [ext_resource type="PackedScene" uid="uid://b2bmnpmonh82s" path="res://assets/ui_components/tool_properties/brush_properties.tscn" id="12_hvfy4"]
 [ext_resource type="PackedScene" uid="uid://3sg62ii1o76t" path="res://assets/ui_components/tool_properties/fill_properties.tscn" id="13_hvfy4"]
 [ext_resource type="Script" uid="uid://ciru41hkovgfg" path="res://assets/swatch.gd" id="14_a37lv"]
+[ext_resource type="Script" uid="uid://b3qm7nlw4782r" path="res://assets/life_renderer.gd" id="14_heme7"]
+[ext_resource type="Texture2D" uid="uid://i3u46muotqv3" path="res://assets/icons/controls/vertex_base.svg" id="15_di6uy"]
+[ext_resource type="Texture2D" uid="uid://dln82mei8mqls" path="res://assets/icons/controls/vertex_hovered.svg" id="16_27do3"]
 [ext_resource type="PackedScene" uid="uid://dxjdp4scr0pec" path="res://assets/ui_components/tool_properties/mesh_properties.tscn" id="16_ej54m"]
 [ext_resource type="Script" uid="uid://cye24k1erlon3" path="res://assets/swatch_picker.gd" id="16_ra7kh"]
 [ext_resource type="Texture2D" uid="uid://ciqst700fl2hu" path="res://assets/icons/buttons/visible.png" id="17_2ysod"]
+[ext_resource type="Texture2D" uid="uid://fkchfv65jhd6" path="res://assets/icons/controls/vertex_active.svg" id="17_bjkq6"]
 [ext_resource type="Texture2D" uid="uid://dpg14vqp4208s" path="res://assets/icons/buttons/invisible.png" id="18_fr0lj"]
 [ext_resource type="Script" uid="uid://b4c8dmg4qfeb7" path="res://assets/ui_components/layers/IconTriggerButton.gd" id="19_aarq4"]
 [ext_resource type="Texture2D" uid="uid://dgl7a6iocu5eh" path="res://assets/icons/buttons/close.png" id="22_1v2j6"]
@@ -127,6 +133,9 @@ script = ExtResource("2_cursor")
 [node name="TreeService" type="Node" parent="Services" unique_id=1369464644]
 script = ExtResource("7_ixia8")
 
+[node name="LifeService" type="Node" parent="Services" unique_id=1113758175]
+script = ExtResource("8_b6hms")
+
 [node name="BackLayer" type="CanvasLayer" parent="." unique_id=2061429068]
 layer = -1
 
@@ -151,18 +160,23 @@ transparent_bg = true
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
-render_target_update_mode = 4
 
 [node name="DrawCamera" type="Camera2D" parent="DrawContainer" unique_id=1125928295]
+unique_name_in_owner = true
 script = ExtResource("1_3npyw")
-min_zoom = 4.0
-max_zoom = 8.0
 metadata/_custom_type_script = "uid://ti52tkbtccx4"
+
+[node name="CanvasRenderer" type="Node2D" parent="DrawContainer" unique_id=176802923 node_paths=PackedStringArray("draw_container", "draw_canvas", "draw_camera")]
+script = ExtResource("11_0dgav")
+draw_container = NodePath("..")
+draw_canvas = NodePath("../DrawCanvas")
+draw_camera = NodePath("../DrawCamera")
+metadata/_custom_type_script = "uid://c1pb74fcafelo"
 
 [node name="LifeContainer" type="SubViewportContainer" parent="." unique_id=454031329 groups=["Life"]]
 visible = false
+texture_filter = 1
 material = SubResource("ShaderMaterial_i2c86")
-custom_minimum_size = Vector2(640, 360)
 offset_right = 640.0
 offset_bottom = 360.0
 stretch = true
@@ -174,11 +188,19 @@ transparent_bg = true
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
-render_target_update_mode = 0
 
 [node name="LifeCamera" type="Camera2D" parent="LifeContainer" unique_id=637166127]
+unique_name_in_owner = true
+enabled = false
 script = ExtResource("1_3npyw")
 metadata/_custom_type_script = "uid://ti52tkbtccx4"
+
+[node name="LifeRenderer" type="Node2D" parent="LifeContainer" unique_id=1710342386 node_paths=PackedStringArray("life_container", "life_canvas")]
+script = ExtResource("14_heme7")
+vertex_icons = Array[Texture2D]([ExtResource("15_di6uy"), ExtResource("16_27do3"), ExtResource("17_bjkq6")])
+life_container = NodePath("..")
+life_canvas = NodePath("../LifeCanvas")
+metadata/_custom_type_script = "uid://b3qm7nlw4782r"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=444308579]
 script = ExtResource("11_rfw64")

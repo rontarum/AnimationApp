@@ -7,7 +7,7 @@
 class_name ToolService
 extends Node
 
-var active_tool: BaseTool = null
+var active_tool = null
 var tool_instances: Dictionary = {}  # ToolType.Type -> BaseTool
 var tool_properties: Dictionary = {}  # ToolType.Type -> Dictionary
 
@@ -19,6 +19,7 @@ func _ready() -> void:
 	tool_instances[ToolType.Type.ERASER] = EraserTool.new()
 	tool_instances[ToolType.Type.FILL] = FillTool.new()
 	tool_instances[ToolType.Type.SELECTION] = SelectionTool.new()
+	tool_instances[ToolType.Type.MESH] = MeshTool.new()
 	
 	# Инициализируем properties для каждого инструмента
 	tool_properties[ToolType.Type.BRUSH] = {"size": 1, "shape": 0}  # 0=square, 1=circle
@@ -38,7 +39,7 @@ func select_tool(tool_type: ToolType.Type) -> void:
 	AppState.current_tool = tool_type
 
 ## Возвращает активный инструмент
-func get_active_tool() -> BaseTool:
+func get_active_tool() -> RefCounted:
 	return active_tool
 
 ## Получить property активного инструмента

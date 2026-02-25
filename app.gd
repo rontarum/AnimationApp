@@ -16,11 +16,5 @@ func _ready() -> void:
 	var draw_canvas = $DrawContainer/DrawCanvas
 	Services.canvas.initialize(draw_canvas)
 	
-	# Добавляем CanvasRenderer как child DrawContainer
-	var draw_container = $DrawContainer
-	var canvas_renderer = CanvasRendererScene.new()
-	canvas_renderer.name = "CanvasRenderer"
-	draw_container.add_child(canvas_renderer)
-	
 	# Эмитим событие готовности приложения
 	EventBus.app_ready.emit()

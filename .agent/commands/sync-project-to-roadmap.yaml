@@ -1,0 +1,60 @@
+command: sync-project-to-roadmap
+
+description: >
+  Synchronize project.md with actual implementation
+  based on changed classes and their references in roadmap.md.
+
+arguments:
+  - project_docs_path (required)     # path to project.md
+  - roadmap_path (required)         # path to roadmap.md
+  - template_path (required)        # path to project_template.md
+  - changed_files (required)        # list of .gd paths
+  - comment (optional)
+  - strict_mode (true | false, default: false)
+  - report_path (default: .agent/readme)
+
+execution:
+  1. Normalize changed_files:
+       - Extract file name
+       - Convert snake_case.gd → PascalCase (drop ".gd")
+       - If class_name exists → prefer it
+       - Build list of affected classes
+
+  2. Parse roadmap.md from roadmap_path:
+       - Locate all mentions of affected class names
+       - Extract surrounding logical blocks (paragraph/section level)
+       - Mark them as "design intent" (NOT in roadmap.gd. Just for yourself)
+
+  3. Analyze current implementation for each class:
+       - Methods
+       - Signals
+       - Dependencies (autoloads, services, other classes etc.)
+       - Scene tree access
+       - Side effects
+
+  4. Locate class entries in project.md:
+       - If block exists → update it
+       - If not → create new structured block
+
+  5. Update ONLY for affected classes:
+       - Responsibility
+       - Depends on
+       - Signals
+       - Layer classification (if changed)
+       - Notes: divergence from roadmap (if detected)
+
+  6. Detect Drift:
+       - Responsibility drift (vs existing project.md)
+       - Design drift (vs roadmap.md intent)
+       - Dependency drift
+       - Layer violation (if strict_mode=true)
+
+  7. Create Sync Report MD in report_path directory:
+       - Updated classes
+       - New classes detected
+       - Roadmap divergence
+       - Architectural violations
+
+  8. Overwrite project.md:
+        - Edit the project.md exactly as in the project_template.md formatting
+        - Do NOT modify roadmap.md.

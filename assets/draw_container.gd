@@ -11,6 +11,7 @@ extends SubViewportContainer
 ## НЕ содержит логику рисования или инструментов
 
 @onready var draw_canvas: SubViewport = $DrawCanvas
+@onready var draw_camera: CanvasCamera = %DrawCamera
 
 var mouse_pos: Vector2
 var active_layer: DrawLayer  # DrawLayer extends TextureRect
@@ -29,6 +30,7 @@ func _ready() -> void:
 	# Подписка на события слоев через EventBus
 	EventBus.layer_selected.connect(_on_layer_selected)
 	EventBus.canvas_resized.connect(_on_canvas_resized)
+	visibility_changed.connect(func(): draw_camera.enabled = visible)
 
 func _process(_delta: float) -> void:
 	mouse_pos = get_local_mouse_position()
@@ -36,8 +38,8 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	# === ГЛОБАЛЬНАЯ ОБРАБОТКА (работает везде) ===
 	
-	var active_tool: BaseTool = Services.tool.get_active_tool()
-	if not active_tool:
+	var active_tool = Services.tool.get_active_tool()
+	if not active_tool or not active_tool is BaseTool:
 		return
 	
 	var pixel_pos = Vector2i(floor(mouse_pos))
@@ -87,8 +89,8 @@ func _gui_input(event: InputEvent) -> void:
 	
 	_resolve_cursor_sprite()
 	
-	var active_tool: BaseTool = Services.tool.get_active_tool()
-	if not active_tool:
+	var active_tool = Services.tool.get_active_tool()
+	if not active_tool or not active_tool is BaseTool:
 		return
 	
 	var pixel_pos = Vector2i(floor(mouse_pos))

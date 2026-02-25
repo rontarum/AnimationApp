@@ -4,6 +4,12 @@ enum Mode {SELECT, ADD, REMOVE}
 
 var mode: Mode = Mode.SELECT
 
+var active_item: SpriteMesh
+
+#func _init() -> void:
+	#active_item = AppState.active_item_id
+	#EventBus.item_selected
+
 func handle_input(event: InputEvent, item: SpriteMesh) -> void:
 	
 	if not item:

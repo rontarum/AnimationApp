@@ -1,14 +1,13 @@
 class_name CanvasCamera
 extends Camera2D
 
-static var instance: CanvasCamera
-
 @export var min_zoom: float = 1.0
 @export var max_zoom: float = 64.0
 
 @export var zoom_step: float = 2.0
 var zoom_value: Vector2
 
+@export var canvas_size: Vector2 = Vector2.ZERO
 var drag_mouse: Vector2
 var drag_camera: Vector2
 var is_dragging: bool = false
@@ -18,26 +17,32 @@ var new_mouse_pos: Vector2
 var diff: Vector2
 
 func _init() -> void:
-	instance = self
+	pass
 
 func _ready() -> void:
+	if canvas_size == Vector2.ZERO:
+		canvas_size = AppState.canvas_size
 	zoom = Vector2.ONE
-	position = AppState.canvas_size * 0.5
+	position = canvas_size * 0.5
 	zoom_value = zoom
 	EventBus.canvas_resized.connect(func(size): center_view(size); zoom_to(Vector2.ONE))
 
 func _process(delta: float) -> void:
 	_zoom(delta)
 
+func set_canvas_size(size: Vector2) -> void:
+	canvas_size = size
+	center_view(size); zoom_to(Vector2.ONE)
+
 func center_view(size: Vector2i) -> void:
 	if size:
 		position = size * 0.5
 	else:
-		position = AppState.canvas_size * 0.5
+		position = canvas_size * 0.5
 
 func zoom_to(to: Vector2) -> void:
 	zoom = to
-	position = AppState.canvas_size * 0.5
+	position = canvas_size * 0.5
 	zoom_value = to
 
 func _zoom(delta: float) -> void:
@@ -87,7 +92,6 @@ func _clamp_zoom(zoom_vector: Vector2) -> Vector2:
 	return Vector2(clamped_value, clamped_value)
 
 func _clamp_position(pos: Vector2) -> Vector2:
-	var canvas_size = AppState.canvas_size
 	var viewport_size = get_viewport().get_visible_rect().size
 	var current_zoom = zoom.x
 

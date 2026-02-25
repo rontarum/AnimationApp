@@ -1,0 +1,65 @@
+command: roadmap-notes-decomposite
+
+description: >
+  Transform freeform "Примечание" blocks in roadmap.md
+  into structured roadmap items while strictly preserving
+  roadmap formatting rules and language (Русский).
+
+arguments:
+  - roadmap_path (required)
+  - rules_section_title (default: "Правила оформления карты")
+  - note_keyword (default: "Примечание")
+  - preserve_original (true | false, default: true)
+
+execution:
+  1. Load roadmap.md.
+  2. Detect document language.
+     - Output MUST use same language (Русский).
+  3. Locate section titled rules_section_title.
+     - Parse formatting conventions:
+         • indentation style
+         • emoji usage
+         • heading levels
+         • bullet structure
+         • spacing
+  4. Locate blocks starting with note_keyword.
+  5. For each note block:
+       - Preserve all class names (PascalCase).
+       - Preserve all technical terms.
+       - Preserve intent and constraints.
+       - Compare note content with existing roadmap items
+         within the same logical section.
+
+       - Deduplication logic:
+           • If part of the note is already represented
+             as structured roadmap items → do NOT recreate it.
+           • Only generate items for information
+             not yet represented in roadmap.
+           • If entire note content is already fully covered
+             by existing roadmap items →
+               - Remove the note block.
+               - Do NOT generate new items.
+
+       - Convert remaining (non-duplicated) thought
+         into structured roadmap items.
+       - Follow EXACT formatting rules extracted
+         from rules section.
+
+  6. Replace note block with:
+       - Newly generated items (if any).
+       - If preserve_original=true and note not fully covered:
+           Wrap original note inside:
+             <!-- NOTE ORIGINAL START -->
+             <!-- NOTE ORIGINAL END -->
+       - If note fully covered:
+           Remove it completely.
+
+  7. Do NOT:
+       - Change document language
+       - Miss or modify formatting rules
+       - Invent new ideas
+       - Simplify technical meaning
+       - Modify unrelated sections
+       - Duplicate existing roadmap items
+
+  8. Overwrite roadmap.md.
