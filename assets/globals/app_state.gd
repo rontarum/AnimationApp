@@ -102,7 +102,6 @@ var focused_element: Node:
 			EventBus.ui_element_focused.emit(value)
 
 # === FLAGS ===
-var is_drawing: bool = false
 var is_dragging_camera: bool = false
 var is_color_picking: bool = false
 

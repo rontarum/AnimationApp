@@ -1,25 +1,28 @@
 class_name FillProperties extends ToolProperties
 
 ## UI настроек заливки
-## Отвечает за синхронизацию своих параметров с ToolService
+## Отвечает за синхронизацию своих параметров с FillProps Resource
 
 var is_contiguous: bool = true
+var fill_props: FillProps
 
 func _ready() -> void:
-	# Подписываемся на изменения properties
-	EventBus.tool_property_changed.connect(_on_tool_property_changed)
+	# Получаем FillProps Resource из ToolService
+	fill_props = Services.tool.get_draw_property(ToolType.Type.FILL) as FillProps
 	
-	# Загружаем текущие значения из ToolService
-	var current_contiguous = Services.tool.get_tool_property("contiguous")
-	if current_contiguous != null:
-		is_contiguous = current_contiguous
+	if fill_props:
+		# Загружаем текущие значения
+		is_contiguous = fill_props.contiguous
+		
+		# Подписываемся на изменения через Resource signals
+		fill_props.contiguous_changed.connect(_on_contiguous_changed_from_resource)
 
 func _on_contiguous_property_toggled(toggled_on: bool) -> void:
-	if is_contiguous != toggled_on:
+	if is_contiguous != toggled_on and fill_props:
 		is_contiguous = toggled_on
-		Services.tool.set_tool_property("contiguous", is_contiguous)
+		fill_props.contiguous = is_contiguous
 
-func _on_tool_property_changed(tool_type: ToolType.Type, property: String, value) -> void:
-	# Обновляем UI если изменился наш параметр
-	if tool_type == ToolType.Type.FILL and property == "contiguous":
-		is_contiguous = value
+func _on_contiguous_changed_from_resource(new_contiguous: bool) -> void:
+	# Обновляем UI если изменился параметр извне
+	if is_contiguous != new_contiguous:
+		is_contiguous = new_contiguous

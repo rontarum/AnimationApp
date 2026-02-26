@@ -1,3 +1,9 @@
+---
+inclusion: auto
+name: project
+description: Current Godot project architecture. Use when you need to understand project architecture, dependencies and principles. Important when working with project tasks or planning new features.
+---
+
 # PROJECT_NAME — Architecture Documentation
 
 ## 1. Architectural Overview

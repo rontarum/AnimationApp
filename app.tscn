@@ -144,6 +144,18 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.9490196, 0.9254902, 0.92941177, 1)
 
+[node name="WorkZone" type="Control" parent="." unique_id=670258613]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 64.0
+offset_top = 32.0
+offset_right = 1664.0
+offset_bottom = 952.0
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
 [node name="DrawContainer" type="SubViewportContainer" parent="." unique_id=1656024856 groups=["Draw"]]
 texture_filter = 1
 texture_repeat = 1
@@ -160,6 +172,7 @@ transparent_bg = true
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
+render_target_update_mode = 4
 
 [node name="DrawCamera" type="Camera2D" parent="DrawContainer" unique_id=1125928295]
 unique_name_in_owner = true
@@ -188,6 +201,7 @@ transparent_bg = true
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
+render_target_update_mode = 0
 
 [node name="LifeCamera" type="Camera2D" parent="LifeContainer" unique_id=637166127]
 unique_name_in_owner = true

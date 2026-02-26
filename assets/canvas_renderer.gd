@@ -36,7 +36,7 @@ func _draw() -> void:
 
 ## Рисует pixel preview для активного инструмента
 func _draw_pixel_preview() -> void:
-	var active_tool = Services.tool.get_active_tool()
+	var active_tool = Services.tool.get_active_draw_tool()
 	if not active_tool or not active_tool.should_draw_preview():
 		return
 	
@@ -46,7 +46,13 @@ func _draw_pixel_preview() -> void:
 	if mouse_pos.x >= draw_container.size.x or mouse_pos.y >= draw_container.size.y:
 		return
 	
-	var brush_size: int = int(Services.tool.get_tool_property("size") if Services.tool.get_tool_property("size") != null else 1)
+	# Получаем размер из typed properties
+	var brush_size: int = 1
+	var tool_type = AppState.current_tool
+	var props = Services.tool.get_draw_property(tool_type)
+	if props and "size" in props:
+		brush_size = props.size
+	
 	var half_size: int = int(floor(brush_size / 2.0))
 	
 	# Rect для preview (всегда квадратный)
@@ -81,7 +87,7 @@ func _draw_canvas_border() -> void:
 
 ## Рисует пиксели выделения во время движения
 func _draw_selection_pixels() -> void:
-	var active_tool = Services.tool.get_active_tool()
+	var active_tool = Services.tool.get_active_draw_tool()
 	if not active_tool or not active_tool is SelectionTool:
 		return
 	
@@ -106,7 +112,7 @@ func _draw_selection_pixels() -> void:
 
 ## Рисует gizmo выделения для SelectionTool
 func _draw_selection_gizmo() -> void:
-	var active_tool = Services.tool.get_active_tool()
+	var active_tool = Services.tool.get_active_draw_tool()
 	if not active_tool or not active_tool is SelectionTool:
 		return
 	

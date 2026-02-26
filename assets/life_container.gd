@@ -13,11 +13,13 @@ func _ready() -> void:
 	life_camera.set_canvas_size(size)
 	
 	root_item.name = "RootItem"
-	#root_item.position = life_canvas.size * 0.5
+	#root_item.position = size * 0.5
+	root_item.position = size * 0.5 - AppState.canvas_size * 0.5
 	life_canvas.add_child(root_item, true)
 	
 	EventBus.canvas_resized.connect(_on_canvas_resized)
 	EventBus.tab_changed.connect(_on_tab_changed)
+	EventBus.item_selected.connect(_on_item_selected)
 	visibility_changed.connect(func(): life_camera.enabled = visible)
 
 func _on_tab_changed(tab: int) -> void:
@@ -41,8 +43,27 @@ func _items_from_layers() -> void:
 		var item := SpriteMesh.new()
 		item.name = layer.get_layer_name()
 		item.texture = ImageTexture.create_from_image(image)
-		item.position = rect.position * 0.5
+		var rect_center := (Vector2(rect.position) * 0.5)
+		item.position = rect_center
 		root_item.add_child(item)
 
 func _on_canvas_resized(new_size: Vector2i) -> void:
 	size = new_size * 2.0
+
+func _gui_input(event: InputEvent) -> void:
+	var active_tool = Services.tool.get_active_life_tool()
+	if not active_tool or not active_item:
+		return
+	
+	active_tool.handle_input(event, active_item)
+
+func _on_item_selected(item_id: int) -> void:
+	if item_id < 0 or item_id >= root_item.get_child_count():
+		active_item = null
+		return
+	
+	var item = root_item.get_child(item_id)
+	if item is SpriteMesh:
+		active_item = item
+	else:
+		active_item = null

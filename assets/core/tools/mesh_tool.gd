@@ -111,3 +111,28 @@ func _uvs_from_vertices(vertices: PackedVector2Array) -> PackedVector2Array:
 			)
 	
 	return uvs
+
+## Signal handlers for MeshProps
+func _on_create_polygon_requested() -> void:
+	if active_item:
+		create_polygon(active_item)
+
+func _on_make_mesh_requested() -> void:
+	if active_item:
+		make_mesh(active_item)
+
+func _on_clear_vertices_requested() -> void:
+	if active_item:
+		active_item.vertex.clear()
+		active_item.uv.clear()
+		active_item.index.clear()
+		print(active_item.name, " vertices cleared")
+
+## Connect to MeshProps signals
+func connect_to_properties(properties: Resource) -> void:
+	if properties.has_signal("create_polygon_requested"):
+		properties.create_polygon_requested.connect(_on_create_polygon_requested)
+	if properties.has_signal("make_mesh_requested"):
+		properties.make_mesh_requested.connect(_on_make_mesh_requested)
+	if properties.has_signal("clear_vertices_requested"):
+		properties.clear_vertices_requested.connect(_on_clear_vertices_requested)

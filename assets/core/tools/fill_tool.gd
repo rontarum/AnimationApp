@@ -1,10 +1,15 @@
-class_name FillTool extends BaseTool
+class_name FillTool extends DrawTool
 
 ## Инструмент заливки - заполняет область одинакового цвета
 ## 
 ## Зона ответственности:
 ## - Flood fill алгоритм для связанных областей (contiguous)
 ## - Заливка всех пикселей цвета (non-contiguous)
+
+var _is_contiguous: bool = true
+
+func _on_contiguous_changed(new_contiguous: bool) -> void:
+	_is_contiguous = new_contiguous
 
 func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if not layer:
@@ -17,9 +22,7 @@ func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if target_color.is_equal_approx(color) or target_color == color:
 		return
 	
-	var is_contiguous: bool = Services.tool.get_tool_property("contiguous")
-	
-	if is_contiguous:
+	if _is_contiguous:
 		_flood_fill_contiguous(position, layer, target_color, color)
 	else:
 		_flood_fill_all(layer, target_color, color)
@@ -83,3 +86,10 @@ func _colors_match(a: Color, b: Color) -> bool:
 	if a.a == 0.0 and b.a == 0.0:
 		return true
 	return a.is_equal_approx(b)
+
+func connect_to_properties(properties: Resource) -> void:
+	if properties.has_signal("contiguous_changed"):
+		properties.contiguous_changed.connect(_on_contiguous_changed)
+		# Initialize current value
+		_is_contiguous = properties.get("contiguous")
+

@@ -1,5 +1,7 @@
 ---
-inclusion: manual
+inclusion: auto
+name: roadmap
+description: User's project roadmap. Use this as reference when planning new features or refactoring current, for keep in mind future cases and dependencies.
 ---
 
 # Архитектурная карта Roadmap проекта ANIMATIONAPP

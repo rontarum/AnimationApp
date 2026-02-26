@@ -1,4 +1,4 @@
-class_name BaseTool extends RefCounted
+class_name DrawTool extends RefCounted
 
 ## Базовый класс для всех инструментов рисования
 ## Определяет единый интерфейс для взаимодействия с canvas

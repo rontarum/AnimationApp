@@ -1,4 +1,4 @@
-class_name BrushTool extends BaseTool
+class_name BrushTool extends DrawTool
 
 ## Инструмент кисти - рисует пиксели выбранным цветом
 ## 
@@ -7,6 +7,8 @@ class_name BrushTool extends BaseTool
 ## - Обновление preview данных для отрисовки
 
 var _temp_position: Vector2i
+var _brush_size: int = 1
+var _brush_shape: int = 0  # 0=square, 1=circle
 
 func on_press(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 	if layer:
@@ -27,15 +29,13 @@ func on_release(position: Vector2i, layer: DrawLayer, color: Color) -> void:
 		layer.finish_changes()
 
 func _draw_brush(position: Vector2i, layer: DrawLayer, color: Color) -> void:
-	var brush_size: int = int(Services.tool.get_tool_property("size"))
-	var brush_shape: int = int(Services.tool.get_tool_property("shape"))  # 0=square, 1=circle
-	var half_size: int = int(floor(brush_size / 2.0))
+	var half_size: int = int(floor(_brush_size / 2.0))
 	
 	# Рисуем кисть в зависимости от формы
-	if brush_shape == 0:  # Square
-		_draw_square_brush(position, layer, color, brush_size, half_size)
+	if _brush_shape == 0:  # Square
+		_draw_square_brush(position, layer, color, _brush_size, half_size)
 	else:  # Circle
-		_draw_circle_brush(position, layer, color, brush_size, half_size)
+		_draw_circle_brush(position, layer, color, _brush_size, half_size)
 	
 	preview_position = position
 	preview_color = color
@@ -78,3 +78,17 @@ func _blend_colors(source: Color, color: Color) -> Color:
 	var blended: Color = source * (1.0 - color.a) + color * color.a
 	blended.a = source.a + color.a
 	return blended
+
+func _on_size_changed(new_size: int) -> void:
+	_brush_size = new_size
+
+func _on_shape_changed(new_shape: int) -> void:
+	_brush_shape = new_shape
+
+func connect_to_properties(properties: Resource) -> void:
+	if properties.has_signal("size_changed") and properties.has_signal("shape_changed"):
+		properties.size_changed.connect(_on_size_changed)
+		properties.shape_changed.connect(_on_shape_changed)
+		# Initialize current values
+		_brush_size = properties.get("size")
+		_brush_shape = properties.get("shape")

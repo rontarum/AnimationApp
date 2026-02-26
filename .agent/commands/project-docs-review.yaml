@@ -29,6 +29,9 @@ execution:
   6. Detect architectural violations if described:
      - Layer rule inconsistencies
      - Undefined dependency constraints
-  7. Create project_docs_review.md in review_path directory and generate structured validation report.
-  8. If strict_mode=true:
+  7. Find and notice redundancies: 
+     - Сomplications, repeated logic, over-explaining class details (methods/signals/fields, etc.)
+     - Everything should be simple, clean, to the point, and concise.
+  8. Create project_docs_review.md in review_path directory and generate structured validation report.
+  9. If strict_mode=true:
        return failure status on any mismatch.

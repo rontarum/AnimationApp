@@ -1,5 +1,7 @@
 ---
-inclusion: manual
+inclusion: auto
+name: project
+description: Current Godot project architecture. Use when you need to understand project architecture, dependencies and principles. Important when working with project tasks or planning new features.
 ---
 
 # AnimApp — Architecture Documentation
@@ -201,20 +203,28 @@ Used by:
 Type: Service / Manager
 
 Responsibility:
-- Tool instance management and lifecycle
+- Tool instance management and lifecycle (separated by mode: Draw/Life)
 - Tool selection and activation
-- Tool property management (size, shape, etc.)
+- Typed property resource management via signal-based communication
 - Tool action coordination (start, update, finish)
 
 Depends on:
 - EventBus (tool_selected, layer_selected, tab_changed)
 - AppState (current_tool, is_drawing)
-- Tool instances (BrushTool, EraserTool, FillTool, SelectionTool, MeshTool)
+- DrawTool instances (BrushTool, EraserTool, FillTool, SelectionTool)
+- LifeTool instances (MeshTool)
+- Property resources (BrushProps, EraserProps, FillProps, MeshProps)
 
 Side effects:
-- Creates tool instances on initialization
-- Emits tool_property_changed events
+- Creates tool instances on initialization (separated by draw_tool_instances and life_tool_instances)
+- Creates typed property resources and connects them to tools via signals
 - Updates AppState.current_tool
+- Switches active tool based on mode (active_draw_tool vs active_life_tool)
+
+Notes:
+- Refactored from dictionary-based properties to typed Resource classes
+- Signal-based communication pattern: Properties emit signals → Tools listen and update internal state
+- Each tool connects to its property resource via `connect_to_properties()`
 
 ### LayerService
 Type: Service / Manager
@@ -324,23 +334,34 @@ Side effects:
 
 ## 5. Core Domain Layer
 
-### BaseTool
-Type: RefCounted (Pure Logic)
+### DrawTool (formerly BaseTool)
+Type: RefCounted (Pure Logic, Base Class for Draw Mode Tools)
 
 Responsibility:
-- Abstract interface for all drawing tools
+- Abstract interface for all Draw mode tools
 - Defines tool lifecycle: on_press, on_drag, on_release, on_hover, on_mouse_exit, on_resize
-- Preview data management
-- Canvas bounds checking
+- Preview data management (preview_position, preview_color)
+- Canvas bounds checking via limits_check()
+
+Depends on:
+- History.undo_redo (for undo/redo support)
+- Services.tool (for resize operations)
+- AppState (for canvas_size bounds checking)
 
 Constraints:
 - No Node dependencies (RefCounted)
 - No direct scene tree manipulation
 - Receives data (position, layer, color) and performs operations
-- Access to History.undo_redo for undo/redo support
+- Works with DrawLayer for pixel manipulation
+
+Notes:
+- Renamed from BaseTool to clarify separation from LifeTool
+- All Draw mode tools extend this class
+
+---
 
 ### BrushTool
-Type: RefCounted (extends BaseTool)
+Type: RefCounted (extends DrawTool)
 
 Responsibility:
 - Pixel drawing with configurable size and shape
@@ -348,56 +369,127 @@ Responsibility:
 - Color blending with alpha support
 - Preview rendering
 
+Depends on:
+- DrawTool (base class)
+- BrushProps (property resource via signals)
+- DrawLayer (pixel operations)
+
+Properties:
+- _brush_size: int (1-10, updated via signal)
+- _brush_shape: int (0=square, 1=circle, updated via signal)
+
+Signal Handlers:
+- _on_size_changed: Updates _brush_size
+- _on_shape_changed: Updates _brush_shape
+
 Constraints:
 - Pure logic, no UI dependencies
 - Operates on DrawLayer.image directly
-- Uses Services.tool for property access
+- Signal-based property updates via connect_to_properties()
+
+---
 
 ### EraserTool
-Type: RefCounted (extends BaseTool)
+Type: RefCounted (extends DrawTool)
 
 Responsibility:
 - Pixel erasing (set to transparent)
 - Configurable eraser size
+- Preview rendering
+
+Depends on:
+- DrawTool (base class)
+- EraserProps (property resource via signals)
+- DrawLayer (pixel operations)
+
+Properties:
+- _eraser_size: int (1-10, updated via signal)
+
+Signal Handlers:
+- _on_size_changed: Updates _eraser_size
 
 Constraints:
 - Similar to BrushTool but sets alpha to 0
+- Signal-based property updates via connect_to_properties()
+
+---
 
 ### FillTool
-Type: RefCounted (extends BaseTool)
+Type: RefCounted (extends DrawTool)
 
 Responsibility:
 - Flood fill algorithm
 - Contiguous/non-contiguous fill modes
+- Preview rendering (position only)
+
+Depends on:
+- DrawTool (base class)
+- FillProps (property resource via signals)
+- DrawLayer (pixel operations)
+
+Properties:
+- _is_contiguous: bool (updated via signal)
+
+Signal Handlers:
+- _on_contiguous_changed: Updates _is_contiguous
+
+Operations:
+- _flood_fill_contiguous: Flood fill for connected regions
+- _flood_fill_all: Fill all pixels of target color
+- _colors_match: Color comparison with alpha handling
 
 Constraints:
 - Operates on entire image data
-- No preview rendering
+- Signal-based property updates via connect_to_properties()
+
+---
 
 ### SelectionTool
-Type: RefCounted (extends BaseTool)
+Type: RefCounted (extends DrawTool)
 
 Responsibility:
 - Rectangular selection
 - Selection movement
 - Copy/paste operations
 
+Depends on:
+- DrawTool (base class)
+- LayerService (for operations)
+
 Constraints:
 - Manages selection state internally
 - Coordinates with LayerService for operations
 
+Notes:
+- Not refactored in current iteration (still extends DrawTool)
+
+---
+
 ### LifeTool
-Type: RefCounted (Base Class for Life Tools)
+Type: RefCounted (Base Class for Life Mode Tools)
 
 Responsibility:
 - Abstract base class for Life mode tools
 - Provides common interface for Life tool operations
 - Undo/redo support through History
 
+Depends on:
+- History.undo_redo (for undo/redo support)
+
+Interface:
+- handle_input(event, item): Process input events for SpriteMesh items
+- should_draw_preview(answer): Return whether preview should be drawn
+
 Constraints:
 - RefCounted (no Node dependencies)
-- Defines handle_input(event, item) interface
-- Provides should_draw_preview() method
+- Works with SpriteMesh items instead of DrawLayer
+- Different input model than DrawTool (event-based vs position-based)
+
+Notes:
+- Minimal base implementation
+- Designed for Life mode tool hierarchy
+
+---
 
 ### MeshTool
 Type: RefCounted (extends LifeTool)
@@ -410,9 +502,14 @@ Responsibility:
 
 Depends on:
 - LifeTool (base class)
+- MeshProps (property resource via signals)
 - SpriteMesh (operates on SpriteMesh instances)
 - History.undo_redo (inherited from LifeTool)
 - Geometry2D (triangulation, convex hull)
+
+Properties:
+- mode: Mode enum (SELECT, ADD, REMOVE - not fully implemented)
+- active_item: SpriteMesh (current working item)
 
 Operations:
 - add_point: Add vertex to polygon
@@ -422,10 +519,72 @@ Operations:
 - _copy_uv: Synchronize UV coordinates with vertices
 - _uvs_from_vertices: Calculate normalized UV coordinates
 
+Signal Handlers:
+- _on_create_polygon_requested: Triggers create_polygon()
+- _on_make_mesh_requested: Triggers make_mesh()
+- _on_clear_vertices_requested: Clears vertex/uv/index arrays
+
 Constraints:
 - Operates on SpriteMesh items (not DrawLayer)
 - Pure logic, no direct scene tree manipulation
-- Mode enum: SELECT, ADD, REMOVE (not fully implemented)
+- Signal-based communication with MeshProps
+
+Notes:
+- Roadmap indicates need for better communication pattern with MeshProperties
+- Current signal-based approach implemented but may need iteration
+
+---
+
+### Property Resources
+
+#### BrushProps
+Type: Resource (Tool Property)
+
+Responsibility:
+- Store and manage BrushTool properties
+- Emit signals on property changes
+
+Signals:
+- size_changed(new_size: int)
+- shape_changed(new_shape: int)
+
+Properties:
+- size: int (1-10, clamped)
+- shape: int (0=square, 1=circle)
+
+---
+
+#### EraserProps
+Type: Resource (Tool Property)
+
+Responsibility:
+- Store and manage EraserTool properties
+- Emit signals on property changes
+
+Signals:
+- size_changed(new_size: int)
+
+Properties:
+- size: int (1-10, clamped)
+
+---
+
+#### FillProps
+Type: Resource (Tool Property)
+
+Responsibility:
+- Store and manage FillTool properties
+- Emit signals on property changes
+
+Signals:
+- contiguous_changed(new_contiguous: bool)
+
+Properties:
+- contiguous: bool
+
+---
+Notes:
+- Roadmap indicates dissatisfaction with current communication approach
 
 ---
 
@@ -465,20 +624,32 @@ Responsibility:
 - SpriteMesh creation from DrawLayer images on tab switch
 - Image trimming and positioning for Life mode
 - Root item hierarchy management
+- Active item tracking and input routing to LifeTool
 
 Depends on:
 - LifeCanvas (SubViewport child)
 - CanvasCamera (for camera control)
-- EventBus (canvas_resized, tab_changed)
+- EventBus (canvas_resized, tab_changed, item_selected)
 - AppState (canvas_size)
 - Services.canvas (get_all_layers)
+- Services.tool (get_active_life_tool)
 - DrawLayer (source for SpriteMesh creation)
+- SpriteMesh (creation and management)
+
+Operations:
+- _items_from_layers: Creates SpriteMesh instances from DrawLayer images
+- _gui_input: Routes input events to active LifeTool via handle_input()
 
 Side effects:
-- Creates SpriteMesh instances from DrawLayer images
+- Creates SpriteMesh instances from DrawLayer images on tab switch
 - Adds SpriteMesh to root_item hierarchy
-- Trims images to used rect (optimization)
+- Trims images to used rect (optimization via get_used_rect() and blit_rect())
 - Manages LifeCanvas size synchronization
+- Tracks active_item for tool operations
+
+Notes:
+- Implements roadmap goal: "Инициализация Life режима при переключении вкладки"
+- Image trimming preserves positions via rect.position offset
 
 #### LifeRenderer
 Type: Node2D (Scene Component)
@@ -554,11 +725,28 @@ Notes:
 ### Drawing Operation Flow
 1. User mouse event on DrawContainer
 2. CanvasRenderer captures event
-3. CanvasRenderer calls active tool method (on_press/on_drag/on_release)
-4. Tool operates on DrawLayer.image (pixel manipulation)
-5. Tool calls DrawLayer.update_image() or start_changes()/finish_changes()
+3. CanvasRenderer calls active DrawTool method (on_press/on_drag/on_release)
+4. DrawTool operates on DrawLayer.image (pixel manipulation)
+5. DrawTool calls DrawLayer.update_image() or start_changes()/finish_changes()
 6. DrawLayer updates ImageTexture
 7. Visual update appears on canvas
+
+### Life Mode Operation Flow
+1. User mouse event on LifeContainer
+2. LifeContainer captures event via _gui_input()
+3. LifeContainer gets active LifeTool from Services.tool
+4. LifeContainer calls LifeTool.handle_input(event, active_item)
+5. LifeTool operates on SpriteMesh (vertex/mesh manipulation)
+6. SpriteMesh updates mesh data (vertex, uv, index)
+7. Visual update appears on canvas
+
+### Tool Property Flow
+1. UI component changes property (e.g., brush size slider)
+2. UI updates property resource (e.g., BrushProps.size = 5)
+3. Property resource setter emits signal (e.g., size_changed.emit(5))
+4. Tool receives signal via connected handler (e.g., _on_size_changed(5))
+5. Tool updates internal state (e.g., _brush_size = 5)
+6. Next tool operation uses updated property
 
 ### Save/Load Flow
 1. User triggers save via DrawMenu
@@ -653,14 +841,14 @@ Where new systems can be added safely:
 - UI.gd and tab groups: Manual group management for tab switching
 - LifeContainer and DrawLayer: Direct dependency for SpriteMesh creation
 - LifeRenderer and MeshTool: Type checking for tool-specific rendering
+- Tool-Property communication: Signal-based pattern implemented but may need iteration (roadmap note)
 
 ### Refactoring Candidates
 - DrawLayer: Could be abstracted to interface for different layer types
-- Tool property management: Currently dictionary-based, could use typed classes (noted in roadmap for MeshProperties)
 - Layer ordering: Currently UI-managed, could move to LayerService
 - File dialogs: Scattered across DrawMenu, could centralize
 - SpriteMesh: Currently in tests/ directory, should move to proper location (assets/core or assets/life)
-- LifeTool separation: Roadmap suggests splitting BaseTool into DrawTool and LifeTool hierarchies
+- MeshProps communication: Roadmap indicates dissatisfaction with current pattern, may need redesign
 
 ### Performance Bottlenecks
 - Large canvas sizes: Pixel-by-pixel operations in tools
@@ -673,9 +861,14 @@ Where new systems can be added safely:
 - EventBus: Many signals, can be hard to trace data flow
 - AppState reactive setters: Implicit behavior, not obvious from call sites
 - Mixed responsibilities: CanvasService handles both drawing and file I/O
-- Tool properties communication: MeshProperties → MeshTool communication pattern needs redesign (roadmap note)
 - SpriteMesh location: Class in tests/ directory violates project structure
 - LifeService minimal implementation: Currently only stores reference, needs expansion for Life mode features
+
+### Recent Improvements
+- ✅ Tool system refactored: BaseTool → DrawTool/LifeTool separation
+- ✅ Typed property resources: Replaced dictionary-based properties with Resource classes
+- ✅ Signal-based communication: Tools connect to property resources via signals
+- ✅ Mode-specific tool storage: draw_tool_instances vs life_tool_instances
 
 ### Future Considerations
 - Animation system: Timeline panel exists but not implemented
@@ -684,3 +877,4 @@ Where new systems can be added safely:
 - Mesh editing: Full MeshTool functionality with preview rendering
 - Camera limits: CanvasCamera bounds need fixing (roadmap note)
 - Endless Canvas: Dynamic canvas sizing for Life mode (roadmap)
+- Tool-Property pattern: May need further iteration based on user feedback

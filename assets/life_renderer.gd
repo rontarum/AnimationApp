@@ -16,7 +16,7 @@ var active_tool = null
 func _ready() -> void:
 	add_to_group("Life", true)
 	EventBus.tool_selected.connect(_on_active_tool_changed)
-	active_tool = Services.tool.get_active_tool()
+	active_tool = Services.tool.get_active_life_tool()
 
 func _process(delta: float) -> void:
 	if not life_container or not visible:
@@ -48,7 +48,7 @@ func _draw_point(pos: Vector2, state: VertexState) -> void:
 	
 
 func _on_active_tool_changed(tool) -> void:
-	active_tool = Services.tool.get_active_tool()
+	active_tool = Services.tool.get_active_life_tool()
 	print(active_tool)
 
 func _in_boundary() -> bool:

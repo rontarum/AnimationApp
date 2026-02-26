@@ -17,5 +17,9 @@ execution:
   4. Classify architectural layers.
   5. Detect dependency violations.
   6. Infer architectural style.
-  7. Populate template sections dynamically.
+  7. Populate template sections dynamically. Be thorough, clear, and concise.
+  Don't repeat yourself. 
+  Don't over-explain the logic of each class—just provide clear hints.
+  There's no need to list fields, methods, or signals from each class and describe them—just general information about the class's role.
+  Keep things simple; don't clutter the document with hundreds of unnecessary lines.
   8. Overwrite (or create new steering if not exists) project.md.

@@ -1,4 +1,4 @@
-class_name SelectionTool extends BaseTool
+class_name SelectionTool extends DrawTool
 
 ## Инструмент выделения - выделяет прямоугольные области и перемещает их содержимое
 ## 

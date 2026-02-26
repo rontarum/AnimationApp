@@ -38,8 +38,8 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	# === ГЛОБАЛЬНАЯ ОБРАБОТКА (работает везде) ===
 	
-	var active_tool = Services.tool.get_active_tool()
-	if not active_tool or not active_tool is BaseTool:
+	var active_tool: DrawTool = Services.tool.get_active_draw_tool()
+	if not active_tool:
 		return
 	
 	var pixel_pos = Vector2i(floor(mouse_pos))
@@ -89,8 +89,8 @@ func _gui_input(event: InputEvent) -> void:
 	
 	_resolve_cursor_sprite()
 	
-	var active_tool = Services.tool.get_active_tool()
-	if not active_tool or not active_tool is BaseTool:
+	var active_tool: DrawTool = Services.tool.get_active_draw_tool()
+	if not active_tool:
 		return
 	
 	var pixel_pos = Vector2i(floor(mouse_pos))
@@ -165,7 +165,7 @@ func _on_mouse_exited() -> void:
 		return
 	
 	# Уведомляем активный инструмент о выходе мыши
-	var active_tool = Services.tool.get_active_tool()
+	var active_tool: DrawTool = Services.tool.get_active_draw_tool()
 	if active_tool and active_layer:
 		active_tool.on_mouse_exit(active_layer)
 	
