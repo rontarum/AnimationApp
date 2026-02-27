@@ -9,14 +9,15 @@ func _ready() -> void:
 	root.set_text(0, "Root")
 	hide_root = true
 	
-	_create_item("Leaf 1", root)
-	var l := _create_item("Leaf 2", root)
-	_create_item("Leaf 3", l)
+	item_selected.connect(_on_item_selected)
+	
+	# Регистрируем себя в TreeService
+	Services.tree.tree = self
 
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_DRAG_BEGIN:
-			drop_mode_flags = DROP_MODE_ON_ITEM | DROP_MODE_INBETWEEN
+			drop_mode_flags = DROP_MODE_INBETWEEN
 		NOTIFICATION_DRAG_END:
 			drop_mode_flags = 0
 
@@ -67,6 +68,9 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if (section == -1 or section == 1) and target.get_parent() == null:
 		section = 0
 
+	# Эмитим событие ДО изменения дерева
+	EventBus.tree_item_move_requested.emit(source, target, section)
+
 	# Сохраняем всё поддерево source
 	var saved := _save_subtree(source)
 	# Удаляем оригинал
@@ -109,3 +113,21 @@ func _restore_subtree(data: Dictionary, parent: TreeItem) -> TreeItem:
 		_restore_subtree(child_data, item)
 	return item
 	
+
+
+func _on_item_selected() -> void:
+	var selected := get_selected()
+	if selected:
+		var item_id := selected.get_index()
+		EventBus.tree_item_selected.emit(item_id)
+
+
+func delete_selected_item() -> void:
+	var selected := get_selected()
+	if selected and selected != get_root():
+		EventBus.tree_item_delete_requested.emit(selected)
+
+func duplicate_selected_item() -> void:
+	var selected := get_selected()
+	if selected and selected != get_root():
+		EventBus.tree_item_duplicate_requested.emit(selected)

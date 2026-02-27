@@ -7,6 +7,7 @@ description: >
 arguments:
   - template_path (required)
   - project_docs_path (required)
+  - project_docs_review (optional)
   - scan_codebase (true | false, default: false)
 
 execution:
@@ -20,7 +21,8 @@ execution:
          - dependencies
          - detected layer role
   4. Compare:
-       - Template structure
+       - if project_docs_review exists:
+         Get basic info about issues in docs from project_docs_review.md
        - Existing document structure
        - Actual code structure (if scanned)
   5. Rebuild architecture document:

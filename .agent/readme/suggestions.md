@@ -1,10 +1,6 @@
 Изучил Known Architectural Risks детально. Вижу более серьёзную картину:
 
 Критический анализ рисков
-🔴 Критичные (блокируют развитие):
-Tool property management - словари вместо типов, MeshProperties → MeshTool коммуникация сломана
-SpriteMesh в tests/ - нарушает структуру, будет проблема при расширении
-LifeService минимальная - заглушка, нужна полноценная реализация для Life режима
 🟡 Средние (усложняют поддержку):
 CanvasService mixed responsibilities - рисование + file I/O в одном месте
 Layer ordering в UI - должно быть в LayerService

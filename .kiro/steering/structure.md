@@ -1,7 +1,7 @@
 ﻿---
 inclusion: auto
 name: structure
-description: Project current structure. Use this when you need to know project file-folder structure to avoid jump-finding file-to-file.
+description: Project current structure. Use this when you need to know project file-folder structure to avoid jump-finding file-to-file. You can also use this when you need to know logic of concrete systems just by finding key-words/names in that struсture (if you don't need to know all project architecture and dependencies).
 ---
 
 # Current project structure
@@ -41,6 +41,9 @@ description: Project current structure. Use this when you need to know project f
 |   |   |-- tools
 |   |   |   |-- draw
 |   |   |   |-- life
+|   |-- game
+|   |   |-- poly_sprite.gd
+|   |   |-- sprite_mesh.gd
 |   |-- scripts
 |   |   |-- cursor_states
 |   |   |-- cursor_sprite.gd
@@ -93,12 +96,10 @@ description: Project current structure. Use this when you need to know project f
 |-- tests
 |   |-- penguin_mesh
 |   |-- animations_test.gdshader
-|   |-- animations_test.tscn
-|   |-- poly_sprite.gd
-|   |-- sprite_mesh.gd
+|   +-- animations_test.tscn
 |-- app.gd
 |-- app.tres
 |-- app.tscn
-|-- blank.gd
+|-- godot_theme_colors.gd
 +-- test.tres
 ```

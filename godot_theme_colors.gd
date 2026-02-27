@@ -1,4 +1,5 @@
 extends Node
+## Референс цветов редактора только для пользователя. 
 
 func _a():
 	Color("#1C1F2EFF") ## Interface — Base Color

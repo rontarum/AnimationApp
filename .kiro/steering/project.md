@@ -308,13 +308,27 @@ Type: Service / Manager
 
 Responsibility:
 - Tree/hierarchy management for Life mode
-- Node relationship tracking
+- Synchronization between TreeItem (UI) and SpriteMesh (scene)
+- TreeItem creation for each SpriteMesh during initialization
+- Coordination of move, delete, and duplicate operations
+- Relationship management via metadata (TreeItem → SpriteMesh)
 
 Depends on:
-- EventBus (tree-related events)
+- EventBus (tree_item_move_requested, tree_item_delete_requested, tree_item_duplicate_requested)
+- Tree (UI component)
+- LifeContainer (for SpriteMesh operations)
+- SpriteMesh (via metadata)
 
 Side effects:
-- Manages tree data structures
+- Creates/deletes TreeItem in Tree
+- Calls LifeContainer methods for SpriteMesh synchronization
+- Fully clears and recreates tree during initialization
+
+Notes:
+- Implements roadmap goal: "TreePanel synchronization with SpriteMesh"
+- Uses metadata(0) to store SpriteMesh reference
+- Tree and LifeContainer self-register via _ready()
+- No UndoRedo support (simplified implementation)
 
 ### LifeService
 Type: Service / Manager
@@ -374,14 +388,6 @@ Depends on:
 - BrushProps (property resource via signals)
 - DrawLayer (pixel operations)
 
-Properties:
-- _brush_size: int (1-10, updated via signal)
-- _brush_shape: int (0=square, 1=circle, updated via signal)
-
-Signal Handlers:
-- _on_size_changed: Updates _brush_size
-- _on_shape_changed: Updates _brush_shape
-
 Constraints:
 - Pure logic, no UI dependencies
 - Operates on DrawLayer.image directly
@@ -402,12 +408,6 @@ Depends on:
 - EraserProps (property resource via signals)
 - DrawLayer (pixel operations)
 
-Properties:
-- _eraser_size: int (1-10, updated via signal)
-
-Signal Handlers:
-- _on_size_changed: Updates _eraser_size
-
 Constraints:
 - Similar to BrushTool but sets alpha to 0
 - Signal-based property updates via connect_to_properties()
@@ -426,17 +426,6 @@ Depends on:
 - DrawTool (base class)
 - FillProps (property resource via signals)
 - DrawLayer (pixel operations)
-
-Properties:
-- _is_contiguous: bool (updated via signal)
-
-Signal Handlers:
-- _on_contiguous_changed: Updates _is_contiguous
-
-Operations:
-- _flood_fill_contiguous: Flood fill for connected regions
-- _flood_fill_all: Fill all pixels of target color
-- _colors_match: Color comparison with alpha handling
 
 Constraints:
 - Operates on entire image data
@@ -507,23 +496,6 @@ Depends on:
 - History.undo_redo (inherited from LifeTool)
 - Geometry2D (triangulation, convex hull)
 
-Properties:
-- mode: Mode enum (SELECT, ADD, REMOVE - not fully implemented)
-- active_item: SpriteMesh (current working item)
-
-Operations:
-- add_point: Add vertex to polygon
-- remove_point: Remove vertex from polygon
-- make_mesh: Generate ArrayMesh from vertices using Delaunay triangulation
-- create_polygon: Auto-generate convex hull polygon from sprite texture
-- _copy_uv: Synchronize UV coordinates with vertices
-- _uvs_from_vertices: Calculate normalized UV coordinates
-
-Signal Handlers:
-- _on_create_polygon_requested: Triggers create_polygon()
-- _on_make_mesh_requested: Triggers make_mesh()
-- _on_clear_vertices_requested: Clears vertex/uv/index arrays
-
 Constraints:
 - Operates on SpriteMesh items (not DrawLayer)
 - Pure logic, no direct scene tree manipulation
@@ -544,10 +516,6 @@ Responsibility:
 - Store and manage BrushTool properties
 - Emit signals on property changes
 
-Signals:
-- size_changed(new_size: int)
-- shape_changed(new_shape: int)
-
 Properties:
 - size: int (1-10, clamped)
 - shape: int (0=square, 1=circle)
@@ -561,9 +529,6 @@ Responsibility:
 - Store and manage EraserTool properties
 - Emit signals on property changes
 
-Signals:
-- size_changed(new_size: int)
-
 Properties:
 - size: int (1-10, clamped)
 
@@ -576,13 +541,26 @@ Responsibility:
 - Store and manage FillTool properties
 - Emit signals on property changes
 
-Signals:
-- contiguous_changed(new_contiguous: bool)
-
 Properties:
 - contiguous: bool
 
 ---
+
+#### MeshProps
+Type: Resource (Tool Property)
+
+Responsibility:
+- Store and manage MeshTool properties
+- Emit signals on property changes
+
+Signals:
+- create_polygon_requested()
+- make_mesh_requested()
+- clear_vertices_requested()
+
+Properties:
+- None (button-triggered operations only)
+
 Notes:
 - Roadmap indicates dissatisfaction with current communication approach
 
@@ -613,6 +591,7 @@ Notes:
 - MainTabs: Mode switcher (Draw, Life, Evo)
 - SwatchPicker: Color picker
 - Dialogs: File operations and project creation
+- Tree: Hierarchy tree for Life mode (SpriteMesh management)
 
 ### Scene Components (Rendering Layer)
 
@@ -625,6 +604,7 @@ Responsibility:
 - Image trimming and positioning for Life mode
 - Root item hierarchy management
 - Active item tracking and input routing to LifeTool
+- SpriteMesh operations: move, delete, duplicate
 
 Depends on:
 - LifeCanvas (SubViewport child)
@@ -633,12 +613,9 @@ Depends on:
 - AppState (canvas_size)
 - Services.canvas (get_all_layers)
 - Services.tool (get_active_life_tool)
+- Services.tree (registration and populate_tree_from_meshes call)
 - DrawLayer (source for SpriteMesh creation)
 - SpriteMesh (creation and management)
-
-Operations:
-- _items_from_layers: Creates SpriteMesh instances from DrawLayer images
-- _gui_input: Routes input events to active LifeTool via handle_input()
 
 Side effects:
 - Creates SpriteMesh instances from DrawLayer images on tab switch
@@ -646,10 +623,14 @@ Side effects:
 - Trims images to used rect (optimization via get_used_rect() and blit_rect())
 - Manages LifeCanvas size synchronization
 - Tracks active_item for tool operations
+- Registers with TreeService via _ready()
+- Uses free() instead of queue_free() for immediate deletion
+- Clears old SpriteMesh before creating new ones (prevents duplicates)
 
 Notes:
-- Implements roadmap goal: "Инициализация Life режима при переключении вкладки"
+- Implements roadmap goal: "Life mode initialization on tab switch"
 - Image trimming preserves positions via rect.position offset
+- Move operation preserves only sibling order, nesting disabled
 
 #### LifeRenderer
 Type: Node2D (Scene Component)
@@ -687,6 +668,33 @@ Owns State:
 
 Depends on:
 - MeshInstance2D (base class)
+
+#### Tree
+Type: Tree (UI Component)
+
+Responsibility:
+- Display SpriteMesh hierarchy in Life mode
+- Drag & drop for element reordering
+- Event emission for operations (move, delete, duplicate, select)
+- Subtree preservation during moves
+
+Depends on:
+- EventBus (tree_item_move_requested, tree_item_delete_requested, tree_item_duplicate_requested, tree_item_selected)
+- Services.tree (self-registration)
+- Leaf (drag preview)
+- TreeItem (metadata for SpriteMesh linking)
+
+Side effects:
+- Emits events to EventBus
+- Registers with TreeService via _ready()
+- Modifies drop_mode_flags during drag operations
+- Uses only DROP_MODE_INBETWEEN (no nesting)
+- Removes test items during initialization (replaced with real ones from LifeContainer)
+
+Notes:
+- Implements roadmap: "TreePanel synchronization with SpriteMesh"
+- Metadata(0) stores SpriteMesh reference
+- Nesting disabled (section 0 treated as sibling)
 
 #### MeshProperties
 Type: ToolProperties (UI Component)
@@ -817,13 +825,15 @@ Where new systems can be added safely:
 6. Emit events for state changes
 
 ### New Tool
-1. Create tool class extending BaseTool (RefCounted)
-2. Implement tool interface: on_press, on_drag, on_release, on_hover
-3. Add tool type to ToolType.Type enum
-4. Register in ToolService.tool_instances
-5. Create tool properties in ToolService.tool_properties
-6. Add tool button to UI ToolPanel
-7. (Optional) Create tool properties UI panel
+1. Create tool class extending DrawTool or LifeTool (RefCounted)
+2. For DrawTool: Implement on_press, on_drag, on_release, on_hover, on_mouse_exit, on_resize
+3. For LifeTool: Implement handle_input(event, item) and should_draw_preview()
+4. Add tool type to ToolType.Type enum
+5. Register in ToolService (draw_tool_instances or life_tool_instances)
+6. Create typed property resource (extends Resource) with signals
+7. Connect property resource to tool via connect_to_properties()
+8. Add tool button to UI ToolPanel
+9. (Optional) Create tool properties UI panel
 
 ### New Data Model
 1. Create Resource class extending Resource

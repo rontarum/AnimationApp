@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="ProjectData" format=4]
+[gd_resource type="Resource" script_class="ProjectData" format=4 uid="uid://bro3de3m023ay"]
 
-[ext_resource type="Script" path="res://assets/data/draw_layer_data.gd" id="1_al8cw"]
-[ext_resource type="Script" path="res://assets/data/project_data.gd" id="2_2ohvf"]
+[ext_resource type="Script" uid="uid://hhms7nrymee5" path="res://assets/data/draw_layer_data.gd" id="1_al8cw"]
+[ext_resource type="Script" uid="uid://dqf3iot2br0f8" path="res://assets/data/project_data.gd" id="2_2ohvf"]
 
 [sub_resource type="Resource" id="Resource_xhoee"]
 script = ExtResource("1_al8cw")
@@ -36,5 +36,4 @@ image_data = PackedByteArray("////AP///wD///8A////AP///wD///8A////AP///wD///8A//
 script = ExtResource("2_2ohvf")
 name = "test"
 canvas_size = Vector2i(64, 128)
-current_tab = 1
 layers = Array[ExtResource("1_al8cw")]([SubResource("Resource_xhoee"), SubResource("Resource_4d4jw"), SubResource("Resource_wko5r"), SubResource("Resource_fycjm"), SubResource("Resource_11vca")])

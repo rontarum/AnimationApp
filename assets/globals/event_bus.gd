@@ -36,6 +36,12 @@ signal layer_all_visibility_requested(visible: bool)  # UI запрос изме
 # === ITEM EVENTS ===
 signal item_selected(item_id: int)
 
+# === TREE EVENTS ===
+signal tree_item_selected(item_id: int)
+signal tree_item_move_requested(source: TreeItem, target: TreeItem, section: int)
+signal tree_item_delete_requested(item: TreeItem)
+signal tree_item_duplicate_requested(item: TreeItem)
+
 # === CANVAS EVENTS ===
 signal canvas_resized(new_size: Vector2i)  # Изменён размер холста
 signal canvas_cleared()  # Холст очищен

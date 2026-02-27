@@ -30,6 +30,7 @@ execution:
      - Layer rule inconsistencies
      - Undefined dependency constraints
   7. Find and notice redundancies: 
+     - Languages mixing (docs must be consistant on one prefered language)
      - Сomplications, repeated logic, over-explaining class details (methods/signals/fields, etc.)
      - Everything should be simple, clean, to the point, and concise.
   8. Create project_docs_review.md in review_path directory and generate structured validation report.
